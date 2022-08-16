@@ -6,10 +6,12 @@ include '../../config/config.php';
 include ROOT.'lib/mongo/autoload.php';
 include ROOT.'api/objects/database.php';
 include ROOT.'api/objects/user.php';
+include ROOT.'api/objects/auth.php';
 
 //initialize classes
 $database=new Database();
 $user=new User($database);
+$auth=new Auth();
 
 // required headers
 header("Access-Control-Allow-Origin: ".URL);
@@ -28,12 +30,22 @@ if(isset($data->AdmissionNo) && isset($data->Token)){
     $localToken=$data->Token;
     $realToken=$user->getToken();
     if($localToken==$realToken){
-        //process session keys
-        openssl_encrypt("derick","aes-256-gcm","whoami");
-        session_start();
-        $_SESSION["favcolor"] = "yellow";
-        //setcookie('user', $id.';'.md5('derick'), 60*600);
-        print_r($_SESSION);
+        $user->setUserProfile();
+        //create keys for usage
+        $session=array(
+            "AdmissionNo"=>$data->AdmissionNo,
+            "UserType"=>$user->getUserType()
+        );
+       $encoded=$auth->Encode(json_encode($session));
+       //set response code
+       http_response_code(200);
+       //give feedback
+       echo json_encode(
+        array(
+            "message"=>"authentication succesful",
+            "bearer"=>$encoded
+            )
+        );
     }
     else{
         http_response_code(403);

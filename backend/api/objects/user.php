@@ -57,6 +57,11 @@ class User{
             return FALSE;
         }
     }
+    
+    //function to get the usertype
+    public function getUserType(){
+        return $this->_UserType;
+    }
 
     //function to set the login token for the user
     public function setToken($token){
