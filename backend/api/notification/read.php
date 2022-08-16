@@ -18,7 +18,7 @@ $notification = new Notification($database,$user);
 // required headers
 header("Access-Control-Allow-Origin: ".URL);
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
@@ -49,8 +49,7 @@ else{
     http_response_code(403);
     echo json_encode(array("message"=>"Authorization required"));
 }
-//$authheader = $_SERVER['Bearer'];
-//print_r($_SERVER);
+
 
 
 ?>
