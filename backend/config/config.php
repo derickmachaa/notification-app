@@ -14,7 +14,4 @@ define('DB_NAME','machaa');//database name
 ///fix cross-orig errors
 define('URL','http://localhost');
 
-//add encryption key for auth for testing
-define('KEY','VGhpcyBpcyBteSB2ZXJ5IHNlY3VyZSBwYXNzd29yZCBmb3IgZW5jcnlwdGluZyBjb29raWVzIGp1c3QgZm9yIHRlc3RpbmcgY2hhbmdlIGl0');
-
 ?>
