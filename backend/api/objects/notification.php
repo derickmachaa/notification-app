@@ -59,5 +59,26 @@ class Notification{
         
         return $sms;
     }
+
+    //function to send notification to students
+    public function sendNotification($message,$recipients,$sender){
+        //the table/collection name
+        $_CollectionName='Notifications';
+        //insert the message to db
+        $values=[
+            "SenderId"=>$sender,
+            "Recipients"=>$recipients,
+            "Content"=>$message,
+            "Date"=>time()
+        ];
+        $result=$this->_Database->createOne($_CollectionName,$values);
+        if($result){
+            return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+
+    }
 }
 ?>
