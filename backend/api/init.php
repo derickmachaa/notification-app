@@ -19,6 +19,7 @@ echo "ok<br>";
 
 //add some users
 $users=[
+    ["AdmissionNo"=>0,"FirstName"=>"Derick","LastName"=>"Kamoro","UserType"=>"admin","PhoneNo"=>"254701873605"],
     ["AdmissionNo"=>10,"FirstName"=>"Derick","LastName"=>"Macharia","UserType"=>"student","PhoneNo"=>"254711218298"],
     ["AdmissionNo"=>11,"FirstName"=>"Juma","LastName"=>"Mwaure","UserType"=>"student","PhoneNo"=>"254712345670"],
     ["AdmissionNo"=>12,"FirstName"=>"Wema","LastName"=>"James","UserType"=>"student","PhoneNo"=>"254712345671"],
@@ -45,11 +46,16 @@ echo "ok<br>";
 $collection=$db->selectCollection('Notifications');
 //insert some notifications
 $notifications=[
-    ["SenderId"=>21,"Content"=>"Please see me at my office","Recipients"=>[10,11,12],"Date"=>"1660569195"],
-    ["SenderId"=>22,"Content"=>"You are disqualified","Recipients"=>[14,15,16],"Date"=>"1660568195"],
-    ["SenderId"=>23,"Content"=>"You have an F","Recipients"=>[17,18,19],"Date"=>"1660567195"],
-    ["SenderId"=>24,"Content"=>"You have an A grade","Recipients"=>[10,11,12,13],"Date"=>"1660566195"],
-    ["SenderId"=>25,"Content"=>"Cat is next week","Recipients"=>[10,15,18,13],"Date"=>"1660565195"]
+    ["SenderId"=>20,"Content"=>"Please see me at my office","Recipients"=>[10,11,12],"Date"=>"1660569195"],
+    ["SenderId"=>20,"Content"=>"You are expelled","Recipients"=>[13,14,12],"Date"=>"1660469195"],
+    ["SenderId"=>21,"Content"=>"You are disqualified","Recipients"=>[14,15,16],"Date"=>"1660368195"],
+    ["SenderId"=>21,"Content"=>"Come for your cat papers","Recipients"=>[17,15,16],"Date"=>"1660268195"],
+    ["SenderId"=>23,"Content"=>"You have an F","Recipients"=>[17,18,19],"Date"=>"1660367195"],
+    ["SenderId"=>23,"Content"=>"You have an B","Recipients"=>[13,10,11],"Date"=>"1660467195"],
+    ["SenderId"=>23,"Content"=>"You have an A grade","Recipients"=>[10,11,12,13],"Date"=>"1660564195"],
+    ["SenderId"=>24,"Content"=>"Cat is next week","Recipients"=>[10,15,18,13],"Date"=>"1660565195"],
+    ["SenderId"=>24,"Content"=>"You have an A grade","Recipients"=>[10,11,12,13],"Date"=>"1660567195"],
+    ["SenderId"=>25,"Content"=>"Cat is next week","Recipients"=>[10,15,18,13],"Date"=>"1660568195"]
 
 ];
 $database->createMany("Notifications",$notifications);

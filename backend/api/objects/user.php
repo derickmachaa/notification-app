@@ -31,6 +31,10 @@ class User{
     public function getFistName(){
         return $this->_FirstName;
     }
+    //function to get the admission number
+    public function getAdmissionNo(){
+        return $this->_AdmissionNo;
+    }
 
     //function to get user by admision number
     public function getUserByAdmission(){
@@ -78,7 +82,7 @@ class User{
     //function to get and return the user token
     public function getToken(){
         $match=["AdmissionNo"=>$this->_AdmissionNo];
-        $options=["projection"=>["Token"=>1]];
+        $options=["projection"=>["Token"=>1,"_id"=>0]];
         $query=$this->_Database->queryRecord($this->_CollectionName,$match,$options);
         if($query){
             return $query[0]->Token;

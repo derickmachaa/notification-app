@@ -14,13 +14,50 @@ class Notification{
         $this->user=$user;
     }
     
-    //function to get all notifications in database
-    public function getAllNotifications(){
+    //function to get sent notifications in database according to admission number and role
+    public function getNotifications($admissionNo,$role){
+        //declare an array to hold the notifications
+        $sms=array();
+        $sms['result']=array();
         $_CollectionName='Notifications';
-        $values=[];
-        $options=[];
+        //options to enable select only the valid sms
+        if($role=="student"){
+            $values=["Recipients"=>$admissionNo];
+            $options=[
+                "sort"=>["Date"=>-1],
+                "projection"=>["Recipients"=>0]
+            ];
+            //get student notifications
+            $notifications=$this->_Database->queryRecord($_CollectionName,$values,$options);
+            foreach($notifications as $row){
+                $sms_list=array(
+                    "Id"=>$row->_id->__toString(),
+                    "Content"=>$row->Content,
+                    "Date" =>$row->Date,
+                    "Sender" => $row->SenderId
+                );
+                array_push($sms['result'],$sms_list);
+            }
+        }//get lecturer notifications
+        else if($role=="lecturer"){
+            $values=["SenderId"=>$admissionNo];
+            $options=[
+                "sort"=>["Date"=>-1],
+                "projection"=>['Sender'=>0]
+        ];
         $notifications=$this->_Database->queryRecord($_CollectionName,$values,$options);
-        return $notifications;
+            foreach($notifications as $row){
+                $sms_list=array(
+                    "Id"=>$row->_id->__toString(),
+                    "Content"=>$row->Content,
+                    "Date" =>$row->Date
+                );
+                array_push($sms['result'],$sms_list);
+            }
+
+        }
+        
+        return $sms;
     }
 }
 ?>

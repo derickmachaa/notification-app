@@ -8,23 +8,25 @@ class Auth{
 
     function __construct()
     {
-        $this->key=KEY;
-        $this->iv="1578d6fc8db1221df16d79b324a647ca";
-        $this->encryptionScheme="aes-128-cbc";
+        //password to use for encryption
+        $this->key=base64_decode("TKgneppD3RDCndTJDJyzMQFR2BQZ3rUZtSZaLB4pJwI=");
+        //initialization vector to use for encryption
+        $this->iv=base64_decode("0LcRklpBwIH97gE150cXJQ==");
+        $this->encryptionScheme="aes-256-cbc";
     }
     //function to encode the token
     public function Encode($data){
         $cipher=openssl_encrypt($data,$this->encryptionScheme,$this->key,$options=0,$this->iv);
-        return base64_encode($cipher);
+        return $cipher;
     }
 
     //function to decrypt the cipher to get the token
     public function Decode($cipher){
-        $data=base64_decode($cipher);
-        if($data){
-            $output=openssl_decrypt($data,$this->encryptionScheme,$this->key,$options=0,$this->iv);
-            if($output){return $output;}else{echo 'not decoded';}
-        }else{
+        $decrypted=openssl_decrypt($cipher,$this->encryptionScheme,$this->key,$options=0,$this->iv);
+        if($decrypted){
+            return $decrypted;
+        }
+        else{
             return FALSE;
         }
     }

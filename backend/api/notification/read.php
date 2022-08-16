@@ -29,14 +29,18 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     //extract token from header
     $session=explode(" ",$sessionheader)[1];
     //try to decode the token
-    echo $auth->Decode($session);
-    if($auth->Decode($session)){
-        echo "hello";
+    
+    $decoded=json_decode($auth->Decode($session),true);
+    if($decoded){
+        $role=$decoded['UserType'];
+        //if the user is a student return all messages addressed to him
+        //set response to true
+        http_response_code(200);
+        echo json_encode($notification->getNotifications($decoded['AdmissionNo'],$role));
+        
     }
     else{
         http_response_code(400);
-        print_r($_SERVER);
-        print_r($session);
         echo json_encode(array("message"=>"invalid bearer token"));
     }
 
