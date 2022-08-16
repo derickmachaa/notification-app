@@ -14,4 +14,6 @@ define('DB_NAME','machaa');//database name
 ///fix cross-orig errors
 define('URL','http://localhost');
 
+//set the default time zone for a better clock
+date_default_timezone_set('Africa/Nairobi');
 ?>
