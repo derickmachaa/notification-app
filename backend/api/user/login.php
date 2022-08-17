@@ -28,8 +28,7 @@ $data = json_decode(file_get_contents("php://input"));
 
 if(isset($data->AdmissionNo)){
     //Check if the admission exists in the database
-    $user->setAdmissionNo($data->AdmissionNo);
-    $exists=$user->getUserByAdmission();
+    $exists=$user->setUserProfile($data->AdmissionNo);
     if($exists){
         //generate a token for the user 
         $token=rand(100,999).'-'.rand(100,999);

@@ -24,13 +24,13 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $data=json_decode(file_get_contents("php://input"));
 //check if required values are present
 if(isset($data->AdmissionNo) && isset($data->Token)){
-    //set userNo
-    $user->setAdmissionNo($data->AdmissionNo);
-    //check if the data provided matches and login
+    //set user profile
+    $user->setUserProfile($data->AdmissionNo);
     $localToken=$data->Token;
     $realToken=$user->getToken();
+    //check if the data provided matches and login
     if($localToken==$realToken){
-        $user->setUserProfile();
+        
         //create keys for usage
         $session=array(
             "AdmissionNo"=>$data->AdmissionNo,
