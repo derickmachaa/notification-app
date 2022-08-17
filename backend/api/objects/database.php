@@ -23,7 +23,7 @@ class Database{
     function createOne($collection_name,$values){
         $insertone = $this->conn->$collection_name->InsertOne($values);
         if($insertone->getInsertedCount()==1){
-            return TRUE;
+            return $insertone->getInsertedId();
         }
         else{
             return FALSE;
@@ -34,7 +34,7 @@ class Database{
     function createMany($collection_name,$values){
         $insertmany = $this->conn->$collection_name->InsertMany($values);
         if($insertmany->getInsertedCount()>1){
-            return TRUE;
+            return $insertmany->getInsertedIds();
         }else{
             return FALSE;
         }
