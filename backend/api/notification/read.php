@@ -3,11 +3,11 @@
 
 //include the necessary files
 include '../../config/config.php';
-include ROOT.'lib/mongo/autoload.php';
-include ROOT.'api/objects/database.php';
-include ROOT.'api/objects/auth.php';
-include ROOT.'api/objects/notification.php';
-include ROOT.'api/objects/user.php';
+include_once ROOT.'lib/mongo/autoload.php';
+include_once ROOT.'api/objects/database.php';
+include_once ROOT.'api/objects/auth.php';
+include_once ROOT.'api/objects/notification.php';
+include_once ROOT.'api/objects/user.php';
 
 //initialize classes
 $database=new Database();
@@ -32,18 +32,41 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     
     $decoded=json_decode($auth->Decode($session),true);
     if($decoded){
+        //assignk values
         $role=$decoded['UserType'];
-        //if the user is a student return all messages addressed to him
-        //set response to true
-        http_response_code(200);
-        echo json_encode($notification->getNotifications($decoded['AdmissionNo'],$role));
-        
+        $admissionNo=$decoded['AdmissionNo'];
+        //check if user is requesting specific id
+        if(isset($_REQUEST['id'])){
+            //return specific id
+            $id=$_REQUEST['id'];
+            if($role=='student'){
+                $sms=$notification->getNotificationRecievedById($id,$admissionNo);
+                http_response_code(200);
+                echo json_encode($sms);
+            }elseif($role=='lecturer'){
+                http_response_code(200);
+                $sms=$notification->getNotificationSentById($id,$admissionNo);
+                echo json_encode($sms);
+            }
+           
+        }
+        else{
+            //return general messages
+            if($role=='lecturer'){
+                http_response_code(200);
+                echo json_encode($notification->senderGetAll($admissionNo));
+            }
+            elseif($role='student'){
+                http_response_code(200);
+                echo json_encode($notification->recieverGetAll($admissionNo));
+            }
+       
+        }        
     }
     else{
         http_response_code(400);
         echo json_encode(array("message"=>"invalid bearer token"));
     }
-
 }
 else{
     http_response_code(403);
