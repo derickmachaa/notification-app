@@ -6,9 +6,8 @@ include ROOT.'api/objects/user.php';
 
 $database=new Database();
 $user=new User($database);
-$user->setAdmissionNo(15);
-$user->setUserProfile();
-$value=$user->getUserByAdmission();
+$user->setUserProfile(15);
+$value=$user->getUserByAdmission(15);
 print_r($value);
-echo $user->getFistName();
+echo $user->getFirstName();
 ?>
