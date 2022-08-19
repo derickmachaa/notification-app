@@ -19,6 +19,22 @@ function send_sms($destination,$token){
 $sms="Your CUEA code:\n".$token."\n";
 //echo $sms;
 }
+
+//function to hide the number before sending it to user
+function hide_number($number){
+	$length=strlen($number);
+	//get first  3
+	$f=substr($number,0,3);
+	//get last 3
+	$l=substr($number,$length-3,$length);
+	//generate so many *
+	$a="";
+	for ($i=0;$i<$length-6;$i++){
+		$a=$a."*";	
+	}
+	return $f.$a.$l;
+}
+
 //initialize the classes
 $database = new Database();
 $user = new User($database);
@@ -35,12 +51,14 @@ if(isset($data->AdmissionNo)){
         //insert token to db
         if($user->setToken($token)){
             send_sms(1,$token);
+	    $fname=$user->getFirstName();
+	    $phone=$user->getPhoneNo();
             http_response_code(200);
-            echo json_encode(array("message"=>"proceed to verification","firstname"=>$user->getFirstName()));
+            echo json_encode(array("message"=>"proceed to verification","firstname"=>$fname,"phoneno"=>hide_number($phone)));
         }
     }
     else{
-        http_response_code(400);
+        http_response_code(204);
         echo json_encode(array("message"=>"user does not exist"));
     }
 }
@@ -48,5 +66,4 @@ else{
     http_response_code(404);
     echo json_encode(array("message"=>"missing _AdmissionNo "));
 }
-
 ?>

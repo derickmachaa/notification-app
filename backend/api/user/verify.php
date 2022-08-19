@@ -43,7 +43,9 @@ if(isset($data->AdmissionNo) && isset($data->Token)){
        echo json_encode(
         array(
             "message"=>"authentication succesful",
-            "bearer"=>$encoded
+	    "bearer"=>$encoded,
+	    "lastname"=>$user->getLastName(),
+	    "usertype"=>$user->getUserType()
             )
         );
     }
