@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CUEA</string>
+    <string name="signintext">To Sign in please enter your admission number registered in the school portal.</string>
+</resources>

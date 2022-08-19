@@ -17,7 +17,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 //function to send sms to
 function send_sms($destination,$token){
 $sms="Your CUEA code:\n".$token."\n";
-echo $sms;
+//echo $sms;
 }
 //initialize the classes
 $database = new Database();
@@ -36,12 +36,12 @@ if(isset($data->AdmissionNo)){
         if($user->setToken($token)){
             send_sms(1,$token);
             http_response_code(200);
-            echo json_encode(array("message"=>"proceed to verification"));
+            echo json_encode(array("message"=>"proceed to verification","firstname"=>$user->getFirstName()));
         }
     }
     else{
         http_response_code(400);
-        echo json_encode(array("message"=>"user_does_not_exist"));
+        echo json_encode(array("message"=>"user does not exist"));
     }
 }
 else{
