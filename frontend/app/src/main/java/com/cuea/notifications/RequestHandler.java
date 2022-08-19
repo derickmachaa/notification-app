@@ -8,12 +8,15 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
 public class RequestHandler {
+
 
     //function to do get requests and return response
     public String GetRequest(String link,String rqtoken){
@@ -49,8 +52,8 @@ public class RequestHandler {
     return response;
     }
 
-    //function to send post request
-    public String PostRequest(String link, HashMap <String,String> body , String rqtoken){
+    //function recieve json object and send it via post request
+    public String PostRequest(String link,JSONObject body , String rqtoken){
         String response="";
         //create  url object
         URL url;
@@ -69,27 +72,52 @@ public class RequestHandler {
             httpURLConnection.setDoOutput(true);
             //stream
             OutputStream outputStream = httpURLConnection.getOutputStream();
-            //convert hashmap to stream
-            JSONObject json = new JSONObject(body);
             //write stream
-            outputStream.write(json.toString().getBytes());
+            outputStream.write(body.toString().getBytes());
             outputStream.close();//close
 
-            InputStream inputStream = httpURLConnection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuilder stringBuilder = new StringBuilder();
-            String line="";
-            while((line=bufferedReader.readLine())!=null){
-                stringBuilder.append(line);
+
+            //check response code
+            if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+                //if ok continue
+                InputStream is = httpURLConnection.getInputStream();
+                //convert to string
+                response = InputstreamToString(is);
             }
-            response = stringBuilder.toString();
+            else if(httpURLConnection.getResponseCode()==403){
+                response="unauthorized";
+
+            }
+            else if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_NO_CONTENT){
+                response="notfound";
+            }
             //close connection
-            //httpURLConnection.disconnect();
+            httpURLConnection.disconnect();
+
 
         }catch(Exception e){
             e.printStackTrace();
+            return "Error";
         }
         return response;
+    }
+
+    //function to convert input stream to string
+    public String InputstreamToString(InputStream input){
+        String string="";
+        //create an instance
+        InputStreamReader inputStreamReader = new InputStreamReader(input);
+        //buffered
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        //String builder
+        StringBuilder sb = new StringBuilder();
+        try{
+            while((string=bufferedReader.readLine())!=null){
+                sb.append(string);
+            }
+        }catch (java.io.IOException e){//handle java.io.IOException
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 }

@@ -6,4 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".VerifyActivity">
 
+    <TextView
+        android:id="@+id/tvfname"
+        android:layout_width="294dp"
+        android:layout_height="111dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:text="TextView"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="119dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="100dp"
+        android:text="Code:"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvfname" />
+
+    <EditText
+        android:id="@+id/edverifycode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="14dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/tvfname" />
+
+    <Button
+        android:id="@+id/btnverify"
+        android:layout_width="239dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="153dp"
+        android:layout_marginTop="135dp"
+        android:layout_marginEnd="170dp"
+        android:onClick="doVerify"
+        android:text="Verify"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edverifycode" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

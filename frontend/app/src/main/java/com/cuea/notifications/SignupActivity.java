@@ -16,8 +16,6 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.net.URL;
-import java.util.HashMap;
 
 public class SignupActivity extends AppCompatActivity {
     @Override
@@ -41,10 +39,8 @@ public class SignupActivity extends AppCompatActivity {
             //check validity of the admission no
             String admissionno = edAmission.getText().toString();
             try {
-
                 //get admission no
                 int adm = Integer.parseInt(admissionno);
-
                 //call async task
                 new DoRequestSignup().execute(adm);
             }
@@ -58,7 +54,8 @@ public class SignupActivity extends AppCompatActivity {
     }
     class DoRequestSignup extends AsyncTask<Integer,Void,String>{
         ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this);
-
+        //json object to hold our json objects
+        JSONObject json = new JSONObject();
 
         @Override
         protected void onPreExecute() {
@@ -73,17 +70,20 @@ public class SignupActivity extends AppCompatActivity {
         protected String doInBackground(Integer... integers) {
             //get admission no
             int admissionno = integers[0];
-            //create hashmap for post request
-            HashMap data = new HashMap<String,String>();
-            data.put("AdmissionNo",admissionno);
-
-            //create request instance
-            RequestHandler requestHandler = new RequestHandler();
-            //call request
-            String response=requestHandler.PostRequest(MyLinks.URL_REGISTER,data,"");
-
-            //send the result to on post execute
-            return response;
+            //create json object
+            try {
+                //put data in json
+                json.put("AdmissionNo", admissionno);
+                //create request instance
+                RequestHandler requestHandler = new RequestHandler();
+                //call request
+                String response = requestHandler.PostRequest(MyLinks.URL_REGISTER,json," ");
+                //return response
+                return response;
+            }catch (Exception e){
+                e.printStackTrace();
+                return "Error";
+            }
         }
 
         @Override
@@ -93,7 +93,11 @@ public class SignupActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
             //check if response was successful
-            if(s==""){
+            if(s=="Error"){
+                Toast.makeText(SignupActivity.this, "Something Went Wrong", Toast.LENGTH_LONG).show();
+//
+            }
+            else if(s=="notfound"){
                 EditText edAmission = (EditText) findViewById(R.id.edAdmission);
                 edAmission.setError("The admission number does not exist");
                 edAmission.requestFocus();
@@ -101,11 +105,15 @@ public class SignupActivity extends AppCompatActivity {
             else {
                 try {
                     //decode if is js
-                    JSONObject json = new JSONObject(s);
-                    String response = json.getString("firstname");
+                    JSONObject jsonresponse = new JSONObject(s);
+                    String firstname = jsonresponse.getString("firstname");
+                    String phoneno = jsonresponse.getString("phoneno");
                     //launch the verify activity
+                    finish();//finish current activity
                     Intent intent = new Intent(SignupActivity.this,VerifyActivity.class);
-                    intent.putExtra("FirstName",response);
+                    intent.putExtra("FirstName",firstname);
+                    intent.putExtra("PhoneNo",phoneno);
+                    intent.putExtra("AdmissionNo",json.getInt("AdmissionNo"));
                     startActivity(intent);
 
 

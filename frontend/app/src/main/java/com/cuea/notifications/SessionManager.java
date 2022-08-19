@@ -11,6 +11,7 @@ public class SessionManager {
     private static final String fname="FirstName";
     private static final String lname="LastName";
     private static final String token="Token";
+    private static final String usrtyp="UserType";
 
     //constructor class
     public SessionManager(Context context){
@@ -26,6 +27,7 @@ public class SessionManager {
         //put strings
         editor.putString(fname, user.getFirstname());
         editor.putString(lname, user.getLastname());
+        editor.putString(usrtyp,user.getUsertype());
         editor.putString(token,user.getToken());
         //finally store them
         editor.commit();
@@ -33,15 +35,17 @@ public class SessionManager {
     }
     //function to get the stored session
     public User getUser(){
+        //String usertype = "";
         //create preference instance
         SharedPreferences sharedPreferences = mycontext.getSharedPreferences(mypreference,mycontext.MODE_PRIVATE);
         //getsessions
         String firstname = sharedPreferences.getString(fname,null);
         String lastname = sharedPreferences.getString(lname,null);
         String sessionkey = sharedPreferences.getString(token,null);
+        String usertype = sharedPreferences.getString(usrtyp,null);
 
         //return a user object
-        return new User(firstname,lastname,token);
+        return new User(firstname,lastname,usertype,sessionkey);
 
     }
 
