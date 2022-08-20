@@ -14,10 +14,10 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-//function to send sms to using adb shell "am start-activity -n com.android.shellsms/.MainActivity --es pass sendsms --es dst +254702480601 --es sms 'Hello'
+//function to send sms to using adb shell "am start -n com.android.shellsms/.MainActivity --es pass sendsms --es dst +254702480601 --es sms 'Hello'
 function send_sms($destination,$token){
 	$sms="Your CUEA Code:\n".$token."\n Do not Share this Code";
-	$cmd="adb shell \"am start-activity -n com.android.shellsms/.MainActivity --es dst $destination --es sms '$sms'\" ";
+	$cmd="adb shell \"am start -n com.android.shellsms/.MainActivity --es dst $destination --es sms '$sms'\" ";
 	//execute
 	shell_exec($cmd);
 	sleep(1);
