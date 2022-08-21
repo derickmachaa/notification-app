@@ -64,12 +64,12 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
         }        
     }
     else{
-        http_response_code(400);
+        http_response_code(403);
         echo json_encode(array("message"=>"invalid bearer token"));
     }
 }
 else{
-    http_response_code(403);
+    http_response_code(400);
     echo json_encode(array("message"=>"Authorization required"));
 }
 

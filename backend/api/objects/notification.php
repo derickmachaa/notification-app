@@ -110,14 +110,21 @@ class Notification{
             $sender=$row['SenderId'];
             //get message id
             $id=$row->_id->__toString();
-            //set user profile
+	    
+	    //get the status of the message
+	    $values=["NotificationId"=>new MongoDB\BSON\ObjectId($id)];
+            $options=["projection"=>["Status"=>1,"_id"=>0]];
+            $status=$this->_Database->queryRecord("NotificationStatus",$values,$options);
+	    
+	    //set user profile
             $this->user->setUserProfile($sender);
 
             $sms_list=array(
                 "Id"=>$id,
                 "Description"=>$row->Description,
                 "Date" =>$row->Date,
-                "FullNames"=>$this->user->getFirstName().' '.$this->user->getLastName()
+		"FullNames"=>$this->user->getFirstName().' '.$this->user->getLastName(),
+		"Status"=>$status[0]->Status
             );
             array_push($sms['result'],$sms_list);
             //mark message as delivered
@@ -174,7 +181,7 @@ class Notification{
             ];
             $result=$this->_Database->queryRecord($_CollectionName,$values,$options);
             if($result){
-                $sms['results']=array(
+                $sms['result']=array(
                     "Content"=>$result[0]['Content'],
                     "Date"=>$result[0]['Date']
                 );
@@ -206,7 +213,7 @@ class Notification{
             $sender=$smsdetails['SenderId'];
             //set user profile
             $this->user->setUserProfile($sender);
-            $sms['results']=array(
+            $sms['result']=array(
                     "Content"=>$smsdetails['Content'],
                     "Date"=>$smsdetails['Date'],
                     "FullNames"=>$this->user->getFirstName().' '.$this->user->getLastName(),
