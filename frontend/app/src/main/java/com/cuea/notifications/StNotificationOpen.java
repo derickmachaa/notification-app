@@ -14,6 +14,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class StNotificationOpen extends AppCompatActivity {
 
@@ -64,8 +67,9 @@ public class StNotificationOpen extends AppCompatActivity {
                 String faculty=result.getString("Faculty");
                 String department= result.getString("Department");
                 Long epoc = result.getLong("Date");
+
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                String date=simpleDateFormat.format(epoc);
+                String date=simpleDateFormat.format(epoc*1000);
                 //build string
                 String fullsms=sms+"\n\n\n\nFaculty:"+faculty+"\nDepartment:"+department+"\nSender:"+sender+"\nDate:"+date;
 

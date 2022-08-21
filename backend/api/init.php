@@ -46,16 +46,16 @@ echo "ok<br>";
 $collection=$db->selectCollection('Notifications');
 //insert some notifications
 $notifications=[
-    ["SenderId"=>20,"Description"=>"Be serious","Content"=>"Please see me at my office","Recipients"=>[10,11,12],"Date"=>"1660569195"],
-    ["SenderId"=>20,"Description"=>"Things are bad","Content"=>"You are expelled","Recipients"=>[13,14,12],"Date"=>"1660469195"],
-    ["SenderId"=>21,"Description"=>"Things are bad","Content"=>"You are disqualified","Recipients"=>[14,15,16],"Date"=>"1660368195"],
-    ["SenderId"=>21,"Description"=>"Cat Marks","Content"=>"Come for your cat papers","Recipients"=>[17,15,16],"Date"=>"1660268195"],
-    ["SenderId"=>23,"Description"=>"Exam Results","Content"=>"You have an F","Recipients"=>[17,18,19],"Date"=>"1660367195"],
-    ["SenderId"=>23,"Description"=>"Exam with B","Content"=>"You have an B","Recipients"=>[13,10,11],"Date"=>"1660467195"],
-    ["SenderId"=>23,"Description"=>"Exam with A","Content"=>"You have an A grade","Recipients"=>[10,11,12,13],"Date"=>"1660564195"],
-    ["SenderId"=>24,"Description"=>"Prepare for cat","Content"=>"Cat is next week","Recipients"=>[10,15,18,13],"Date"=>"1660565195"],
-    ["SenderId"=>24,"Description"=>"Exam with A","Content"=>"You have an A grade","Recipients"=>[10,11,12,13],"Date"=>"1660567195"],
-    ["SenderId"=>25,"Description"=>"Prepare for cat","Content"=>"Cat is next week","Recipients"=>[10,15,18,13],"Date"=>"1660568195"]
+    ["SenderId"=>20,"Description"=>"Be serious","Content"=>"Please see me at my office","Recipients"=>[10,11,12],"Date"=>1660569195],
+    ["SenderId"=>20,"Description"=>"Things are bad","Content"=>"You are expelled","Recipients"=>[13,14,12],"Date"=>1660469195],
+    ["SenderId"=>21,"Description"=>"Things are bad","Content"=>"You are disqualified","Recipients"=>[14,15,16],"Date"=>1660368195],
+    ["SenderId"=>21,"Description"=>"Cat Marks","Content"=>"Come for your cat papers","Recipients"=>[17,15,16],"Date"=>660268195],
+    ["SenderId"=>23,"Description"=>"Exam Results","Content"=>"You have an F","Recipients"=>[17,18,19],"Date"=>1660367195],
+    ["SenderId"=>23,"Description"=>"Exam with B","Content"=>"You have an B","Recipients"=>[13,10,11],"Date"=>1660467195],
+    ["SenderId"=>23,"Description"=>"Exam with A","Content"=>"You have an A grade","Recipients"=>[10,11,12,13],"Date"=>1660564195],
+    ["SenderId"=>24,"Description"=>"Prepare for cat","Content"=>"Cat is next week","Recipients"=>[10,15,18,13],"Date"=>1660565195],
+    ["SenderId"=>24,"Description"=>"Exam with A","Content"=>"You have an A grade","Recipients"=>[10,11,12,13],"Date"=>1660567195],
+    ["SenderId"=>25,"Description"=>"Prepare for cat","Content"=>"Cat is next week","Recipients"=>[10,15,18,13],"Date"=>1660568195]
 
 ];
 $database->createMany("Notifications",$notifications);
@@ -66,16 +66,16 @@ $collection=$db->selectCollection('NotificationStatus');
 //get notification id_s from db
 $notifications=$database->queryRecord('Notifications',[],["projection"=>['_id'=>1]]);
 $status=[
-    ["NotificationId"=>$notifications[0]['_id'],"Recipient"=>10,"Status"=>1,"Date"=>"1660715195"],
-    ["NotificationId"=>$notifications[1]['_id'],"Recipient"=>12,"Status"=>2,"Date"=>"1660726195"],
-    ["NotificationId"=>$notifications[2]['_id'],"Recipient"=>14,"Status"=>1,"Date"=>"1660737195"],
-    ["NotificationId"=>$notifications[3]['_id'],"Recipient"=>15,"Status"=>2,"Date"=>"1660748195"],
-    ["NotificationId"=>$notifications[4]['_id'],"Recipient"=>17,"Status"=>3,"Date"=>"1660759195"],
-    ["NotificationId"=>$notifications[5]['_id'],"Recipient"=>11,"Status"=>3,"Date"=>"1660759195"],
-    ["NotificationId"=>$notifications[6]['_id'],"Recipient"=>10,"Status"=>3,"Date"=>"1660759195"],
-    ["NotificationId"=>$notifications[7]['_id'],"Recipient"=>13,"Status"=>3,"Date"=>"1660759195"],
-    ["NotificationId"=>$notifications[8]['_id'],"Recipient"=>12,"Status"=>3,"Date"=>"1660759195"],
-    ["NotificationId"=>$notifications[9]['_id'],"Recipient"=>10,"Status"=>3,"Date"=>"1660759195"]
+    ["NotificationId"=>$notifications[0]['_id'],"Recipient"=>10,"Status"=>1,"Date"=>1660715195],
+    ["NotificationId"=>$notifications[1]['_id'],"Recipient"=>12,"Status"=>2,"Date"=>1660726195],
+    ["NotificationId"=>$notifications[2]['_id'],"Recipient"=>14,"Status"=>1,"Date"=>1660737195],
+    ["NotificationId"=>$notifications[3]['_id'],"Recipient"=>15,"Status"=>2,"Date"=>1660748195],
+    ["NotificationId"=>$notifications[4]['_id'],"Recipient"=>17,"Status"=>3,"Date"=>1660759195],
+    ["NotificationId"=>$notifications[5]['_id'],"Recipient"=>11,"Status"=>3,"Date"=>1660759195],
+    ["NotificationId"=>$notifications[6]['_id'],"Recipient"=>10,"Status"=>3,"Date"=>1660759195],
+    ["NotificationId"=>$notifications[7]['_id'],"Recipient"=>13,"Status"=>3,"Date"=>1660759195],
+    ["NotificationId"=>$notifications[8]['_id'],"Recipient"=>12,"Status"=>3,"Date"=>1660759195],
+    ["NotificationId"=>$notifications[9]['_id'],"Recipient"=>10,"Status"=>3,"Date"=>1660759195]
 
 ];
 $database->createMany("NotificationStatus",$status);

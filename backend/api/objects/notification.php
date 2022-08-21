@@ -112,7 +112,7 @@ class Notification{
             $id=$row->_id->__toString();
 	    
 	    //get the status of the message
-	    $values=["NotificationId"=>new MongoDB\BSON\ObjectId($id)];
+	    $values=["NotificationId"=>new MongoDB\BSON\ObjectId($id),"Recipient"=>$admissionNo];
             $options=["projection"=>["Status"=>1,"_id"=>0]];
             $status=$this->_Database->queryRecord("NotificationStatus",$values,$options);
 	    
@@ -157,11 +157,9 @@ class Notification{
                 "Recipient"=>$receiver,
                 "Date"=>time()
             ];
-            $result=$this->_Database->createOne($_CollectionName,$values);
-            if($result){
-                return TRUE;
-            }
-        }
+            $this->_Database->createOne($_CollectionName,$values);
+	    }
+	    return TRUE;
         }
         else{
             return FALSE;
@@ -205,7 +203,7 @@ class Notification{
          if($result){
             $smsdetails=$result[0];
             //get the message status
-            $values=["NotificationId"=>new MongoDB\BSON\ObjectId($notificationid)];
+            $values=["NotificationId"=>new MongoDB\BSON\ObjectId($notificationid),"Recipient"=>$admissionNo];
             $options=["projection"=>["Status"=>1,"_id"=>0]];
             $status=$this->_Database->queryRecord("NotificationStatus",$values,$options);
             // get the sender details from sender id

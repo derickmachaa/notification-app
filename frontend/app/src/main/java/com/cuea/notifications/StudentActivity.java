@@ -88,13 +88,18 @@ public class StudentActivity extends AppCompatActivity {
                         maintitle.add(object.getString("FullNames"));
                         //get the description of the notification
                         subtitle.add(object.getString("Description"));
-                        //get the status of notification and update accordingly
-                        if(object.getInt("Status")!=3){
-                            icons.add(R.drawable.smsnew);
+                        //get the status of the id
+                        try{
+                        int status = object.getInt("Status");
+                        if(status!=3){
+                                icons.add(R.drawable.smsnew);
                         }
                         else{
-                            icons.add(R.drawable.smsread);
+                                icons.add(R.drawable.smsread);
+                            }}catch (Exception e){
+                            icons.add(R.drawable.smsnew);
                         }
+
                         //update list with the id
                         notificationID.add(object.getString("Id"));
                     }
@@ -111,17 +116,15 @@ public class StudentActivity extends AppCompatActivity {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            //get the item number clicked
-                            int itemnumber = i;
-                            //check if message read
-                            if(icons.get(itemnumber)==R.drawable.smsnew){
+                            ImageView x = (ImageView) view.findViewById(R.id.img_sms_status);
+                            //check if message unread
+                            if(icons.get(i)==R.drawable.smsnew){
                                 //set to read
-                                ImageView x = (ImageView) findViewById(R.id.img_sms_status);
                                 x.setImageResource(R.drawable.smsread);
                             }
                             //Toast.makeText(StudentActivity.this,notificationID.get(i),Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(StudentActivity.this,StNotificationOpen.class);
-                            intent.putExtra("notificationID",notificationID.get(itemnumber));
+                            intent.putExtra("notificationID",notificationID.get(i));
                             startActivity(intent);
                         }
                     });
