@@ -70,7 +70,12 @@ $status=[
     ["NotificationId"=>$notifications[1]['_id'],"Recipient"=>12,"Status"=>2,"Date"=>"1660726195"],
     ["NotificationId"=>$notifications[2]['_id'],"Recipient"=>14,"Status"=>1,"Date"=>"1660737195"],
     ["NotificationId"=>$notifications[3]['_id'],"Recipient"=>15,"Status"=>2,"Date"=>"1660748195"],
-    ["NotificationId"=>$notifications[4]['_id'],"Recipient"=>17,"Status"=>3,"Date"=>"1660759195"]
+    ["NotificationId"=>$notifications[4]['_id'],"Recipient"=>17,"Status"=>3,"Date"=>"1660759195"],
+    ["NotificationId"=>$notifications[5]['_id'],"Recipient"=>11,"Status"=>3,"Date"=>"1660759195"],
+    ["NotificationId"=>$notifications[6]['_id'],"Recipient"=>10,"Status"=>3,"Date"=>"1660759195"],
+    ["NotificationId"=>$notifications[7]['_id'],"Recipient"=>13,"Status"=>3,"Date"=>"1660759195"],
+    ["NotificationId"=>$notifications[8]['_id'],"Recipient"=>12,"Status"=>3,"Date"=>"1660759195"],
+    ["NotificationId"=>$notifications[9]['_id'],"Recipient"=>10,"Status"=>3,"Date"=>"1660759195"]
 
 ];
 $database->createMany("NotificationStatus",$status);
