@@ -33,20 +33,21 @@ public class RequestHandler {
             httpURLConnection.setRequestProperty("Authorization","Bearer "+rqtoken); //set Authorization
             //set input stream
             httpURLConnection.setDoInput(true);
-            //write to input stream
+            //write to input stream if sucess
             InputStream inputStream = httpURLConnection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuilder stringBuilder = new StringBuilder();
-            //write
-            String line="";
-            while((line=bufferedReader.readLine())!=null){
-                stringBuilder.append(line);
+            if(httpURLConnection.getResponseCode()==200){
+                response = InputstreamToString(inputStream);
             }
-            response = stringBuilder.toString();
+            else if(httpURLConnection.getResponseCode()==400){
+                response="notfound";
+            }
+            else if(httpURLConnection.getResponseCode()==403){
+                response="unauthorized";
+            }
             //close the connection
             httpURLConnection.disconnect();
         }catch (Exception e){
+            response="Error";
             e.printStackTrace();
         }
     return response;

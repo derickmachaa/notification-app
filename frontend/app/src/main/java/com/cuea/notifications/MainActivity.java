@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,15 +17,15 @@ public class MainActivity extends AppCompatActivity {
             //if logged in check usertype
             User user = sessionManager.getUser();
             String usertype= user.getUsertype();
-            //launch respective menu
-            if(usertype=="student"){
-                //launch student activity
+            ///if student go to student menu
+            if(usertype.equals("student")){
                 finish();
                 Intent intent = new Intent(this,StudentActivity.class);
                 startActivity(intent);
-            }else if(usertype=="lecturer"){
-                //launch lect activity
-            };
+            }
+            else if(usertype.equals("lecturer")){
+                //go to lecturer activity
+            }
         }else{
             //start sign in activity
             finish(); //finish mainactivity
