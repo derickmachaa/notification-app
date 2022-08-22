@@ -167,6 +167,32 @@ class Notification{
 
     }
 
+    //function to delete a notification
+    public function deleteNotification($notificationid,$admissionNo){
+        $_CollectionName='Notifications';
+        //where value = id and sender=id
+        $values=[
+            "_id" => new MongoDB\BSON\ObjectId($notificationid),
+            "SenderId" => $admissionNo
+        ];
+        $result=$this->_Database->removeOne($_CollectionName,$values);
+        //remove from status also
+        if($result){
+            $_CollectionName="NotificationStatus";
+            $values=[
+                "NotificationId"=>new MongoDB\BSON\ObjectId($notificationid)
+            ];
+            $result=$this->_Database->removeOne($_CollectionName,$values);
+            if($result){
+                return TRUE;
+            }
+            else{
+                return FALSE;
+            }
+        }
+        else return FALSE;
+    }
+
     //function for sender to get a specific notification
     public function getNotificationSentById($notificationid,$admissionNo){
         $sms=array();

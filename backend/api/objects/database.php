@@ -7,7 +7,9 @@ class Database{
     function __construct()
     {
         // Creating Connection to mongodb
-        $uri="mongodb://". DB_HOST . ':' . DB_PORT;
+        $user="Admin";
+        $password="CueaNotificationSystem";
+        $uri="mongodb://$user:$password@". DB_HOST . ':' . DB_PORT;
         
         //select a database
         $this->db = new MongoDB\Client($uri);
@@ -43,7 +45,6 @@ class Database{
     //function to delete one record from the database
     function removeOne($collection_name,$values){
         $deleteone = $this->conn->$collection_name->deleteOne($values);
-        printf("Deleted %d document(s)\n", $deleteone->getDeletedCount());
         if($deleteone->getDeletedCount()==1){
             return TRUE;
         }
