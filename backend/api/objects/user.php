@@ -105,6 +105,28 @@ class User{
     
     }
 
+    //function to update the user
+    public function updateUser(){
+        $from=["AdmissionNo"=>$this->getAdmissionNo()];
+        $to=[
+            "FirstName"=> $this->getFirstName(),
+            "LastName"=> $this->getLastName(),
+            "UserType"=> $this->getUserType(),
+            "PhoneNo" => $this->getPhoneNo(),
+            "Faculty"=> $this->getFaculty(),
+            "Department"=> $this->getDepartment()
+        ];
+      
+            $result=$this->_Database->modifyOne($this->_CollectionName,$from,$to);
+            if($result){
+                return TRUE;
+            }
+            else{
+                return FALSE;
+            }
+
+    }
+
 
     //function to get user by admision number
     public function getUserByAdmission($admissionNo){
