@@ -4,10 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/rounded_corners.xml" value="0.194" />
+        <entry key="app/src/main/res/layout/activity_lec.xml" value="0.13043478260869565" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1693840579710145" />
         <entry key="app/src/main/res/layout/activity_signup.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_st_notification_open.xml" value="0.19010416666666666" />
-        <entry key="app/src/main/res/layout/activity_student.xml" value="0.17447916666666666" />
+        <entry key="app/src/main/res/layout/activity_student.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_verify.xml" value="0.25" />
         <entry key="app/src/main/res/layout/reciever_sms.xml" value="0.19010416666666666" />
       </map>

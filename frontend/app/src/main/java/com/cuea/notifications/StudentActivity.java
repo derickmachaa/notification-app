@@ -53,7 +53,7 @@ public class StudentActivity extends AppCompatActivity {
             super.onPreExecute();
             //create dialog
             progressDialog.setMessage("Getting your messages");
-            progressDialog.setCancelable(true);
+            progressDialog.setCancelable(false);
             progressDialog.show();
 
         }
@@ -70,12 +70,12 @@ public class StudentActivity extends AppCompatActivity {
             super.onPostExecute(s);
             //stop process dialog
             progressDialog.dismiss();
-            ///process the messages
+            ///process the messages;
             //Toast.makeText(StudentActivity.this,s,Toast.LENGTH_LONG).show();
             if(s.equals("Error")){
-                Toast.makeText(StudentActivity.this,"Something went Wrong",Toast.LENGTH_LONG);
+                Toast.makeText(StudentActivity.this,"Something went Wrong",Toast.LENGTH_LONG).show();
             }else if(s=="unauthorized"||s=="notfound") {
-                Toast.makeText(StudentActivity.this, "Not authorized logout", Toast.LENGTH_LONG);
+                Toast.makeText(StudentActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
             }else{
                 //try to decode the json object and render it
                 try{

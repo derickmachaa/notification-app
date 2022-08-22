@@ -109,12 +109,13 @@ public class SignupActivity extends AppCompatActivity {
                     String firstname = jsonresponse.getString("firstname");
                     String phoneno = jsonresponse.getString("phoneno");
                     //launch the verify activity
-                    finish();//finish current activity
                     Intent intent = new Intent(SignupActivity.this,VerifyActivity.class);
                     intent.putExtra("FirstName",firstname);
                     intent.putExtra("PhoneNo",phoneno);
                     intent.putExtra("AdmissionNo",json.getInt("AdmissionNo"));
                     startActivity(intent);
+                    finish();//finish current activity
+
 
 
                 } catch (Exception e) {

@@ -19,19 +19,20 @@ public class MainActivity extends AppCompatActivity {
             String usertype= user.getUsertype();
             ///if student go to student menu
             if(usertype.equals("student")){
-                finish();
                 Intent intent = new Intent(this,StudentActivity.class);
                 startActivity(intent);
+                finish(); //finish current activity
             }
             else if(usertype.equals("lecturer")){
                 //go to lecturer activity
             }
         }else{
             //start sign in activity
-            finish(); //finish mainactivity
             //start singup
             Intent intent = new Intent(this,SignupActivity.class);
             startActivity(intent);
+            finish(); //finish mainactivity
+
         }
 
     }

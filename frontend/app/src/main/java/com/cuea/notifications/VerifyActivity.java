@@ -121,10 +121,11 @@ public class VerifyActivity extends AppCompatActivity {
                     sessionManager.storeSession(user);
                     //start
                     if(usertype.equals("student")){
-                        ///finish and redirect to sms
-                        finish();
+                        /// redirect to sms and finish
                         Intent stintent = new Intent(VerifyActivity.this,StudentActivity.class);
                         startActivity(stintent);
+                        finish();
+
                     }
                 }catch(JSONException e){
                     e.printStackTrace();
