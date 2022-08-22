@@ -1,7 +1,7 @@
 <?php
 //This file will be used by the admin to manage users in the system
 //include necessary file
-include_once "../../../config/config.php";
+include_once "../../config/config.php";
 include_once ROOT."api/objects/auth.php";
 include_once ROOT."lib/mongo/autoload.php";
 include_once ROOT."api/objects/user.php";
