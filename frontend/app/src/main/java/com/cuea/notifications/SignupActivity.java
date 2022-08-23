@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.transition.MaterialContainerTransform;
+
 import org.json.JSONObject;
 
 
@@ -29,26 +31,14 @@ public class SignupActivity extends AppCompatActivity {
         //select edit text
         EditText edAmission = (EditText) findViewById(R.id.edAdmission);
         //do some validation before posting
-        //check if empty
-        int length = edAmission.length();
-        if(length==0){
-            edAmission.setError("Admission number cannot be blank");
-            edAmission.requestFocus();
-        }
-        else {
-            //check validity of the admission no
             String admissionno = edAmission.getText().toString();
-            try {
-                //get admission no
-                int adm = Integer.parseInt(admissionno);
-                //call async task
-                new DoRequestSignup().execute(adm);
-            }
-            //if number is invalid alert
-            catch (NumberFormatException e) {
-                edAmission.setError("Invalid admission No");
-                edAmission.requestFocus();
-            }
+            MyVerification myverification = new MyVerification();
+        if (!myverification.isAdmissionNoValid(admissionno)) {
+            edAmission.setError("invalid admission");
+            edAmission.requestFocus();
+        } else {
+            int adm = Integer.parseInt(admissionno);
+            new DoRequestSignup().execute(adm);
         }
 
     }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/admin_report"
+        android:title="Generate Report"
+        android:onClick="doReport"
+        />
+    <item
+        android:id="@+id/admin_about"
+        android:title="About"
+        android:onClick="doAbout"
+        />
+    <item
+        android:id="@+id/admin_logout"
+        android:title="Log Out"
+        android:onClick="doLogout"
+        />
+    <item
+        android:icon="@android:drawable/ic_input_add"
+        android:title="@+id/admin_adduser"
+        android:onClick="doAddUser"
+        app:showAsAction="always"
+        />
+</menu>

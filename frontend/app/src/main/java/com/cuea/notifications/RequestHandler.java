@@ -44,6 +44,7 @@ public class RequestHandler {
             else if(httpURLConnection.getResponseCode()==403){
                 response="unauthorized";
             }
+
             //close the connection
             httpURLConnection.disconnect();
         }catch (Exception e){
@@ -91,6 +92,12 @@ public class RequestHandler {
             }
             else if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_NO_CONTENT){
                 response="notfound";
+            }
+            else if(httpURLConnection.getResponseCode()==201){
+                response="created";
+            }
+            else if(httpURLConnection.getResponseCode()==304){
+                response="notmodified";
             }
             //close connection
             httpURLConnection.disconnect();

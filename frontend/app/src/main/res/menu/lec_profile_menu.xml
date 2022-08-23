@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/lec_report"
+        android:title="Generate Report"
+        android:onClick="doReport"
+        />
+    <item
+        android:id="@+id/lec_about"
+        android:title="About"
+        android:onClick="doAbout"
+        />
+    <item
+        android:id="@+id/lec_logout"
+        android:title="Log Out"
+        android:onClick="doLogout"
+        />
+    <item
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@+id/lec_addnotification"
+        android:onClick="doCreateNotification"
+        app:showAsAction="always"
+        />
+</menu>

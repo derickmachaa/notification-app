@@ -4,10 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +25,13 @@ public class MainActivity extends AppCompatActivity {
                 finish(); //finish current activity
             }
             else if(usertype.equals("lecturer")){
-                //go to lecturer activity
+                Intent intent = new Intent(this,LecActivity.class);
+                startActivity(intent);
+                finish();
+            }else if(usertype.equals("admin")){
+                Intent intent = new Intent(this,AdminActivity.class);
+                startActivity(intent);
+                finish();//
             }
         }else{
             //start sign in activity

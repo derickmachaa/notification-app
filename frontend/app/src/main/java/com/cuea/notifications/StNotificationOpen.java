@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +21,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 public class StNotificationOpen extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,7 @@ public class StNotificationOpen extends AppCompatActivity {
             User user = sessionManager.getUser();
             String token= user.getToken();
             RequestHandler requestHandler = new RequestHandler();
-            return requestHandler.GetRequest(MyLinks.URL_READ_ONE+id,token);
+            return requestHandler.GetRequest(MyLinks.STUDENT_URL_READ_ONE+id,token);
 
         }
 
@@ -79,5 +80,6 @@ public class StNotificationOpen extends AppCompatActivity {
             Toast.makeText(StNotificationOpen.this,"Something went wrong try later",Toast.LENGTH_LONG).show();
             }
         }
+
     }
 }

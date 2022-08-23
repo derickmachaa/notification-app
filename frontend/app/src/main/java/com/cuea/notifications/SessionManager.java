@@ -60,4 +60,15 @@ public class SessionManager {
         }
     }
 
+    public void logout(){
+        //create preference instance with private mode access
+        SharedPreferences sharedPreferences = mycontext.getSharedPreferences(mypreference,mycontext.MODE_PRIVATE);
+        //create preference editor
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //clear the storage ares
+        editor.clear();
+        //commit
+        editor.commit();
+    }
+
 }

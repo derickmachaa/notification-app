@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/startdate"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReportActivity">
+
+    <Button
+        android:id="@+id/btnstartdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="35dp"
+        android:onClick="chooseStart"
+        android:text="SELECT START"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edstarttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:hint="DD/MM/YY"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/btnstartdate"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnenddate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="35dp"
+        android:text="SELECT END"
+        android:onClick="chooseEnd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnstartdate" />
+
+    <EditText
+        android:id="@+id/edenddate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:hint="DD/MM/YY"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/btnenddate"
+        app:layout_constraintTop_toBottomOf="@+id/edstarttime" />
+
+    <TextView
+        android:id="@+id/txtfilename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="38dp"
+        android:text="FILENAME:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnenddate" />
+
+    <EditText
+        android:id="@+id/edfilename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="23dp"
+        android:ems="10"
+        android:hint="filename"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/txtfilename"
+        app:layout_constraintTop_toBottomOf="@+id/btnenddate" />
+
+    <Button
+        android:id="@+id/btngenerate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="117dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="183dp"
+        android:text="Generate"
+        android:onClick="doGenerate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edfilename" />
+</androidx.constraintlayout.widget.ConstraintLayout>
