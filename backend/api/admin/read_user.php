@@ -64,6 +64,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                         $newarray=array(
                             "AdmissionNo" => $row['AdmissionNo'],
                             "FirstName" =>  $row['FirstName'],
+                            "LastName" =>  $row['LastName'],
                             "PhoneNo" =>  $row['PhoneNo'],
                             "UserType" =>  $row['UserType'],
                             "Faculty" =>  $row['Faculty'],
