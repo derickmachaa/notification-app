@@ -29,7 +29,7 @@ public class LecActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lec);
-        this.setTitle("CUEA LECTURER");
+        this.setTitle("Lecturer Profile");
         //get notififcations
         new NotificationsGet().execute();
     }
@@ -54,8 +54,10 @@ public class LecActivity extends AppCompatActivity {
     public void doLogout(MenuItem item) {
         perFormLogout();
     }
-    public void doCreateNotification(MenuItem item) {
 
+    public void doCreateNotification(MenuItem item) {
+        Intent intent = new Intent(this,LecSendActivity.class);
+        startActivity(intent);
     }
     public void doAddUser(MenuItem item) {
 

@@ -2,7 +2,9 @@ package com.cuea.notifications;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,29 +17,35 @@ import org.json.JSONObject;
 
 public class AdminEditUser extends AppCompatActivity {
 
+    TextView edadmission ;
+    TextView edfirstname;
+    TextView edlastname ;
+    TextView edusertype ;
+    TextView edphone ;
+    TextView eddepartment;
+    TextView edfaculty; 
+    //myverification class
+    MyVerification myVerification = new MyVerification();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_user);
+        edadmission = (TextView) findViewById(R.id.edadmissionno);
+        edfirstname = (TextView) findViewById(R.id.edfirstname);
+        edlastname = (TextView) findViewById(R.id.edlastname);
+        edusertype = (TextView) findViewById(R.id.edusertype);
+        edphone = (TextView) findViewById(R.id.edphone);
+        eddepartment = (TextView) findViewById(R.id.eddepartment);
+        edfaculty = (TextView) findViewById(R.id.edfaculty);
         //get the intent
         Intent intent = getIntent();
         Integer adm =  Integer.parseInt(intent.getStringExtra("id"));
-        Toast.makeText(this, adm.toString(), Toast.LENGTH_SHORT).show();
         new getUserDetails().execute(adm);
 
     }
 
     public void doUpdateUser(View view) {
-       //myverification class
-        MyVerification myVerification = new MyVerification();
-        TextView edadmission = (TextView) findViewById(R.id.edadmissionno);
-        TextView edfirstname = (TextView) findViewById(R.id.edfirstname);
-        TextView edlastname = (TextView) findViewById(R.id.edlastname);
-        TextView edusertype = (TextView) findViewById(R.id.edusertype);
-        TextView edphone = (TextView) findViewById(R.id.edphone);
-        TextView eddepartment = (TextView) findViewById(R.id.eddepartment);
-        TextView edfaculty = (TextView) findViewById(R.id.edfaculty);
-
+        //check verification
         if(!myVerification.isAdmissionNoValid(edadmission.getText().toString())){
             edadmission.setError("Invalid Admission Number");
             edadmission.requestFocus();
@@ -79,6 +87,38 @@ public class AdminEditUser extends AppCompatActivity {
         }
 
     }
+
+    //function to be called when delete button is pressed
+    public void doDelete(View view) {
+        //build a dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you really want to Delete the user?");
+        //add a positive action
+        builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(!myVerification.isAdmissionNoValid(edadmission.getText().toString())){
+                    edadmission.setError("Invalid Admission Number");
+                    edadmission.requestFocus();
+                }else{
+                    //call delete user
+                    new DeleteUSer().execute(edadmission.getText().toString());
+                }
+            }
+        });
+
+        //add a negative action
+        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //do nothing
+            }
+        });
+        //show the dialog
+        builder.show();
+
+    }
+
     ///function to get the user profile
     class getUserDetails extends AsyncTask<Integer,Void,String>{
         TextView edadmission = (TextView) findViewById(R.id.edadmissionno);
@@ -190,6 +230,45 @@ public class AdminEditUser extends AppCompatActivity {
             }
             else{
                 Toast.makeText(AdminEditUser.this, "Something Went Wrong Try Again Later", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //class to delete user
+    class DeleteUSer extends AsyncTask<String,Void,String> {
+        ProgressDialog progressDialog = new ProgressDialog(AdminEditUser.this);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //create process
+            progressDialog.setMessage("Deleting user");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String adm;
+            //get admission
+            adm = strings[0];
+            SessionManager sessionManager = new SessionManager(AdminEditUser.this);
+            User user = sessionManager.getUser();
+            String token = user.getToken();
+            RequestHandler requestHandler = new RequestHandler();
+            return requestHandler.GetRequest(MyLinks.ADMIN_DELETE_USER+adm, token);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            progressDialog.dismiss();
+            Toast.makeText(AdminEditUser.this, s, Toast.LENGTH_SHORT).show();
+            if (s.equals("Error")) {
+                Toast.makeText(AdminEditUser.this, "User Already deleted", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(AdminEditUser.this, "User has been deleted", Toast.LENGTH_SHORT).show();
             }
         }
     }

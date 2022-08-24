@@ -1,5 +1,5 @@
 <?php
-//file to read notifications
+//file to generate report students side
 
 //include the necessary files
 include '../../config/config.php';
@@ -17,7 +17,7 @@ $notification = new Notification($database,$user);
 
 // required headers
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 
 //check if user is  logged in
 if(isset($_SERVER['HTTP_AUTHORIZATION'])){
@@ -32,12 +32,13 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
         //assignk values
         $role=$decoded['UserType'];
         $admissionNo=$decoded['AdmissionNo'];
-        //check if user is requesting specific id
-        if(isset($_REQUEST['id'])){
+        //extract raw data from data from the body
+        $postdata=json_decode(file_get_contents("php://input"));
+        //decode
+        if(isset($postdata->startdate) && isset($postdata->enddate)){
             //return specific id
-            $id=$_REQUEST['id'];
             if($role=='student'){
-                $sms=$notification->getNotificationRecievedById($id,$admissionNo);
+                $sms=$notification->StudentGenerateReport($admissionNo,$postdata->startdate,$postdata->enddate);
                 if($sms){
                 http_response_code(200);
                 echo json_encode($sms);
@@ -45,27 +46,17 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                     http_response_code(204);
                     echo json_encode(array("message"=>"Not found"));
                 }
-
-                echo json_encode($sms);
-            }elseif($role=='lecturer'){
-                http_response_code(200);
-                $sms=$notification->getNotificationSentById($id,$admissionNo);
-                echo json_encode($sms);
+            }
+            else{
+                http_response_code(403);
+                echo json_encode(array("message"=>"invalid bearer token"));
             }
            
         }
         else{
-            //return general messages
-            if($role=='lecturer'){
-                http_response_code(200);
-                echo json_encode($notification->senderGetAll($admissionNo));
-            }
-            elseif($role='student'){
-                http_response_code(200);
-                echo json_encode($notification->recieverGetAll($admissionNo));
-            }
-       
-        }        
+            http_response_code(400);
+            echo json_encode(array("message"=>"invalid body"));
+        }      
     }
     else{
         http_response_code(403);

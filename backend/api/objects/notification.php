@@ -29,6 +29,22 @@ class Notification{
         }
     }
 
+    //public function generate report
+    public function StudentGenerateReport($admissionNo,$startdate,$enddate){
+        $_CollectionName='Notifications';
+        $values=["Date"=>['$lte'=>$startdate,'$gte'=>$enddate],"Recipient"=>$admissionNo];
+        $options=[];
+        $result=$this->_Database->queryRecord($_CollectionName,$values,$options);
+        if($result){
+            //return the message gotten
+            return $result[0];
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+
 
         //function to mark sms as read
     public function markRead($notificationid,$admissionNo){

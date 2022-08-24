@@ -58,7 +58,8 @@ public class AdminActivity extends AppCompatActivity {
 
     //function to add users
     public void doAddUser(MenuItem item) {
-        setContentView(R.layout.activity_admin_edit_user);
+        Intent intent = new Intent(this,AdminAddUser.class);
+        startActivity(intent);
     }
 
 

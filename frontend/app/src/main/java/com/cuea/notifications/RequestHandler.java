@@ -90,7 +90,7 @@ public class RequestHandler {
                 response="unauthorized";
 
             }
-            else if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_NO_CONTENT){
+            else if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_NO_CONTENT || httpURLConnection.getResponseCode()==404){
                 response="notfound";
             }
             else if(httpURLConnection.getResponseCode()==201){
