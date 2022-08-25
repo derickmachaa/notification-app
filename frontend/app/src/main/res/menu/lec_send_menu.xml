@@ -4,6 +4,7 @@
 
     <item android:title="New "
         android:icon="@drawable/ic_adduser_bg"
+        android:onClick="selectDestination"
         app:showAsAction="always"
         />
 </menu>

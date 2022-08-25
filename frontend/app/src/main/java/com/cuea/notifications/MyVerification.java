@@ -8,7 +8,7 @@ import java.util.Date;
 //this class will be used for verification
 public class MyVerification {
     //the date format i will be using
-    final static String DATE_FORMAT = "dd/MM/yyyy";
+    final static String DATE_FORMAT = "/MM/dd/yyyy";
 
     //constructor
     public MyVerification() {
@@ -106,5 +106,23 @@ public class MyVerification {
         }
     }
 
+    public boolean isDescriptionValid(String description){
+        if(description.length()>2 && description.length()<60){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    public boolean isSMSValid(String sms){
+        if(sms.equals("")){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
 }

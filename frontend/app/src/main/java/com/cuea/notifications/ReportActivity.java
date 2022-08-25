@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -14,17 +15,25 @@ import android.widget.Toast;
 
 import com.google.android.material.datepicker.CalendarConstraints;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.sql.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class ReportActivity extends AppCompatActivity {
-    final static String DATE_FORMAT = "dd/MM/yyyy";
+    final static String DATE_FORMAT = "MM/dd/yyyy";
     ///create some variables
     Button btnstart,btnend,btngenerate;
-    EditText edstart,edstop,edfile;
+    EditText edstart,edstop;
     private int mYear,mMonth,mDay;
 
 
@@ -32,7 +41,7 @@ public class ReportActivity extends AppCompatActivity {
     public static Long isDateValid(String date)
     {
         try {
-            DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+            DateFormat df = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
             //parse to date
             Date dat = df.parse(date);
             //get time in epoc
@@ -49,7 +58,6 @@ public class ReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report);
         edstart=(EditText) findViewById(R.id.edstarttime);
         edstop=(EditText) findViewById(R.id.edenddate);
-        edfile=(EditText) findViewById(R.id.edfilename);
     }
 
 
@@ -64,8 +72,8 @@ public class ReportActivity extends AppCompatActivity {
         //create a date picker dialog with default time as now
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int year, int monthofyear, int dayofyear) {
-                edstop.setText(dayofyear+"/"+monthofyear+"/"+year);
+            public void onDateSet(DatePicker datePicker, int year, int monthofyear, int dayofmonth) {
+                edstop.setText(1+monthofyear+"/"+dayofmonth+"/"+year);
             }
         },mYear,mMonth,mDay);
 
@@ -82,8 +90,8 @@ public class ReportActivity extends AppCompatActivity {
         //create a date picker dialog with default time as now
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int year, int monthofyear, int dayofyear) {
-                edstart.setText(dayofyear+"/"+monthofyear+"/"+year);
+            public void onDateSet(DatePicker datePicker, int year, int monthofyear, int dayofmonth) {
+                edstart.setText(1+monthofyear+"/"+dayofmonth+"/"+year);
             }
         },mYear,mMonth,mDay);
 
@@ -119,14 +127,8 @@ public class ReportActivity extends AppCompatActivity {
                 edstop.requestFocus();
             }
             else{
-              //check if the filename provided is empty
-                if(edfile.length()<3){
-                    edfile.setError("File name cannot be empty");
-                }
-                else{
                     //post the data to async task
                     new generateReport().execute(startingdate,endingdate);
-                }
 
             }
             //Toast.makeText(this, isDateValid(edstart.getText().toString()).toString(), Toast.LENGTH_SHORT).show();
@@ -135,7 +137,12 @@ public class ReportActivity extends AppCompatActivity {
     }
 
     class generateReport extends AsyncTask<Long,Void,String>{
-        //set progress dialog
+        //create a list variable to hold the values
+        List<String> sender = new ArrayList<String>();
+        List<String> date = new ArrayList<String>();
+        List<String> content = new ArrayList<String>();
+
+        //create progress dialog
         ProgressDialog progressDialog = new ProgressDialog(ReportActivity.this);
         @Override
         protected void onPreExecute() {
@@ -159,13 +166,65 @@ public class ReportActivity extends AppCompatActivity {
             User user = sessionManager.getUser();
             String token = user.getToken();
             //do request now
-            return null;
+            try {
+                //create a json object to hold my data
+                JSONObject json = new JSONObject();
+                json.put("startdate",startdate);
+                json.put("enddate",stopdate);
+                return requestHandler.PostRequest(MyLinks.STUDENT_URL_REPORT,json,token);
+            }catch (JSONException e){
+                Toast.makeText(ReportActivity.this, "Something went wrong try again later", Toast.LENGTH_SHORT).show();
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progressDialog.dismiss();
+            Toast.makeText(ReportActivity.this, s.toString(), Toast.LENGTH_SHORT).show();
+            if(s.equals("notfound")){
+                Toast.makeText(ReportActivity.this, "No reports for that month", Toast.LENGTH_SHORT).show();
+            }else
+            if(s.equals("Error")){
+                Toast.makeText(ReportActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }else
+            //otherwise do the creation of reports
+            try{
+                //create a new json object
+                JSONObject json= new JSONObject(s);
+                //get the result
+                JSONArray array = json.getJSONArray("result");
+                //iterate through the array creating users
+                for (int i=0;i<array.length();i++){
+                    //get the array object
+                    JSONObject object = array.getJSONObject(i);
+                    //get the sender
+                    sender.add(object.getString("FullNames"));
+                    //the content
+                    content.add(object.getString("Content"));
+                    //get the long date and convert to string
+                    Long epoc = object.getLong("Date");
+                    //convert epoc to date
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                    String smsdate = simpleDateFormat.format(epoc*1000).toString();
+                    //add the date
+                    date.add(smsdate);
+                }
+                //convert the array list to string list
+                String[] x = sender.toArray(new String[0]);
+                String[] y = content.toArray(new String[0]);
+                String[] z = date.toArray(new String[0]);
+                //now we have the data feed it to the list view
+                Intent intent = new Intent(ReportActivity.this,ReportViewActivity.class);
+                intent.putExtra("senders",x);
+                intent.putExtra("contents",y);
+                intent.putExtra("dates",z);
+                startActivity(intent);
+            }
+            catch (JSONException e){
+                Toast.makeText(ReportActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }

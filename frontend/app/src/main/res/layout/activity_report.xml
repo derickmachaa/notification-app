@@ -25,7 +25,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="38dp"
         android:ems="10"
-        android:hint="DD/MM/YY"
+        android:hint="MM/DD/YY"
         android:inputType="textPersonName"
         app:layout_constraintStart_toEndOf="@+id/btnstartdate"
         app:layout_constraintTop_toTopOf="parent" />
@@ -48,43 +48,21 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="38dp"
         android:ems="10"
-        android:hint="DD/MM/YY"
+        android:hint="MM/DD/YY"
         android:inputType="textPersonName"
         app:layout_constraintStart_toEndOf="@+id/btnenddate"
         app:layout_constraintTop_toBottomOf="@+id/edstarttime" />
-
-    <TextView
-        android:id="@+id/txtfilename"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="38dp"
-        android:text="FILENAME:"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnenddate" />
-
-    <EditText
-        android:id="@+id/edfilename"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="23dp"
-        android:ems="10"
-        android:hint="filename"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toEndOf="@+id/txtfilename"
-        app:layout_constraintTop_toBottomOf="@+id/btnenddate" />
 
     <Button
         android:id="@+id/btngenerate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="117dp"
-        android:layout_marginTop="59dp"
-        android:layout_marginEnd="183dp"
-        android:text="Generate"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:onClick="doGenerate"
+        android:text="Generate"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edfilename" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
