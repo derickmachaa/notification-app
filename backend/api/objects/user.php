@@ -141,6 +141,17 @@ class User{
         }
     }
 
+    //function to get student according to departement
+    public function getStudentsByDepartment($department){
+        $filter=["UserType"=>"student","Department"=>$department];
+        $options=["projection"=>["AdmissionNo"=>1,"_id"=>0]];
+        $result=$this->_Database->queryRecord($this->_CollectionName,$filter,$options);
+        if($result){
+            return $result;
+        }else{
+            return FALSE;
+        }
+    }
 
     //function to delete user by id
     public function deleteUserByAdmission($admissionNo){
