@@ -32,12 +32,37 @@ class Notification{
     //public function generate report
     public function StudentGenerateReport($admissionNo,$startdate,$enddate){
         $_CollectionName='Notifications';
-        $values=["Date"=>['$lte'=>$startdate,'$gte'=>$enddate],"Recipient"=>$admissionNo];
+        //create an array to hold the results
+        $sms=array();
+        $sms['result']=array();
+        $values=["Date"=>['$gte'=>$startdate,'$lte'=>$enddate],"Recipients"=>$admissionNo];
         $options=[];
         $result=$this->_Database->queryRecord($_CollectionName,$values,$options);
         if($result){
-            //return the message gotten
-            return $result[0];
+            //iterate though each message
+            foreach($result as $row){
+                //get sender id
+                $sender=$row['SenderId'];
+                //get message id
+                $id=$row->_id->__toString();
+                //get the status of the message
+                $values=["NotificationId"=>new MongoDB\BSON\ObjectId($id),"Recipient"=>$admissionNo];
+                $options=["projection"=>["Status"=>1,"_id"=>0]];
+                $status=$this->_Database->queryRecord("NotificationStatus",$values,$options);
+            
+                //set user profile
+                $this->user->setUserProfile($sender);
+    
+                $sms_list=array(
+                    "Id"=>$id,
+                    "Date" =>$row->Date,
+                    "Content" =>$row->Content,
+                    "FullNames"=>$this->user->getFirstName().' '.$this->user->getLastName(),
+                    //"Status"=>$status[0]->Status
+                    );
+                array_push($sms['result'],$sms_list);
+                }
+                return $sms;
         }
         else{
             return FALSE;
