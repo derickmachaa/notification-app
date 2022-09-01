@@ -19,7 +19,7 @@ public class LecNotificationOpen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lec_notification_open);
+        setContentView(R.layout.notification_sent_layout);
         //get intent
         Intent intent = getIntent();
         String notificationid=intent.getStringExtra("notificationID");
@@ -59,18 +59,25 @@ public class LecNotificationOpen extends AppCompatActivity {
                 JSONObject result = json.getJSONObject("result");
                 //get the values
                 String sms=result.getString("Content");
-                //String sender=result.getString("FullNames");
-                //String faculty=result.getString("Faculty");
-                //String department= result.getString("Department");
+                //convert epoc to date
                 Long epoc = result.getLong("Date");
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String date=simpleDateFormat.format(epoc*1000);
-                //build string
-                String fullsms=sms+"\n\n\n\nDate:"+date;
 
-                TextView txtview= (TextView)findViewById(R.id.lc_open_sms_read);
-                txtview.setText(fullsms);
+                String day = date.split(" ")[0];
+                String time = date.split(" ")[1];
+
+                //put sms to display
+
+                TextView txtsms= (TextView)findViewById(R.id.txt_sender_sms);
+                TextView txtday = (TextView)findViewById(R.id.txt_sender_date);
+                TextView txttime = (TextView)findViewById(R.id.txt_sender_time);
+
+                txtsms.setText(sms);
+                txtday.setText(day);
+                txttime.setText(time);
+
             }catch (JSONException e){e.printStackTrace();
                 Toast.makeText(LecNotificationOpen.this,"Something went wrong try later",Toast.LENGTH_LONG).show();
             }

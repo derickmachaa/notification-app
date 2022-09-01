@@ -81,6 +81,9 @@ public class LecActivity extends AppCompatActivity {
     }
 
     public void doReport(MenuItem item) {
+        //start the report activity
+        Intent intent = new Intent(this,LecReportActivity.class);
+        startActivity(intent);
     }
 
     public void doAbout(MenuItem item) {
@@ -177,7 +180,6 @@ public class LecActivity extends AppCompatActivity {
                     Intent intent = new Intent(LecActivity.this,LecNotificationOpen.class);
                     intent.putExtra("notificationID",notificationID.get(i));
                     startActivity(intent);
-                    Toast.makeText(LecActivity.this,notificationID.get(i),Toast.LENGTH_LONG).show();
                 }
             });
             listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -195,11 +197,20 @@ public class LecActivity extends AppCompatActivity {
     //end display
 
 
+    //refresh list on resume
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new NotificationsGet().execute();
+
+    }
 
     //Async task to request sms
     class NotificationsGet extends AsyncTask<Void,Void,String> {
         @Override
         protected void onPreExecute() {
+            //clear the list before fetching new data
+            clearlist();
             super.onPreExecute();
             //create dialog
             progressDialog.setMessage("Getting your messages");
@@ -217,6 +228,8 @@ public class LecActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            //clear list that holds the data
+            clearlist();
             //stop process dialog
             progressDialog.dismiss();
             if(s.equals("Error")){
@@ -231,20 +244,25 @@ public class LecActivity extends AppCompatActivity {
                     //iterate through the json array
                     for(int i=0;i<array.length();i++){
                         JSONObject object = array.getJSONObject(i);
-                        //get the name of the sender
-                        maintitle.add(object.getString("Description"));
                         //get the description of the notification
+                        maintitle.add(object.getString("Description"));
+                        //get content
                         subtitle.add(object.getString("Content"));
-                        //get the status of the id
                         try{
-                            int status = object.getInt("Status");
-                            if(status!=3){
-                                icons.add(R.drawable.ic_single_grey_tick);
+                            JSONObject status = object.getJSONObject("Status");
+                            //get the status
+                            int progress = status.getInt("progress");
+                            //get total
+                            if(progress==100){
+                                icons.add(R.drawable.ic_sms_read);
+                            }else
+                            if(progress>=50 && progress < 100){
+                                icons.add(R.drawable.ic_sms_delivered);
                             }
                             else{
-                                icons.add(R.drawable.smsread);
+                                icons.add(R.drawable.ic_sms_sent);
                             }}catch (Exception e){
-                            icons.add(R.drawable.ic_single_grey_tick);
+                            icons.add(R.drawable.ic_sms_sent);
                         }//update list with the id
                         notificationID.add(object.getString("Id"));
                     }

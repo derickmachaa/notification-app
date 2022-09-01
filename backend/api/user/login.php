@@ -3,7 +3,6 @@
 
 ///include the neccesary files
 include '../../config/config.php';
-include ROOT.'lib/mongo/autoload.php';
 include ROOT.'api/objects/database.php';
 include ROOT.'api/objects/user.php';
 
@@ -62,7 +61,7 @@ if(isset($data->AdmissionNo)){
     }
     else{
         http_response_code(204);
-        echo json_encode(array("message"=>"user does not exist"));
+       // echo json_encode(array("message"=>"user does not exist"));
     }
 }
 else{

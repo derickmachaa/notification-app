@@ -3,7 +3,6 @@
 
 //include the necessary files
 include '../../../config/config.php';
-include_once ROOT.'lib/mongo/autoload.php';
 include_once ROOT.'api/objects/auth.php';
 include_once ROOT.'api/objects/database.php';
 include_once ROOT.'api/objects/user.php';
@@ -31,7 +30,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     if($data){
         $role=$data['UserType'];
         $sender=$data['AdmissionNo'];
-        if($role=="lecturer"){
+        if($role=="staff"){
             //get message from sender
             $postdata=json_decode(file_get_contents("php://input"));
             if($postdata){

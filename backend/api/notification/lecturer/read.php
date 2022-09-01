@@ -4,7 +4,6 @@
 //include necessary file
 include_once "../../../config/config.php";
 include_once ROOT."api/objects/auth.php";
-include_once ROOT."lib/mongo/autoload.php";
 include_once ROOT."api/objects/user.php";
 include_once ROOT."api/objects/notification.php";
 include_once ROOT."api/objects/database.php";
@@ -36,7 +35,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
         $role=$data['UserType'];
         $admissionNo=$data['AdmissionNo'];
         //check if truly is a student
-        if($role=="lecturer"){
+        if($role=="lecturer" or $role=="staff"){
             //then check whether to read one or many
             if(isset($_REQUEST['id'])){
                 //get one record

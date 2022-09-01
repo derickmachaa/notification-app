@@ -3,7 +3,6 @@
 
 //include the necessary files
 include '../../../config/config.php';
-include_once ROOT.'lib/mongo/autoload.php';
 include_once ROOT.'api/objects/database.php';
 include_once ROOT.'api/objects/auth.php';
 include_once ROOT.'api/objects/notification.php';

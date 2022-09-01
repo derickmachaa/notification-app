@@ -3,7 +3,6 @@
 
 ///include the neccesary files
 include '../../config/config.php';
-include ROOT.'lib/mongo/autoload.php';
 include ROOT.'api/objects/database.php';
 include ROOT.'api/objects/user.php';
 include ROOT.'api/objects/auth.php';
@@ -36,7 +35,10 @@ if(isset($data->AdmissionNo) && isset($data->Token)){
             "AdmissionNo"=>$data->AdmissionNo,
             "UserType"=>$user->getUserType()
         );
+        //create bearer
        $encoded=$auth->Encode(json_encode($session));
+       //remove token
+       $user->removeToken();
        //set response code
        http_response_code(200);
        //give feedback

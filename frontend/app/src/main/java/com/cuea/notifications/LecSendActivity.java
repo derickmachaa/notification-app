@@ -20,18 +20,36 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class LecSendActivity extends AppCompatActivity {
+    //some variables
+    String students[];
+    boolean studentschecked[];
     Button btnsend;
     EditText destination;
     EditText description;
     EditText editxtsms;
-    boolean sendtomany;
+    boolean  sendtomany;
+    ProgressDialog progressDialog;
+
+    String token;
+    //myobjects
+    SessionManager sessionManager;
+    User user;
+    RequestHandler requestHandler=new RequestHandler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //create some instances
+        sessionManager = new SessionManager(this);
+        user = sessionManager.getUser();
+        token = user.getToken();
         setContentView(R.layout.activity_lec_send);
         //set the action bar to new message
         this.setTitle("New Notification");
@@ -39,6 +57,10 @@ public class LecSendActivity extends AppCompatActivity {
         description=(EditText) findViewById(R.id.edtxtdescription);
         destination=(EditText) findViewById(R.id.edtxtadmission);
         editxtsms=(EditText) findViewById(R.id.editxtsms);
+        progressDialog = new ProgressDialog(LecSendActivity.this);
+
+        //get the student list
+        new doGetStudents().execute();
 
         ////add an onclic listener for sending text
         btnsend.setOnClickListener(new View.OnClickListener() {
@@ -88,32 +110,24 @@ public class LecSendActivity extends AppCompatActivity {
     }
 
 
-
     //function to add users to sending list
-
     public void selectDestination(MenuItem mt){
-        // initialise the list items for the alert dialog
-        final String[] listItems = "A long list TODO".split(" ");
-        final boolean[] checkedItems = new boolean[listItems.length];
-        // list of items
-        final List<String> selectedItems = Arrays.asList(listItems);
+
         // initially set the null for the text preview
         destination.setText(null);
-
         // initialise the alert dialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(LecSendActivity.this);
         // set the title for the alert dialog
-        builder.setTitle("Choose Students");
-
+        builder.setTitle("Choose Student ID");
+      //  Toast.makeText(this, Integer.toString(students.length), Toast.LENGTH_SHORT).show();
         // set the icon for the alert dialog
         builder.setIcon(R.drawable.cuea);
-
         // now this is the function which sets the alert dialog for multiple item selection ready
-        builder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setMultiChoiceItems(students, studentschecked, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                checkedItems[which] = isChecked;
-                String currentItem = selectedItems.get(which);
+            public void onClick(DialogInterface dialog, int i, boolean isChecked) {
+                studentschecked[i] = isChecked;
+                String currentitem=students[i];
             }
         });
 
@@ -125,11 +139,12 @@ public class LecSendActivity extends AppCompatActivity {
             // @SuppressLint("SetTextI18n")
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (int i = 0; i < checkedItems.length; i++) {
-                    if (checkedItems[i]) {
-                        destination.setText(destination.getText() + selectedItems.get(i) + ",");
+                for (int i = 0; i < studentschecked.length; i++) {
+                    if (studentschecked[i]) {
+                        //add to view
+                            destination.setText(destination.getText() + students[i] + ",");
+                        }
                     }
-                }
             }
         });
 
@@ -146,8 +161,8 @@ public class LecSendActivity extends AppCompatActivity {
         builder.setNeutralButton("CLEAR ALL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (int i = 0; i < checkedItems.length; i++) {
-                    checkedItems[i] = false;
+                for (int i = 0; i < studentschecked.length; i++) {
+                    studentschecked[i] = false;
                 }
             }
         });
@@ -163,7 +178,6 @@ public class LecSendActivity extends AppCompatActivity {
 
 
     class doSendNotification extends AsyncTask<String,Void,String>{
-        ProgressDialog progressDialog = new ProgressDialog(LecSendActivity.this);
         @Override
         protected void onPreExecute() {
             progressDialog.setMessage("Sending message");
@@ -192,10 +206,6 @@ public class LecSendActivity extends AppCompatActivity {
                     JSONArray array = new JSONArray(receiver);
                     json.put("recipients",array);
                     //now post
-                    SessionManager sessionManager = new SessionManager(LecSendActivity.this);
-                    User user = sessionManager.getUser();
-                    String token = user.getToken();
-                    RequestHandler requestHandler = new RequestHandler();
                     return requestHandler.PostRequest(MyLinks.LEC_URL_SEND,json,token);
 
                 }catch (JSONException e){
@@ -220,6 +230,38 @@ public class LecSendActivity extends AppCompatActivity {
             }catch(Exception e)
             {
                 Toast.makeText(LecSendActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //get the students
+    class doGetStudents extends AsyncTask<Void,Void,String>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            return requestHandler.GetRequest(MyLinks.LEC_URL_LIST_STUDENT,token);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try{
+                JSONObject json = new JSONObject(s);
+               // Toast.makeText(LecSendActivity.this, s, Toast.LENGTH_SHORT).show();
+                JSONArray array = json.getJSONArray("result");
+                //create an array of equal size
+              students = new String[array.length()];
+              studentschecked = new boolean[array.length()];
+                for(int i=0;i<array.length();i++){
+                    students[i]=(Integer.toString(array.getInt(i)));
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
             }
         }
     }

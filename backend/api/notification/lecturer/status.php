@@ -1,9 +1,11 @@
 <?php
-//this file will be used by a lecturer for deleting an sms
+//this file will be used by a lecturer for getting the status of a notification
 
 //include the necessary files
 
+
 include '../../../config/config.php';
+include_once ROOT.'lib/mongo/autoload.php';
 include_once ROOT.'api/objects/auth.php';
 include_once ROOT.'api/objects/database.php';
 include_once ROOT.'api/objects/user.php';
@@ -34,15 +36,16 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
         if($role=="lecturer"){
             //get message the message to delete
             if(isset($_REQUEST['id'])){
-                $deleteid=$_REQUEST['id'];
-                $result=$notifications->deleteNotification($deleteid,$sender);
+                $statusid=$_REQUEST['id'];
+                $result=$notifications->getNotificationStatus($statusid);
                 if($result){
                     //alert true
                     http_response_code(200);
-                    echo json_encode(array("message"=>"successfully deleted"));
+                    echo json_encode($result);
                 }
                 else
                 {
+                    echo json_encode($result);
                     http_response_code(204);
                     echo json_encode(array("message"=>"message not found"));
                 }

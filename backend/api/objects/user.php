@@ -1,7 +1,7 @@
 <?php
 //this file will be the user object
 class User{
-    private $_AdmissionNo;
+    private $_Id;
     private $_FirstName;
     private $_LastName;
     private $_UserType;
@@ -9,13 +9,13 @@ class User{
     private $_Database;
     private $_CollectionName;
     private $_Faculty;
-    private $_Department;
+    private $_DepartmentId;
+    private $_DepartmentName;
 
     //function called during initialization of user
     function __construct($db)
     {
         $this->_Database=$db;
-        $this->_CollectionName='users';
         
     }
     
@@ -37,22 +37,43 @@ class User{
         $this->_LastName=$lname;
     }
     
-    //get and set faculty
+    
+    //get and department
+    public function getDepartmentName(){
+        return $this->_DepartmentName;
+    }
+    
+    public function setDepartmentName($name){
+        $this->_DepartmentName=$name;
+    }
+
+    //get the department id and set faculty from dep name
+    public function setFaculty($name){
+        //check in faculty record first since it is nested
+        $values=["Department.DepartmentName"=>$name];
+        //select only the faculty name
+        $options=["projection"=>["FacultyName"=>1,"_id"=>0]];
+        $record=$this->_Database->queryData('faculty',$values,$options);
+        if($record){
+            $this->_Faculty=$record[0]->FacultyName;
+        }else{
+            //check in staffdepartment
+            $this->_Faculty="";
+        }
+        
+        }
+    
+        //get and set faculty
     public function getFaculty(){
         return $this->_Faculty;
     }
-    public function setFaculty($faculty){
-        $this->_Faculty=$faculty;
-    }
     
-    
-    //get and department
-    public function getDepartment(){
-        return $this->_Department;
+
+//get and department
+    public function setDepartmentId($id){
+        $this->_DepartmentId=$id;
     }
-    public function setDepartment($department){
-        $this->_Department=$department;
-    }
+
     
 
     //get and set phone number
@@ -65,11 +86,11 @@ class User{
     
 
     // get and set the admission number
-    public function getAdmissionNo(){
-        return $this->_AdmissionNo;
+    public function getIdNo(){
+        return $this->_Id;
     }
-    public function setAdmissionNo($admissionno){
-      $this->_AdmissionNo=$admissionno;
+    public function setIdNo($idno){
+      $this->_Id=$idno;
     }
     
 
@@ -128,24 +149,31 @@ class User{
     }
 
 
-    //function to get user by admision number
-    public function getUserByAdmission($admissionNo){
-        $filter=['AdmissionNo'=>$admissionNo];
+    //function to get user by admision number 
+    public function getUserById($idNo){
+        //go through all the databases to check if a user is valid
+        $users=['student','staff'];
+        $filter=['_id'=>$idNo];
         //supress mongo id field together with token
-        $options=["projection"=>['_id'=>0,"Token"=>0]];
-        $result=$this->_Database->queryRecord($this->_CollectionName,$filter,$options);
-        if(count($result)==1){
-            return $result[0];
-        }else{
-            return FALSE;
+        //$options=["projection"=>['_id'=>0,"Token"=>0]];
+        $options=[];
+        foreach($users as $collection){
+            $result=$this->_Database->queryData($collection,$filter,$options);
+            if($result){
+                //add the database name to the result as a way of showing the user type
+                array_push($result,array("UserType"=>$collection));
+                return $result;
+                break;
+            }
         }
+        return FALSE;
     }
 
     //function to get student according to departement
-    public function getStudentsByDepartment($department){
-        $filter=["UserType"=>"student","Department"=>$department];
-        $options=["projection"=>["AdmissionNo"=>1,"_id"=>0]];
-        $result=$this->_Database->queryRecord($this->_CollectionName,$filter,$options);
+    public function getStudentsByDepartmentName($departmentname){
+        $filter=["DepartmentName"=>$departmentname];
+        $options=["projection"=>["_id"=>1]];
+        $result=$this->_Database->queryData('student',$filter,$options);
         if($result){
             return $result;
         }else{
@@ -172,17 +200,17 @@ class User{
     }
 
     //function to set the userprofile
-    public function setUserProfile($no){
-        $row=$this->getUserByAdmission($no);
+    public function setUserProfile($idNo){
+        $row=$this->getUserById($idNo);
         if($row){{
-            $this->setAdmissionNo($row->AdmissionNo);
-            $this->setFirstName($row->FirstName);
-            $this->setLastName($row->LastName);
-            $this->setUserType($row->UserType);
-            $this->setPhoneNo($row->PhoneNo);
-            $this->setDepartment($row->Department);
-            $this->setFaculty($row->Faculty);
-                return TRUE;
+            $this->setIdNo($row[0]->_id);
+            $this->setFirstName($row[0]->FirstName);
+            $this->setLastName($row[0]->LastName);
+            $this->setUserType($row[1]['UserType']);
+            $this->setPhoneNo($row[0]->PhoneNo);
+            $this->setDepartmentName($row[0]->DepartmentName);
+            $this->setFaculty($row[0]->DepartmentName);
+            return TRUE;
             }
         }else{
             return FALSE;
@@ -192,9 +220,9 @@ class User{
 
     //function to set the login token for the user
     public function setToken($token){
-        $match=["AdmissionNo"=>$this->_AdmissionNo];
-        $modify=["Token"=>$token];
-        $value=$this->_Database->modifyOne($this->_CollectionName,$match,$modify);
+        $from=["_id"=>$this->_Id];
+        $to=['$set'=>["Token"=>$token]];
+        $value=$this->_Database->upsertOne('token',$from,$to);
         if($value){
             return TRUE;
         }else{
@@ -204,9 +232,9 @@ class User{
 
     //function to get and return the user token
     public function getToken(){
-        $match=["AdmissionNo"=>$this->_AdmissionNo];
+        $match=["_id"=>$this->_Id];
         $options=["projection"=>["Token"=>1,"_id"=>0]];
-        $query=$this->_Database->queryRecord($this->_CollectionName,$match,$options);
+        $query=$this->_Database->queryData('token',$match,$options);
         if($query){
             return $query[0]->Token;
         }
@@ -215,6 +243,21 @@ class User{
         }
 
     }
+
+    //function to delete the token
+    public function removeToken(){
+        $match=["_id"=>$this->_Id];
+        $options=[];
+        $query=$this->_Database->deleteRecord('token',$match,$options);
+        if($query){
+            return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+
+    }
+
 
     //function to get all users in the system
     public function getAllUsers(){

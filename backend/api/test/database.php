@@ -4,9 +4,10 @@ class Database{
 	private $conn;
 
 	function __construct(){
-        $this->database="notificationsystem";
-        $pass=DB_PASS;
-        $user=DB_USER;
+        $this->database=DB_NAME;
+	echo DB_HOST;
+        $pass=DB_USER;
+        $user=DB_PASS;
         $host=DB_HOST;
         $port=DB_PORT;
 
@@ -36,9 +37,10 @@ class Database{
     function createRecord($collection_name,$fields){
         //this function will be called multiple number of times to insert records according to the collection name specified and the fileds given
         $InsertRecord = new MongoDB\Driver\BulkWrite;
+        $writeConcern = new MongoDB\Driver\WriteConcern(MongoDB\Driver\WriteConcern::MAJORITY, 100);
         $InsertRecord->insert($fields);
         try {
-            $result=$this->conn->executeBulkWrite($this->database.'.'.$collection_name, $InsertRecord);
+            $result=$this->conn->executeBulkWrite($this->database.'.'.$collection_name, $InsertRecord,$writeConcern);
         } catch (MongoDB\Driver\Exception\BulkWriteException $e) {
             $result = $e->getWriteResult();
             // Check if any write operations did not complete at all
@@ -82,9 +84,9 @@ class Database{
     function updateOne($collection_name,$filter,$values){
         //this function changes a database record to the values given
         $update = new MongoDB\Driver\BulkWrite;
-        $options=['multi'=>false,'upsert'=>false];
-        $update->update($filter,$values,$options);
-        $result = $this->conn->executeBulkWrite($this->database.'.'.$collection_name, $update);
+        $writeConcern = new MongoDB\Driver\WriteConcern(MongoDB\Driver\WriteConcern::MAJORITY, 100);
+        $update->update($filter,$values);
+        $result = $this->conn->executeBulkWrite($this->database.'.'.$collection_name, $update,['multi'=>false,'upsert'=>false]);
         if($result->getModifiedCount() == 1){
             return TRUE;
         }
@@ -93,30 +95,12 @@ class Database{
             return FALSE;
         }
     }
-
-
-    //function to update and insert if does not exist
-    function upsertOne($collection_name,$from,$to){
-        //this function changes a database record to the values given
-        $update = new MongoDB\Driver\BulkWrite;
-        $options=['multi'=>false,'upsert'=>true];
-        $update->update($from,$to,$options);
-        $result = $this->conn->executeBulkWrite($this->database.'.'.$collection_name, $update);
-        if($result->getModifiedCount() == 1 or $result->getupsertedCount()==1){
-            return TRUE;
-        }
-        else
-        {
-            return FALSE;
-        }
-    }
-
     function updateMany($collection_name,$filter,$values){
         //this function changes a database record to the values given
         $update = new MongoDB\Driver\BulkWrite;
-        $options=['multi'=>true,'upsert'=>false];
+        $writeConcern = new MongoDB\Driver\WriteConcern(MongoDB\Driver\WriteConcern::MAJORITY, 100);
         $update->update($filter,$values);
-        $result = $this->conn->executeBulkWrite($this->database.'.'.$collection_name, $update,$options);
+        $result = $this->conn->executeBulkWrite($this->database.'.'.$collection_name, $update,['multi'=>true,'upsert'=>false]);
         if($result->getModifiedCount() > 0){
             return TRUE;
         }

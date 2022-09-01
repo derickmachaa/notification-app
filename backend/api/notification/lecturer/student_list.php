@@ -3,7 +3,6 @@
 
 //include the necessary files
 include '../../../config/config.php';
-include_once ROOT.'lib/mongo/autoload.php';
 include_once ROOT.'api/objects/database.php';
 include_once ROOT.'api/objects/auth.php';
 include_once ROOT.'api/objects/notification.php';
@@ -36,14 +35,14 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             if($role=="lecturer"){
                 //get his department
                 $user->setUserProfile($admissionNo);
-                $department=$user->getDepartment();
+                $departmentname=$user->getDepartmentName();
                 //find all students in the database who are in the same department
-                $students=$user->getStudentsByDepartment($department);
+                $students=$user->getStudentsByDepartmentName($departmentname);
                 if($students){
                     $result=array();
                     //create a list of admission numbers only
                     foreach($students as $row){
-                        array_push($result,$row->AdmissionNo);
+                        array_push($result,$row->_id);
                     }
                 http_response_code(200);
                 echo json_encode(array("result"=>$result));

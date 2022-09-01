@@ -15,10 +15,17 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 
 public class StNotificationOpen extends AppCompatActivity {
+    TextView smsholder,senderholder,dayholder,timeholder,titleholder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_st_notification_open);
+        setContentView(R.layout.notification_received_layout);
+        smsholder=(TextView)findViewById(R.id.txt_receiver_message);
+        senderholder=(TextView)findViewById(R.id.txt_receiver_sendername);
+        dayholder=(TextView)findViewById(R.id.txt_receiver_date);
+        timeholder=(TextView)findViewById(R.id.txt_receiver_time);
+        titleholder=(TextView)findViewById(R.id.txt_receiver_faculty);
 
         //get intent
         Intent intent = getIntent();
@@ -64,12 +71,16 @@ public class StNotificationOpen extends AppCompatActivity {
                 Long epoc = result.getLong("Date");
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                //get the date
                 String date=simpleDateFormat.format(epoc*1000);
-                //build string
-                String fullsms=sms+"\n\n\n\nFaculty:"+faculty+"\nDepartment:"+department+"\nSender:"+sender+"\nDate:"+date;
+                String day  = date.split(" ")[0];
+                String time = date.split(" ")[1];
+                smsholder.setText(sms);
+                senderholder.setText(sender);
+                titleholder.setText(faculty+"\n"+"Department of "+ department);
+                dayholder.setText(day);
+                timeholder.setText(time);
 
-                TextView txtview= (TextView)findViewById(R.id.st_sms_read);
-                txtview.setText(fullsms);
             }catch (JSONException e){e.printStackTrace();
             Toast.makeText(StNotificationOpen.this,"Something went wrong try later",Toast.LENGTH_LONG).show();
             }

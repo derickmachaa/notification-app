@@ -4,7 +4,6 @@
 //include necessary file
 include_once "../../../config/config.php";
 include_once ROOT."api/objects/auth.php";
-include_once ROOT."lib/mongo/autoload.php";
 include_once ROOT."api/objects/user.php";
 include_once ROOT."api/objects/notification.php";
 include_once ROOT."api/objects/database.php";
@@ -40,7 +39,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             //then check whether to read one or many
             if(isset($_REQUEST['id'])){
                 //get one record
-                $sms=$notification->getNotificationRecievedById($_REQUEST['id'],$admissionNo);
+                $sms=$notification->studentGetNotificationById($_REQUEST['id'],$admissionNo);
                 //responde
                 if($sms){
                     http_response_code(200);
@@ -53,7 +52,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             {
                 //respond
             http_response_code(200);
-            echo json_encode($notification->recieverGetAll($admissionNo));
+            echo json_encode($notification->studentGetNotification($admissionNo));
             }
         }
         else{

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Button
+        android:id="@+id/btnstartdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="35dp"
+        android:text="SELECT START"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edstarttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:hint="MM/DD/YY"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/btnstartdate"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnenddate"
+        android:layout_width="144dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="35dp"
+        android:text="SELECT END"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnstartdate" />
+
+    <EditText
+        android:id="@+id/edenddate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:hint="MM/DD/YY"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/btnenddate"
+        app:layout_constraintTop_toBottomOf="@+id/edstarttime" />
+
+    <Button
+        android:id="@+id/btngenerate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="Generate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnfilter"
+        android:layout_width="200dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="10dp"
+        android:text="Choose a filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtfiltervalue" />
+
+    <EditText
+        android:id="@+id/edfiltername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:hint="filter name"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/txtfiltername"
+        app:layout_constraintTop_toBottomOf="@+id/edenddate" />
+
+    <EditText
+        android:id="@+id/edfiltervalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="38dp"
+        android:ems="10"
+        android:hint="filter value"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/txtfiltervalue"
+        app:layout_constraintTop_toBottomOf="@+id/edfiltername" />
+
+    <TextView
+        android:id="@+id/txtfiltername"
+        android:layout_width="144dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="45dp"
+        android:text="FilterName:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnenddate" />
+
+    <TextView
+        android:id="@+id/txtfiltervalue"
+        android:layout_width="144dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="45dp"
+        android:text="FilterValue:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtfiltername" />
+</androidx.constraintlayout.widget.ConstraintLayout>
