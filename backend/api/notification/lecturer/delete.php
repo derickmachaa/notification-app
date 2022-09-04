@@ -31,7 +31,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     if($data){
         $role=$data['UserType'];
         $sender=$data['AdmissionNo'];
-        if($role=="lecturer"){
+        if($role=="lecturer" or $role=="staff"){
             //get message the message to delete
             if(isset($_REQUEST['id'])){
                 $deleteid=$_REQUEST['id'];
