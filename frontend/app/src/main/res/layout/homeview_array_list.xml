@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/st_sms_title"
+            android:id="@+id/txt_homeview_title"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -18,7 +18,7 @@
             android:text="TextView" />
 
         <TextView
-            android:id="@+id/st_sms_subtitle"
+            android:id="@+id/txt_homeview_subtitle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:textSize="17sp"
@@ -26,9 +26,9 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/img_sms_status"
+        android:id="@+id/img_homeview_icon"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_weight="1"
-        app:srcCompat="@drawable/smsnew" />
+        />
 </LinearLayout>
