@@ -10,13 +10,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -28,6 +33,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class StudentActivity extends AppCompatActivity {
+    //some variables
+    EditText edsearch;
+    ProgressDialog progressDialog;
+    ListView listView;
+    //create list to hold the notification ids
+    List<String> notificationID = new ArrayList<String>();
+
+    ArrayList<HomeView> arrayList = new ArrayList<HomeView>();
+
+    //some classes
+    //get session manager
+    SessionManager sessionManager;
+    User user;
+
+    HomeViewAdapter homeViewAdapter;
+
+    //searchview
+    SearchView searchView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -38,28 +61,50 @@ public class StudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
+
+        //initialise
+        sessionManager = new SessionManager(this);
+        //create a progress dialog
+        progressDialog = new ProgressDialog(StudentActivity.this);
+        // create the instance of the ListView
+        listView = (ListView) findViewById(R.id.st_sms_list);
+        searchView = findViewById(R.id.searchView);
         //change title
         this.setTitle("CUEA Student");
         //get notifications
         new NotificationsGet().execute();
     }
 
+    public void setupSearch(){
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                homeViewAdapter.filter(s.toString());
+                return true;
+            }
+        });
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setQueryHint("Enter sender/content to match");
+    }
+
+
 
     //Async task to request sms
     class NotificationsGet extends AsyncTask<Void,Void,String>{
-        //get session manager instance
-        SessionManager sessionManager = new SessionManager(StudentActivity.this);
+
         ///get return type of user
         User user = sessionManager.getUser();
         //get the token to use for requests
         String token = user.getToken();
-        //create a progress dialog
-        ProgressDialog progressDialog = new ProgressDialog(StudentActivity.this);
-        //create list to hold the responses
-        List<String> maintitle = new ArrayList<String>();
-        List<String> subtitle = new ArrayList<String>();
-        List<Integer> icons = new ArrayList<Integer>();
-        List<String> notificationID = new ArrayList<String>();
+
+
+
 
         @Override
         protected void onPreExecute() {
@@ -94,45 +139,47 @@ public class StudentActivity extends AppCompatActivity {
                 try{
                     JSONObject json = new JSONObject(s);
                     JSONArray array = json.getJSONArray("result");
+                    int imgid;
                     //iterate through the json array
                     for(int i=0;i<array.length();i++){
                         JSONObject object = array.getJSONObject(i);
                         //get the name of the sender
-                        maintitle.add(object.getString("FullNames"));
+                        String maintitle=object.getString("FullNames");
                         //get the description of the notification
-                        subtitle.add(object.getString("Description"));
-                        //get the status of the id
+                        String subtitle=object.getString("Description");
+                        //get the status of the notification
                         try{
-                        int status = object.getInt("Status");
-                        if(status!=3){
-                                icons.add(R.drawable.smsnew);
-                        }
-                        else{
-                                icons.add(R.drawable.smsread);
+                            int status = object.getInt("Status");
+                            if(status!=3){
+                                imgid=R.drawable.smsnew;
+                            }
+                            else{
+                                imgid=R.drawable.smsread;
                             }}catch (Exception e){
-                            icons.add(R.drawable.smsnew);
+                            imgid=R.drawable.smsnew;
                         }
 
                         //update list with the id
                         notificationID.add(object.getString("Id"));
+                        arrayList.add(new HomeView(imgid,maintitle,subtitle));
                     }
-                    //get the list view
-                    ListView listView = (ListView) findViewById(R.id.st_sms_list);
+                    // Now create the instance of the homeview adapter and pass
+                    // the context and arrayList created above
+                    homeViewAdapter = new HomeViewAdapter(StudentActivity.this, arrayList);
 
-                    //convert array list to string list
-                    String[] x=maintitle.toArray(new String[0]); //toarray returns object[] so pass an array as argument
-                    String[] y=subtitle.toArray(new String[0]);
-                    Integer[] z = icons.toArray(new Integer[0]);
-                    //connect to the  adapter now
-                    StudentListAdapter adapter = new StudentListAdapter(StudentActivity.this,x,y,z);
-                    //create handle on click
+                    // set the homeviewadapter for ListView
+                    listView.setAdapter(homeViewAdapter);
+                    listView.setTextFilterEnabled(true);
+                    setupSearch();
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            ImageView x = (ImageView) view.findViewById(R.id.img_sms_status);
+                            ImageView x = (ImageView) view.findViewById(R.id.img_homeview_icon);
                             //check if message unread
-                            if(icons.get(i)==R.drawable.smsnew){
+                            if(arrayList.get(i).getImageviewid()==R.drawable.smsnew){
                                 //set to read
+
+                                Toast.makeText(StudentActivity.this, "Am here", Toast.LENGTH_SHORT).show();
                                 x.setImageResource(R.drawable.smsread);
                             }
                             //Toast.makeText(StudentActivity.this,notificationID.get(i),Toast.LENGTH_LONG).show();
@@ -141,8 +188,6 @@ public class StudentActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
-                    listView.setAdapter(adapter);
-
 
                 }catch (JSONException e){
                     Toast.makeText(StudentActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
@@ -177,7 +222,7 @@ public class StudentActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //if the user has selected to logout clear the tokens in db and finish activity
                         //create an instance of session manager and clear
-                        SessionManager sessionManager = new SessionManager(StudentActivity.this);
+                        sessionManager = new SessionManager(StudentActivity.this);
                         sessionManager.logout();
                         //say good bye
                         Toast.makeText(StudentActivity.this, "Good Bye", Toast.LENGTH_LONG).show();
