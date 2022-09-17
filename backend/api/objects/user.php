@@ -1,21 +1,24 @@
 <?php
 //this file will be the user object
 class User{
-    private $_Id;
-    private $_FirstName;
-    private $_LastName;
-    private $_UserType;
-    private $_PhoneNo;
-    private $_Database;
-    private $_CollectionName;
-    private $_Faculty;
-    private $_DepartmentId;
-    private $_DepartmentName;
+	private $_Id;
+	private $_islec;
+	private $_FirstName;
+	private $_LastName;
+	private $_UserType;
+    	private $_PhoneNo;
+	private $_Database;
+    	private $_Faculty;
+    	private $_DepartmentId;
+	private $_DepartmentName;
+	private $_CollectionName;
 
     //function called during initialization of user
     function __construct($db)
     {
         $this->_Database=$db;
+	$this->_CollectionName='users';
+	$this->_islec=false;
         
     }
     
@@ -102,21 +105,29 @@ class User{
         $this->_UserType=$usertype;
     }
     
+    //function to get islec boolean
+    public function getIsLec(){
+        return $this->_islec;
+    }
+    public function setIsLec($boolean){
+        $this->_islec=$boolean;
+    }
 
     //function to create a new user in the system
     public function createUser(){
         //place the appropriate values
         $values=[
-            "AdmissionNo"=> $this->getAdmissionNo(),
+            "_id"=> $this->getIdNo(),
             "FirstName"=> $this->getFirstName(),
             "LastName"=> $this->getLastName(),
             "UserType"=> $this->getUserType(),
-            "PhoneNo" => $this->getPhoneNo(),
+	    "PhoneNo" => $this->getPhoneNo(),
+	    "is_lec" => $this->getIsLec(),
             "Faculty"=> $this->getFaculty(),
-            "Department"=> $this->getDepartment()
+            "DepartmentName"=> $this->getDepartmentName()
         ];
       
-            $result=$this->_Database->createOne($this->_CollectionName,$values);
+            $result=$this->_Database->createRecord($this->_CollectionName,$values);
             if($result){
                 return TRUE;
             }
@@ -128,17 +139,17 @@ class User{
 
     //function to update the user
     public function updateUser(){
-        $from=["AdmissionNo"=>$this->getAdmissionNo()];
+        $from=["_id"=>$this->getIdNo()];
         $to=[
             "FirstName"=> $this->getFirstName(),
             "LastName"=> $this->getLastName(),
             "UserType"=> $this->getUserType(),
             "PhoneNo" => $this->getPhoneNo(),
             "Faculty"=> $this->getFaculty(),
-            "Department"=> $this->getDepartment()
+            "DepartmentName"=> $this->getDepartmentName()
         ];
       
-            $result=$this->_Database->modifyOne($this->_CollectionName,$from,$to);
+            $result=$this->_Database->updateOne($this->_CollectionName,$from,$to);
             if($result){
                 return TRUE;
             }
@@ -152,17 +163,14 @@ class User{
     //function to get user by admision number 
     public function getUserById($idNo){
         //go through all the databases to check if a user is valid
-        $users=['student','staff'];
+        $userdatabases=['users','admin'];
         $filter=['_id'=>$idNo];
-        //supress mongo id field together with token
-        //$options=["projection"=>['_id'=>0,"Token"=>0]];
         $options=[];
-        foreach($users as $collection){
+        foreach($userdatabases as $collection){
             $result=$this->_Database->queryData($collection,$filter,$options);
             if($result){
-                //add the database name to the result as a way of showing the user type
-                array_push($result,array("UserType"=>$collection));
-                return $result;
+		    //return result
+                return $result[0];
                 break;
             }
         }
@@ -182,14 +190,14 @@ class User{
     }
 
     //function to delete user by id
-    public function deleteUserByAdmission($admissionNo){
+    public function deleteUserById($idNo){
         //set the admission number to the required one
-        $value=['AdmissionNo'=>$admissionNo];
-        $result=$this->_Database->removeOne($this->_CollectionName,$value);
+        $value=['_id'=>$idNo];
+        $result=$this->_Database->deleteRecord($this->_CollectionName,$value,[]);
         if($result){
             //now delete the previous messages sent
-            $value=['Recipient'=>$admissionNo];
-            $result=$this->_Database->removeOne("NotificationStatus",$value);
+            $value=['Recipient'=>$idNo];
+            $result=$this->_Database->deleteRecord("notificationstatus",$value,[]);
             //respond
             return TRUE;
         }
@@ -203,13 +211,16 @@ class User{
     public function setUserProfile($idNo){
         $row=$this->getUserById($idNo);
         if($row){{
-            $this->setIdNo($row[0]->_id);
-            $this->setFirstName($row[0]->FirstName);
-            $this->setLastName($row[0]->LastName);
-            $this->setUserType($row[1]['UserType']);
-            $this->setPhoneNo($row[0]->PhoneNo);
-            $this->setDepartmentName($row[0]->DepartmentName);
-            $this->setFaculty($row[0]->DepartmentName);
+            $this->setIdNo($row->_id);
+            $this->setFirstName($row->FirstName);
+            $this->setLastName($row->LastName);
+            $this->setUserType($row->UserType);
+	    $this->setPhoneNo($row->PhoneNo);
+	    if($this->getUserType() != "admin" ){
+		    $this->setDepartmentName($row->DepartmentName);
+		    $this->setFaculty($row->DepartmentName);
+		    $this->setIsLec($row->is_lec);
+	    }
             return TRUE;
             }
         }else{
@@ -263,7 +274,7 @@ class User{
     public function getAllUsers(){
         $values=[];
         $options=[];
-        $query=$this->_Database->queryRecord($this->_CollectionName,$values,$options);
+        $query=$this->_Database->queryData($this->_CollectionName,$values,$options);
         if($query){
             return $query;
         }
@@ -271,5 +282,30 @@ class User{
             return FALSE;
         }
     }
+
+    //function to generate admin reports
+
+    public function adminGenerateReport($startid,$stopid){
+        //create an array to hold the results
+        $users=array();
+        $users['result']=array();
+        $values=["_id"=>['$gte'=>$startid,'$lte'=>$stopid]];
+        $options=[];
+        $result=$this->_Database->queryData($this->_CollectionName,$values,$options);
+        if($result){
+            //iterate though each user and add them
+		foreach($result as $row){
+		    //get the faculty from department name
+		    $this->setFaculty($row->DepartmentName);
+		    $row->Faculty=$this->getFaculty();
+                array_push($users['result'],$row);
+                }
+            return $users;
+        }
+        else{
+            return FALSE;
+        }
+    }
+
 }
 ?>

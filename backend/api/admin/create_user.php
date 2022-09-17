@@ -3,7 +3,6 @@
 //include necessary file
 include_once "../../config/config.php";
 include_once ROOT."api/objects/auth.php";
-include_once ROOT."lib/mongo/autoload.php";
 include_once ROOT."api/objects/user.php";
 include_once ROOT."api/objects/notification.php";
 include_once ROOT."api/objects/database.php";
@@ -39,18 +38,20 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             $_UserType=$postdata->UserType;
             $_PhoneNo=$postdata->PhoneNo;
             $_Faculty=$postdata->Faculty;
-            $_Department=$postdata->Department;
+            $_Department=$postdata->DepartmentName;
+	    $_islec=$postdata->islec;
 
             //check if all fields required are present
             if(isset($_AdmissionNo)&&isset($_FirstName)&&isset($_LastName)&&isset($_UserType)&&isset($_PhoneNo)&&isset($_Faculty)&&isset($_Department)){
                 //set the user
-                $user->setAdmissionNo($_AdmissionNo);
+                $user->setIdNo($_AdmissionNo);
                 $user->setFirstName($_FirstName);
                 $user->setLastName($_LastName);
                 $user->setUserType($_UserType);
+		$user->setIsLec($_islec);
                 $user->setPhoneNo($_PhoneNo);
                 $user->setFaculty($_Faculty);
-                $user->setDepartment($_Department);
+                $user->setDepartmentName($_Department);
 
                 $result=$user->createUser();
 

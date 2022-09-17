@@ -3,7 +3,6 @@
 //include necessary file
 include_once "../../config/config.php";
 include_once ROOT."api/objects/auth.php";
-include_once ROOT."lib/mongo/autoload.php";
 include_once ROOT."api/objects/user.php";
 include_once ROOT."api/objects/notification.php";
 include_once ROOT."api/objects/database.php";
@@ -40,7 +39,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                 //get one record
                 //cast id to int
                 $id=(int) $_REQUEST['id'];
-                $result=$user->deleteUserByAdmission($id);
+                $result=$user->deleteUserById($id);
                 if($result){
                     http_response_code(200);
                     echo json_encode(array("message"=>"user deleted"));

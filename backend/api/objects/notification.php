@@ -32,11 +32,11 @@ class Notification{
     }
 
     //public function generate report
-    public function StudentGenerateReport($admissionNo,$startdate,$enddate){
+    public function studentGenerateReport($admissionNo,$startdate,$enddate){
         //create an array to hold the results
         $sms=array();
         $sms['result']=array();
-        $values=["SendDate"=>['$gte'=>$startdate,'$lte'=>$enddate],"Recipients"=>$admissionNo];
+        $values=["SendDate"=>['$gte'=>$startdate,'$lte'=>$enddate],"RecipientId"=>$admissionNo];
         $options=[];
         $result=$this->_Database->queryData($this->_CollectionName,$values,$options);
         if($result){
@@ -121,7 +121,6 @@ class Notification{
             "Description"=>$row->Description,
             "Date" =>$row->SendDate,
             "Status"=>$this->getNotificationStatus($row->_id->__toString())
-            //"Status"=>3
             );
         array_push($sms['result'],$sms_list);
         }
@@ -132,7 +131,7 @@ class Notification{
     public function studentGetNotification($idNo){
         $sms=array();
         $sms['result']=array();
-        $values=["Recipients"=>$idNo];
+        $values=["RecipientId"=>$idNo];
         $options=[
             //sort by date descending order
             "sort"=>["SendDate"=>-1]
@@ -176,7 +175,7 @@ class Notification{
             $values=[
                 "_id"=>$notificationid,
                 "SenderId"=>$sender,
-                "Recipients"=>$recipients,
+                "RecipientId"=>$recipients,
                 "Content"=>$message,
                 "Description"=>$description,
                 "SendDate"=>time()
@@ -298,7 +297,7 @@ class Notification{
         $sms=array();
         $values=[
             "_id"=>new MongoDB\BSON\ObjectId($notificationid),
-            "Recipients"=>$admissionNo,
+            "RecipientId"=>$admissionNo,
          ];
          $options=["projection"=>['Recipients'=>0]];
          $result=$this->_Database->queryData($this->_CollectionName,$values,$options);
@@ -370,8 +369,8 @@ class Notification{
                     $new=array(
                         "NotificationId"=>$notificationid->__toString(),
                         "SendDate"=>date("Y-m-d H:i:s",$row->SendDate),
-                        "Content"=>$row->Content,
-                        "Description"=>$row->Description,
+                        "Content"=>'"'.$row->Content.'"',
+                        "Description"=>'"'.$row->Description.'"',
                         "RecipientId"=>$info->RecipientId,
                         "DeliveredDate"=>$DeliveredDate,
                         "ReadDate"=>$ReadDate,

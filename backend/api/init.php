@@ -10,7 +10,7 @@ $db=$database->getConnection();
 
 $compscience="Computer and Information Science";
 $community="Community Health and Development";
-$maths="Mathematics and Acturial Science";
+$maths="Mathematics and Actuarial Science";
 $nursing="Nursing";
 $naturalsci="Natural Sciences";
 $cps="CONTINUING PROFESSIONAL DEVELOPMENT PROJECTS AND RESEARCH"; 
@@ -28,6 +28,10 @@ $registrydep="Registry";
 $psychology="Counseling Psychology"; 
 
 
+$admin=[
+    ["_id"=>0,"FirstName"=>"Derick","LastName"=>"Macharia","PhoneNo"=>"254701873605","Gender"=>"Male","UserType"=>"admin"]
+];
+
 //create faculty
 $faculty=[
     ["FacultyName"=>"Faculty of Science","Department"=>array(["DepartmentName"=>"Computer and Information Science"],["DepartmentName"=>"Community Health and Development"],["DepartmentName"=>"Mathematics and Actuarial Science"],["DepartmentName"=>"Natural Sciences"],["DepartmentName"=>"Nursing"])],
@@ -44,29 +48,24 @@ $staffdepartment=[
 
 //create collection of Students
 //add some users
-$student=[
-    ["_id"=>1000,"FirstName"=>"Derick","LastName"=>"Macharia","PhoneNo"=>"254711218298","DepartmentName"=>$compscience,"Gender"=>"Male"],
-    ["_id"=>1001,"FirstName"=>"Juma","LastName"=>"Mwaure","PhoneNo"=>"254712345670","DepartmentName"=>$economics,"Gender"=>"Male"],
-    ["_id"=>1002,"FirstName"=>"Wema","LastName"=>"Wamboi","PhoneNo"=>"254712345671","DepartmentName"=>$community,"Gender"=>"Female"],
-    ["_id"=>1003,"FirstName"=>"Samuel","LastName"=>"John","PhoneNo"=>"254712345672","DepartmentName"=>$socialsci,"Gender"=>"Male"],
-    ["_id"=>1004,"FirstName"=>"Zipporah","LastName"=>"Wanjiru","PhoneNo"=>"254712345673","DepartmentName"=>$maths, "Gender"=>"Female"],
-    ["_id"=>1005,"FirstName"=>"Brenda","LastName"=>"kivuva","PhoneNo"=>"254712345674","DepartmentName"=>$naturalsci, "Gender"=>"Female"],
-    ["_id"=>1006,"FirstName"=>"Anne","LastName"=>"Luke","PhoneNo"=>"254712345675","DepartmentName"=>$humanities, "Gender"=>"Female"],
-    ["_id"=>1007,"FirstName"=>"Diana","LastName"=>"Peter","PhoneNo"=>"254712345676","DepartmentName"=>$theology, "Gender"=>"Female"],
-    ["_id"=>1008,"FirstName"=>"Denzel","LastName"=>"Michael","PhoneNo"=>"254712345677","DepartmentName"=>$religious, "Gender"=>"Male"],
-    ["_id"=>1009,"FirstName"=>"Daniel","LastName"=>"Mike","PhoneNo"=>"254712345678","DepartmentName"=>$pastoral, "Gender"=>"Male"]
-];
-
-
-$staff=[
-    ["_id"=>8000,"FirstName"=>"Edward","LastName"=>"Maina","is_lec"=>true,"PhoneNo"=>"254712345679","is_admin"=>false,"DepartmentName"=>$compscience,"Gender"=>"Male","JobTitle"=>"Lecturer"],
-    ["_id"=>8001,"FirstName"=>"Francis","LastName"=>"Mwangi","is_lec"=>true,"PhoneNo"=>"254712345679","is_admin"=>false,"DepartmentName"=>$theology, "Gender"=>"Male","JobTitle"=>"Lecturer"],
-    ["_id"=>8002,"FirstName"=>"Vincent","LastName"=>"Kamau","is_lec"=>false,"PhoneNo"=>"254712345679","is_admin"=>false,"DepartmentName"=>$creditdep, "Gender"=>"Male","JobTitle"=>"Credit Controller"],
-    ["_id"=>8003,"FirstName"=>"James","LastName"=>"Njoroge","is_lec"=>false,"PhoneNo"=>"254712345679","is_admin"=>false,"DepartmentName"=>$registrydep, "Gender"=>"Male","JobTitle"=>"Registrar"],
-    ["_id"=>8004,"FirstName"=>"Mercy","LastName"=>"Wamboi","is_lec"=>true,"PhoneNo"=>"254712345679","is_admin"=>false,"DepartmentName"=>$maths,"Gender"=>"Female","JobTitle"=>"Lecturer"],
-    ["_id"=>8005,"FirstName"=>"Diana","LastName"=>"Akinyi","is_lec"=>true,"PhoneNo"=>"254712345679","is_admin"=>false,"DepartmentName"=>$theology, "Gender"=>"Female","JobTitle"=>"Lecturer"],
-    ["_id"=>8006,"FirstName"=>"Derick","LastName"=>"Kamoro","is_lec"=>false,"PhoneNo"=>"254701873605","is_admin"=>true,"DepartmentName"=>$ictdep, "Gender"=>"Male","JobTitle"=>"Admin"],
-
+$users=[
+["_id"=>1000,"FirstName"=>"Derick","LastName"=>"Macharia","is_lec"=>false,"PhoneNo"=>"254711218298","DepartmentName"=>$compscience,"Gender"=>"Male","UserType"=>"student"],
+["_id"=>1001,"FirstName"=>"Juma","LastName"=>"Mwaure","is_lec"=>false,"PhoneNo"=>"254712345670","DepartmentName"=>$economics,"Gender"=>"Male","UserType"=>"student"],
+["_id"=>1002,"FirstName"=>"Wema","LastName"=>"Wamboi","is_lec"=>false,"PhoneNo"=>"254712345671","DepartmentName"=>$community,"Gender"=>"Female","UserType"=>"student"],
+["_id"=>1003,"FirstName"=>"Samuel","LastName"=>"John","is_lec"=>false,"PhoneNo"=>"254712345672","DepartmentName"=>$socialsci,"Gender"=>"Male","UserType"=>"student"],
+["_id"=>1004,"FirstName"=>"Zipporah","LastName"=>"Wanjiru","is_lec"=>false,"PhoneNo"=>"254712345673","DepartmentName"=>$maths, "Gender"=>"Female","UserType"=>"student"],
+["_id"=>1005,"FirstName"=>"Brenda","LastName"=>"kivuva","is_lec"=>false,"PhoneNo"=>"254712345674","DepartmentName"=>$naturalsci, "Gender"=>"Female","UserType"=>"student"],
+["_id"=>1006,"FirstName"=>"Anne","LastName"=>"Luke","is_lec"=>false,"PhoneNo"=>"254712345675","DepartmentName"=>$humanities, "Gender"=>"Female","UserType"=>"student"],
+["_id"=>1007,"FirstName"=>"Diana","LastName"=>"Peter","is_lec"=>false,"PhoneNo"=>"254712345676","DepartmentName"=>$theology, "Gender"=>"Female","UserType"=>"student"],
+["_id"=>1008,"FirstName"=>"Denzel","LastName"=>"Michael","is_lec"=>false,"PhoneNo"=>"254712345677","DepartmentName"=>$religious, "Gender"=>"Male","UserType"=>"student"],
+["_id"=>1009,"FirstName"=>"Daniel","LastName"=>"Mike","is_lec"=>false,"PhoneNo"=>"254712345678","DepartmentName"=>$pastoral, "Gender"=>"Male","UserType"=>"student"],
+["_id"=>8000,"FirstName"=>"Eden","LastName"=>"Maina","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$compscience,"Gender"=>"Male","UserType"=>"staff"],
+["_id"=>8001,"FirstName"=>"Christiano","LastName"=>"Muthike","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$theology, "Gender"=>"Male","UserType"=>"staff"],
+["_id"=>8002,"FirstName"=>"Ian","LastName"=>"Waweru","is_lec"=>false,"PhoneNo"=>"254712345679","DepartmentName"=>$creditdep, "Gender"=>"Male","UserType"=>"staff"],
+["_id"=>8003,"FirstName"=>"James","LastName"=>"Njoroge","is_lec"=>false,"PhoneNo"=>"254712345679","DepartmentName"=>$registrydep, "Gender"=>"Male","UserType"=>"staff"],
+["_id"=>8004,"FirstName"=>"Mercy","LastName"=>"Wamboi","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$maths,"Gender"=>"Female","UserType"=>"staff"],
+["_id"=>8005,"FirstName"=>"Diana","LastName"=>"Akinyi","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$theology, "Gender"=>"Female","UserType"=>"staff"],
+["_id"=>8006,"FirstName"=>"Derick","LastName"=>"Kamoro","is_lec"=>false,"PhoneNo"=>"254701873605","DepartmentName"=>$ictdep, "Gender"=>"Male","UserType"=>"staff"],
 ];
 
 $notify=new MongoDB\BSON\ObjectId();
@@ -115,24 +114,23 @@ $notification=[
 ];
 
 
+//create admin
+foreach($admin as $row){
+	$database->createRecord('admin',$row);
+}
+//create a collection of faculties
+foreach($faculty as $row){
+	$database->createRecord('faculty',$row);
+}
+//create users
+foreach($users as $row){
+    $database->createRecord('users',$row);
+}
 
-////create a collection of faculties
-//foreach($faculty as $row){
-//	$database->createRecord('faculty',$row);
-//}
-////create departments
-//foreach($staff as $row){
-//    $database->createRecord('staff',$row);
-//}
-//
-//foreach($staffdepartment as $row){
-//    $database->createRecord('staffdepartment',$row);
-//}
-//
-//foreach($student as $row){
-//    $database->createRecord('student',$row);
-//}
-//
+foreach($staffdepartment as $row){
+    $database->createRecord('staffdepartment',$row);
+}
+
 foreach($notification as $row){
     $database->createRecord('notification',$row);
 }

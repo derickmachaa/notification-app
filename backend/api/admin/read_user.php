@@ -4,7 +4,6 @@
 //include necessary file
 include_once "../../config/config.php";
 include_once ROOT."api/objects/auth.php";
-include_once ROOT."lib/mongo/autoload.php";
 include_once ROOT."api/objects/user.php";
 include_once ROOT."api/objects/notification.php";
 include_once ROOT."api/objects/database.php";
@@ -41,8 +40,10 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                 //get one record
                 //cast id to int
                 $id=(int) $_REQUEST['id'];
-                $result=$user->getUserByAdmission($id);
+                $result=$user->getUserById($id);
                 if($result){
+			$user->setUserProfile($id);
+			$result->Faculty=$user->getFaculty($user->getDepartmentName());
                     http_response_code(200);
                     echo json_encode($result);
                     }else{
@@ -62,13 +63,13 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                     foreach($result as $row){
                         //create an array for each record
                         $newarray=array(
-                            "AdmissionNo" => $row['AdmissionNo'],
-                            "FirstName" =>  $row['FirstName'],
-                            "LastName" =>  $row['LastName'],
-                            "PhoneNo" =>  $row['PhoneNo'],
-                            "UserType" =>  $row['UserType'],
-                            "Faculty" =>  $row['Faculty'],
-                            "Department" =>  $row['Department']
+                            "AdmissionNo" => $row->_id,
+                            "FirstName" =>  $row->FirstName,
+                            "LastName" =>  $row->LastName,
+                            "PhoneNo" =>  $row->PhoneNo,
+                            "UserType" =>  $row->UserType,
+                            "Department" =>  $row->DepartmentName,
+			    "islec" => $row->is_lec
                         );
                         //append it to result array
                         array_push($users['result'],$newarray);

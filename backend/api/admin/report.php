@@ -2,7 +2,7 @@
 //file to generate report students side
 
 //include the necessary files
-include '../../../config/config.php';
+include '../../config/config.php';
 include_once ROOT.'api/objects/database.php';
 include_once ROOT.'api/objects/auth.php';
 include_once ROOT.'api/objects/notification.php';
@@ -30,17 +30,27 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     if($decoded){
         //assignk values
         $role=$decoded['UserType'];
-        $admissionNo=$decoded['AdmissionNo'];
         //extract raw data from data from the body
         $postdata=json_decode(file_get_contents("php://input"));
         //decode
-        if(isset($postdata->startdate) && isset($postdata->enddate)){
+        if(isset($postdata->startid) && isset($postdata->stopid)){
             //return specific id
-            if($role=='student'){
-                $sms=$notification->studentGenerateReport($admissionNo,$postdata->startdate,$postdata->enddate);
-                if($sms){
-                http_response_code(200);
-                echo json_encode($sms);
+            if($role=='admin'){
+		    $users=$user->adminGenerateReport($postdata->startid,$postdata->stopid);
+		    if($users){
+			    //create my own CSV add the headers
+			    $header='_id,FirstName,LastName,is_lec,PhoneNo,DepartmentName,Gender,UserType,Faculty'."\n";
+			    $body="";
+			    //now add the body
+			    foreach($users['result'] as $user){
+				    $body.=$user->_id.','.$user->FirstName.','.$user->LastName.','.$user->is_lec.','.$user->PhoneNo.','.$user->DepartmentName.','.$user->Gender.','.$user->UserType.','.$user->Faculty."\n";
+                    }
+                    $final=$header.$body;
+                    $uploaddir="../../downloads/";
+                    $filename = $uploaddir.md5($final).".csv";
+                    file_put_contents($filename,$final);
+                    http_response_code(200);
+                    echo $filename;
                 }else{
                     http_response_code(204);
                     echo json_encode(array("message"=>"Not found"));
