@@ -9,12 +9,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -27,10 +31,7 @@ import java.util.List;
 
 public class LecActivity extends AppCompatActivity {
     //define some list array to hold my data
-    List<String> maintitle = new ArrayList<String>();
-    List<String> subtitle = new ArrayList<String>();
-    List<Integer> icons = new ArrayList<Integer>();
-    List<String> notificationID = new ArrayList<String>();
+    ArrayList<HomeView> arrayList;
     //create progressdialog object
     ProgressDialog progressDialog;
     //create session manager object
@@ -44,14 +45,13 @@ public class LecActivity extends AppCompatActivity {
     //listview
     ListView listView;
     //adapter
-    LecListAdapter lecListAdapter;
+    HomeViewAdapter homeViewAdapter;
+    //search view
+    SearchView searchView;
 
 
     public void clearlist(){
-        maintitle = new ArrayList<String>();
-        subtitle = new ArrayList<String>();
-        icons = new ArrayList<Integer>();
-        notificationID = new ArrayList<String>();
+        arrayList.clear();
     }
 
 
@@ -59,19 +59,20 @@ public class LecActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //create progress dialog
-         progressDialog = new ProgressDialog(LecActivity.this);
-         sessionManager = new SessionManager(LecActivity.this);
-         //create sessionmanager
-         user = sessionManager.getUser();
-         //get user token
-         token=user.getToken();
-
-
+        progressDialog = new ProgressDialog(LecActivity.this);
+        sessionManager = new SessionManager(LecActivity.this);
+        //create sessionmanager
+        user = sessionManager.getUser();
+        //get user token
+        token = user.getToken();
+        //array list instance
+        arrayList = new ArrayList<HomeView>();
         setContentView(R.layout.activity_lec);
         this.setTitle("Lecturer Profile");
         //get notififcations
         new NotificationsGet().execute();
     }
+
 
     //action bar hacks
     @Override
@@ -166,31 +167,49 @@ public class LecActivity extends AppCompatActivity {
     public void doDisplayNotification(){
             //get the list view
             listView = (ListView) findViewById(R.id.lec_sms_list);
+            //search view instance
+            searchView=(SearchView) findViewById(R.id.lec_searchView);
+            homeViewAdapter=new HomeViewAdapter(this,arrayList);
 
-            //convert array list to string list
-            String[] x=maintitle.toArray(new String[0]); //toarray returns object[] so pass an array as argument
-            String[] y=subtitle.toArray(new String[0]);
-            Integer[] z = icons.toArray(new Integer[0]);
-            //connect to the  adapter now
-            lecListAdapter = new LecListAdapter(LecActivity.this,x,y,z);
+
             //create handle on click
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //get the homeview
+                    HomeView homeView = arrayList.get(i);
                     Intent intent = new Intent(LecActivity.this,LecNotificationOpen.class);
-                    intent.putExtra("notificationID",notificationID.get(i));
+                    intent.putExtra("notificationID",homeView.getObjectid());
                     startActivity(intent);
                 }
             });
             listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    doDeleteSms(notificationID.get(i));
-                    lecListAdapter.notifyDataSetChanged();
+                    HomeView homeView = arrayList.get(i);
+                    doDeleteSms(homeView.getObjectid());
+                    homeViewAdapter.notifyDataSetChanged();
                     return true;
                 }
             });
-            listView.setAdapter(lecListAdapter);
+            //connect to the  adapter now
+            listView.setAdapter(homeViewAdapter);
+            //add search options
+            searchView.setQueryHint("Enter Content/Description");
+            searchView.setSubmitButtonEnabled(false); //disable submit button
+            searchView.setIconifiedByDefault(false);
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                homeViewAdapter.filter(s);
+                return true;
+            }
+        });
 
 
     }
@@ -243,28 +262,30 @@ public class LecActivity extends AppCompatActivity {
                     JSONArray array = json.getJSONArray("result");
                     //iterate through the json array
                     for(int i=0;i<array.length();i++){
+                        int imgid;
                         JSONObject object = array.getJSONObject(i);
                         //get the description of the notification
-                        maintitle.add(object.getString("Description"));
+                        String maintitle=object.getString("Description");
                         //get content
-                        subtitle.add(object.getString("Content"));
+                        String subtitle = object.getString("Content");
                         try{
                             JSONObject status = object.getJSONObject("Status");
                             //get the status
                             int progress = status.getInt("progress");
                             //get total
                             if(progress==100){
-                                icons.add(R.drawable.ic_sms_read);
+                                imgid=R.drawable.ic_sms_read;
                             }else
                             if(progress>=50 && progress < 100){
-                                icons.add(R.drawable.ic_sms_delivered);
+                                imgid=R.drawable.ic_sms_delivered;
                             }
                             else{
-                                icons.add(R.drawable.ic_sms_sent);
+                                imgid=R.drawable.ic_sms_sent;
                             }}catch (Exception e){
-                            icons.add(R.drawable.ic_sms_sent);
+                            imgid=R.drawable.ic_sms_sent;
                         }//update list with the id
-                        notificationID.add(object.getString("Id"));
+                        String objectid = object.getString("Id");
+                        arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
                     }
                     //now display
                     doDisplayNotification();

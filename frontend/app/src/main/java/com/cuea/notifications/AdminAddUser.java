@@ -74,10 +74,12 @@ public class AdminAddUser extends AppCompatActivity {
                 }else
                 if(!myVerification.isFacultyValid(edfaculty.getText().toString())){
                     edfaculty.setError("Invalid Faculty");
+                    edfaculty.requestFocus();
                 }else
 
                 if(!myVerification.isPhoneNoValid(edphone.getText().toString())){
                     edphone.setError("Invalid Phone");
+                    edfaculty.requestFocus();
                 }
                 else
                 {
@@ -130,8 +132,11 @@ public class AdminAddUser extends AppCompatActivity {
                 json.put("LastName", strings[2]);
                 json.put("UserType", strings[3]);
                 json.put("PhoneNo", strings[4]);
-                json.put("Department", strings[5]);
+                json.put("DepartmentName", strings[5]);
                 json.put("Faculty", strings[6]);
+                if(strings[3].equals("student")){
+                    json.put("islec",false);
+                }
                 SessionManager sessionManager = new SessionManager(AdminAddUser.this);
                 User user = sessionManager.getUser();
                 String token = user.getToken();
@@ -147,7 +152,7 @@ public class AdminAddUser extends AppCompatActivity {
             super.onPostExecute(s);
             progressDialog.dismiss();
             if(s.equals("created")){
-                Toast.makeText(AdminAddUser.this, "User Has Been updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminAddUser.this, "User Has Been Created", Toast.LENGTH_SHORT).show();
             }
             else if(s.equals("notmodified")){
                 Toast.makeText(AdminAddUser.this, "User Already up to date", Toast.LENGTH_SHORT).show();

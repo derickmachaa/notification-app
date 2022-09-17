@@ -7,14 +7,21 @@ public class HomeView {
     private int imageviewid;
     private String maintitle;
     private String subtitle;
+    private String objectid;
+
 
     //create a constructor class to set the values
-    public HomeView(int imageviewid, String maintitle, String subtitle) {
+    public HomeView(int imageviewid, String maintitle, String subtitle,String objectid) {
         this.imageviewid = imageviewid;
         this.maintitle = maintitle;
         this.subtitle = subtitle;
+        this.objectid = objectid;
     }
 
+    //getter method for returning the objectid
+    public String getObjectid() {
+        return objectid;
+    }
 
     // getter method for returning the ID of the imageview
     public int getImageviewid() {

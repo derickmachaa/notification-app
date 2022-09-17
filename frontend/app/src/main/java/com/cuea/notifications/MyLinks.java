@@ -1,8 +1,8 @@
 package com.cuea.notifications;
 
 public class MyLinks {
-    private static final String ROOT_URL = "http://192.168.8.2:8000/api/";
-    public static String DOC_ROOT="http://192.168.8.2:8000/";
+    private static final String ROOT_URL = "https://code.machaaindustries.iit/api/";
+    public static String DOC_ROOT="https://code.machaaindustries.iit/";
     private static final String NOTIFICATION_ROOT_URL = ROOT_URL + "notification/";
     public static final String URL_REGISTER = ROOT_URL + "user/login.php";
     public static final String URL_VERIFY = ROOT_URL + "user/verify.php";
@@ -29,6 +29,7 @@ public class MyLinks {
     //report links
     public static final String STUDENT_URL_REPORT = NOTIFICATION_ROOT_URL + "student/report.php";
     public static final String LEC_URL_REPORT = NOTIFICATION_ROOT_URL + "lecturer/report.php";
+    public static final String  ADMIN_URL_REPORT = ADMIN_ROOT_URL + "report.php";
 
     //user lists
     public static final String LEC_URL_LIST_STUDENT = NOTIFICATION_ROOT_URL + "lecturer/student_list.php";

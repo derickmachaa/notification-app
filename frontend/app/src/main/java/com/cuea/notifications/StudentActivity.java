@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -37,10 +38,9 @@ public class StudentActivity extends AppCompatActivity {
     EditText edsearch;
     ProgressDialog progressDialog;
     ListView listView;
-    //create list to hold the notification ids
-    List<String> notificationID = new ArrayList<String>();
-
+    //create list to
     ArrayList<HomeView> arrayList = new ArrayList<HomeView>();
+    ArrayList<HomeView> arrayList_copy = new ArrayList<HomeView>();
 
     //some classes
     //get session manager
@@ -49,6 +49,9 @@ public class StudentActivity extends AppCompatActivity {
 
     HomeViewAdapter homeViewAdapter;
 
+    //notification count
+    int notificationcheck=0;
+
     //searchview
     SearchView searchView;
 
@@ -56,6 +59,10 @@ public class StudentActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu,menu);
         return true;
+    }
+
+    public void clearlist(){
+        arrayList.clear();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +75,17 @@ public class StudentActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(StudentActivity.this);
         // create the instance of the ListView
         listView = (ListView) findViewById(R.id.st_sms_list);
-        searchView = findViewById(R.id.searchView);
+        searchView = findViewById(R.id.student_searchView);
         //change title
         this.setTitle("CUEA Student");
         //get notifications
         new NotificationsGet().execute();
+    }
+
+    @Override
+    protected void onResume(){
+        new NotificationsGet().execute();
+        super.onResume();
     }
 
     public void setupSearch(){
@@ -109,10 +122,13 @@ public class StudentActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //create dialog
-            progressDialog.setMessage("Getting your messages");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            //create dialog if this is the first time we are checking for messages
+            if(notificationcheck==0){
+                progressDialog.setMessage("Getting your messages");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
+            notificationcheck+=1;
 
         }
 
@@ -125,6 +141,7 @@ public class StudentActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
+            clearlist();
             super.onPostExecute(s);
             //stop process dialog
             progressDialog.dismiss();
@@ -159,9 +176,12 @@ public class StudentActivity extends AppCompatActivity {
                             imgid=R.drawable.smsnew;
                         }
 
-                        //update list with the id
-                        notificationID.add(object.getString("Id"));
-                        arrayList.add(new HomeView(imgid,maintitle,subtitle));
+                        //get the id
+                        String objectid = object.getString("Id");
+                        arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
+                    }
+                    if(arrayList_copy.equals(arrayList)){
+                        Toast.makeText(StudentActivity.this, "Still the same", Toast.LENGTH_SHORT).show();
                     }
                     // Now create the instance of the homeview adapter and pass
                     // the context and arrayList created above
@@ -179,12 +199,12 @@ public class StudentActivity extends AppCompatActivity {
                             if(arrayList.get(i).getImageviewid()==R.drawable.smsnew){
                                 //set to read
 
-                                Toast.makeText(StudentActivity.this, "Am here", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(StudentActivity.this, "Am here", Toast.LENGTH_SHORT).show();
                                 x.setImageResource(R.drawable.smsread);
                             }
                             //Toast.makeText(StudentActivity.this,notificationID.get(i),Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(StudentActivity.this,StNotificationOpen.class);
-                            intent.putExtra("notificationID",notificationID.get(i));
+                            intent.putExtra("notificationID",arrayList.get(i).getObjectid());
                             startActivity(intent);
                         }
                     });

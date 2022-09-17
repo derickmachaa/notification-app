@@ -2,6 +2,9 @@ package com.cuea.notifications;
 
 //create a class to handle requests using java.neturl
 
+import android.content.Context;
+import android.widget.Toast;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -13,7 +16,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class RequestHandler {
 
@@ -28,25 +37,25 @@ public class RequestHandler {
         try{
             url = new URL(link);
             //connection instance
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection Connection = (HttpsURLConnection) url.openConnection();
             //set required headers
-            httpURLConnection.setRequestProperty("Authorization","Bearer "+rqtoken); //set Authorization
+            Connection.setRequestProperty("Authorization","Bearer "+rqtoken); //set Authorization
             //set input stream
-            httpURLConnection.setDoInput(true);
+            Connection.setDoInput(true);
             //write to input stream if sucess
-            InputStream inputStream = httpURLConnection.getInputStream();
-            if(httpURLConnection.getResponseCode()==200){
+            InputStream inputStream = Connection.getInputStream();
+            if(Connection.getResponseCode()==200){
                 response = InputstreamToString(inputStream);
             }
-            else if(httpURLConnection.getResponseCode()==400){
+            else if(Connection.getResponseCode()==400){
                 response="notfound";
             }
-            else if(httpURLConnection.getResponseCode()==403){
+            else if(Connection.getResponseCode()==403){
                 response="unauthorized";
             }
 
             //close the connection
-            httpURLConnection.disconnect();
+            Connection.disconnect();
         }catch (Exception e){
             response="Error";
             e.printStackTrace();
@@ -63,44 +72,44 @@ public class RequestHandler {
             //create instance
             url = new URL(link);
             //create and open connection
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection Connection = (HttpsURLConnection) url.openConnection();
             //set post method
-            httpURLConnection.setRequestMethod("POST");
+            Connection.setRequestMethod("POST");
             //set headers
-            httpURLConnection.setRequestProperty("Content-Type","application/json;charset=UTF-8");
-            httpURLConnection.setRequestProperty("Authorization","Bearer "+rqtoken);
+            Connection.setRequestProperty("Content-Type","application/json;charset=UTF-8");
+            Connection.setRequestProperty("Authorization","Bearer "+rqtoken);
             //allow output streams
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.setDoOutput(true);
+            Connection.setDoInput(true);
+            Connection.setDoOutput(true);
             //stream
-            OutputStream outputStream = httpURLConnection.getOutputStream();
+            OutputStream outputStream = Connection.getOutputStream();
             //write stream
             outputStream.write(body.toString().getBytes());
             outputStream.close();//close
 
 
             //check response code
-            if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_OK){
+            if(Connection.getResponseCode()==HttpURLConnection.HTTP_OK){
                 //if ok continue
-                InputStream is = httpURLConnection.getInputStream();
+                InputStream is = Connection.getInputStream();
                 //convert to string
                 response = InputstreamToString(is);
             }
-            else if(httpURLConnection.getResponseCode()==403){
+            else if(Connection.getResponseCode()==403){
                 response="unauthorized";
 
             }
-            else if(httpURLConnection.getResponseCode()==HttpURLConnection.HTTP_NO_CONTENT || httpURLConnection.getResponseCode()==404){
+            else if(Connection.getResponseCode()==HttpURLConnection.HTTP_NO_CONTENT || Connection.getResponseCode()==404){
                 response="notfound";
             }
-            else if(httpURLConnection.getResponseCode()==201){
+            else if(Connection.getResponseCode()==201){
                 response="created";
             }
-            else if(httpURLConnection.getResponseCode()==304){
+            else if(Connection.getResponseCode()==304){
                 response="notmodified";
             }
             //close connection
-            httpURLConnection.disconnect();
+            Connection.disconnect();
 
 
         }catch(Exception e){

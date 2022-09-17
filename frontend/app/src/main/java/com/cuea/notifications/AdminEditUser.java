@@ -156,12 +156,12 @@ public class AdminEditUser extends AppCompatActivity {
             //Toast.makeText(AdminEditUser.this, s, Toast.LENGTH_SHORT).show();
             try{
                 JSONObject json= new JSONObject(s);
-                Integer admission = json.getInt("AdmissionNo");
+                Integer admission = json.getInt("_id");
                 String firstname = json.getString("FirstName");
                 String lastname = json.getString("LastName");
                 String usertype = json.getString("UserType");
                 String phoneno = json.getString("PhoneNo");
-                String department = json.getString("Department");
+                String department = json.getString("DepartmentName");
                 String faculty = json.getString("Faculty");
                 ///fill current screen with required info
                 edadmission.setText(admission.toString());

@@ -26,6 +26,7 @@ public class StNotificationOpen extends AppCompatActivity {
         dayholder=(TextView)findViewById(R.id.txt_receiver_date);
         timeholder=(TextView)findViewById(R.id.txt_receiver_time);
         titleholder=(TextView)findViewById(R.id.txt_receiver_faculty);
+        setTitle("Notification");
 
         //get intent
         Intent intent = getIntent();
@@ -77,13 +78,14 @@ public class StNotificationOpen extends AppCompatActivity {
                 String time = date.split(" ")[1];
                 smsholder.setText(sms);
                 senderholder.setText(sender);
-                titleholder.setText(faculty+"\n"+"Department of "+ department);
+                titleholder.setText(faculty+"\n"+"Department: "+ department);
                 dayholder.setText(day);
                 timeholder.setText(time);
 
             }catch (JSONException e){e.printStackTrace();
             Toast.makeText(StNotificationOpen.this,"Something went wrong try later",Toast.LENGTH_LONG).show();
             }
+
         }
 
     }
