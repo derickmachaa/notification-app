@@ -16,10 +16,4 @@
         android:title="Log Out"
         android:onClick="doLogout"
         />
-    <item
-        android:icon="@android:drawable/ic_input_add"
-        android:title="@+id/admin_adduser"
-        android:onClick="doAddUser"
-        app:showAsAction="always"
-        />
 </menu>

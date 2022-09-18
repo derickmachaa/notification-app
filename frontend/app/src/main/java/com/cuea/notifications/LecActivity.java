@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -71,8 +73,15 @@ public class LecActivity extends AppCompatActivity {
         this.setTitle("Lecturer Profile");
         //get notififcations
         new NotificationsGet().execute();
+
     }
 
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this,v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.new_sms_actions, popup.getMenu());
+        popup.show();
+    }
 
     //action bar hacks
     @Override
@@ -243,6 +252,7 @@ public class LecActivity extends AppCompatActivity {
             //do checking
             return requestHandler.GetRequest(MyLinks.LEC_URL_READ,token);
         }
+
 
         @Override
         protected void onPostExecute(String s) {

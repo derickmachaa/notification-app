@@ -9,12 +9,17 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +47,11 @@ public class AdminActivity extends AppCompatActivity {
     HomeViewAdapter homeViewAdapter;
     //search view
     SearchView searchView;
+    //Floating button
+    FloatingActionButton fab_add,fab_useradd,fab_facultyadd;
+    TextView adduseraction,addfacultyaction;
+    // to check whether sub FAB buttons are visible or not.
+    Boolean isAllFabsVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +65,65 @@ public class AdminActivity extends AppCompatActivity {
         token = user.getToken();
         //array list instance
         arrayList = new ArrayList<HomeView>();
-        setContentView(R.layout.activity_lec);
-
         setContentView(R.layout.activity_admin);
 
         //set different title
         this.setTitle("CUEA Admin");
         //get users
         new getAllUsers().execute();
+
+        fab_add = (FloatingActionButton) findViewById(R.id.admin_fab);
+        fab_useradd = (FloatingActionButton) findViewById(R.id.admin_fab_adduser);
+        fab_facultyadd = (FloatingActionButton) findViewById(R.id.admin_fab_addfaculty);
+        adduseraction = (TextView) findViewById(R.id.admintxtuser);
+        addfacultyaction = findViewById(R.id.admintxtfabfaculty);
+
+        //hide the floating buttons until we click it
+        fab_facultyadd.setVisibility(View.GONE);
+        fab_useradd.setVisibility(View.GONE);
+        adduseraction.setVisibility(View.GONE);
+        addfacultyaction.setVisibility(View.GONE);
+        isAllFabsVisible=false;
+
+        //floating bar onlick
+        fab_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isAllFabsVisible){
+                    //show when clicked
+                    fab_facultyadd.show();
+                    fab_useradd.show();
+                    //change bckground icon to cancel
+                    fab_add.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                    addfacultyaction.setVisibility(View.VISIBLE);
+                    adduseraction.setVisibility(View.VISIBLE);
+                    isAllFabsVisible=true;
+                }
+                else{
+                    //hide because clicked
+                    fab_facultyadd.hide();
+                    fab_useradd.hide();
+                    //return default image
+                    fab_add.setImageResource(android.R.drawable.ic_input_add);
+                    //
+                    addfacultyaction.setVisibility(View.GONE);
+                    adduseraction.setVisibility(View.GONE);
+                    isAllFabsVisible=false;
+                }
+            }
+        });
+
+        //add user onclick
+        fab_useradd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AdminActivity.this,AdminAddUser.class);
+                startActivity(intent);
+            }
+        });
+
     }
+
 
     //action bar hacks
     @Override
@@ -86,12 +146,6 @@ public class AdminActivity extends AppCompatActivity {
 
     public void doLogout(MenuItem item) {
         perFormLogout();
-    }
-
-    //function to add users
-    public void doAddUser(MenuItem item) {
-        Intent intent = new Intent(this,AdminAddUser.class);
-        startActivity(intent);
     }
     //end action bar hacks
 

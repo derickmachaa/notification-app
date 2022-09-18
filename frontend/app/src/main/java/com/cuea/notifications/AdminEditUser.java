@@ -1,6 +1,7 @@
 package com.cuea.notifications;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,13 +26,16 @@ public class AdminEditUser extends AppCompatActivity {
     TextView edusertype ;
     TextView edphone ;
     TextView eddepartment;
-    TextView edfaculty; 
+    TextView edfaculty;
+    TextView edgender;
+    SwitchCompat islec;
+    Boolean is_lec;
     //myverification class
     MyVerification myVerification = new MyVerification();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_edit_user);
+        setContentView(R.layout.activity_admin_manage_users);
         edadmission = (TextView) findViewById(R.id.edadmissionno);
         edfirstname = (TextView) findViewById(R.id.edfirstname);
         edlastname = (TextView) findViewById(R.id.edlastname);
@@ -37,6 +43,35 @@ public class AdminEditUser extends AppCompatActivity {
         edphone = (TextView) findViewById(R.id.edphone);
         eddepartment = (TextView) findViewById(R.id.eddepartment);
         edfaculty = (TextView) findViewById(R.id.edfaculty);
+        edgender = (TextView) findViewById(R.id.edgender);
+        islec = findViewById(R.id.btnislec);
+        is_lec=false;
+
+        //add a text listener to produce the is lec toggle
+        edusertype.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().equals("staff")){
+                    islec.setVisibility(View.VISIBLE);
+                }
+                else{
+                    islec.setChecked(false);
+                    islec.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+
         //get the intent
         Intent intent = getIntent();
         Integer adm =  Integer.parseInt(intent.getStringExtra("id"));
@@ -75,7 +110,7 @@ public class AdminEditUser extends AppCompatActivity {
         }
         else
         {
-            String adm,fname,lname,usrty,phone,dep,fac;
+            String adm,fname,lname,usrty,phone,dep,fac,gen;
             adm=edadmission.getText().toString();
             fname=edfirstname.getText().toString();
             lname=edlastname.getText().toString();
@@ -83,7 +118,8 @@ public class AdminEditUser extends AppCompatActivity {
             phone=edphone.getText().toString();
             dep=eddepartment.getText().toString();
             fac=edfaculty.getText().toString();
-            new updateUserDetails().execute(adm,fname,lname,usrty,phone,dep,fac);
+            gen=edgender.getText().toString();
+            new updateUserDetails().execute(adm,fname,lname,usrty,phone,dep,fac,gen);
         }
 
     }
@@ -121,13 +157,6 @@ public class AdminEditUser extends AppCompatActivity {
 
     ///function to get the user profile
     class getUserDetails extends AsyncTask<Integer,Void,String>{
-        TextView edadmission = (TextView) findViewById(R.id.edadmissionno);
-        TextView edfirstname = (TextView) findViewById(R.id.edfirstname);
-        TextView edlastname = (TextView) findViewById(R.id.edlastname);
-        TextView edusertype = (TextView) findViewById(R.id.edusertype);
-        TextView edphone = (TextView) findViewById(R.id.edphone);
-        TextView eddepartment = (TextView) findViewById(R.id.eddepartment);
-        TextView edfaculty = (TextView) findViewById(R.id.edfaculty);
         ProgressDialog progressDialog = new ProgressDialog(AdminEditUser.this);
         @Override
         protected void onPreExecute() {
@@ -163,6 +192,8 @@ public class AdminEditUser extends AppCompatActivity {
                 String phoneno = json.getString("PhoneNo");
                 String department = json.getString("DepartmentName");
                 String faculty = json.getString("Faculty");
+                String gender = json.getString("Gender");
+                is_lec = json.getBoolean("islec");
                 ///fill current screen with required info
                 edadmission.setText(admission.toString());
                 edfirstname.setText(firstname);
@@ -171,6 +202,8 @@ public class AdminEditUser extends AppCompatActivity {
                 edusertype.setText(usertype);
                 edphone.setText(phoneno);
                 edfaculty.setText(faculty);
+                edgender.setText(gender);
+                islec.setChecked(is_lec);
 
 
             }catch (JSONException e){

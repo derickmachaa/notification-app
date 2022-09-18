@@ -20,9 +20,71 @@
     <ListView
         android:id="@+id/admin_user_list"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/admin_searchView" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/admin_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:backgroundTint="@color/cardview_light_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/admin_fab_addfaculty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintEnd_toEndOf="@+id/admin_fab"
+        app:layout_constraintStart_toStartOf="@+id/admin_fab"
+        android:backgroundTint="@color/cardview_light_background"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/admin_fab"
+        app:srcCompat="@android:drawable/ic_menu_edit"
+         />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/admin_fab_adduser"
+        android:layout_width="wrap_content"
+        android:backgroundTint="@color/cardview_light_background"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_adduser_bg"
+        app:layout_constraintStart_toStartOf="@+id/admin_fab"
+        app:layout_constraintEnd_toEndOf="@+id/admin_fab"
+        app:layout_constraintBottom_toTopOf="@id/admin_fab"
+        android:layout_marginBottom="85dp"
+        />
+
+    <TextView
+        android:id="@+id/admintxtuser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add User"
+        app:layout_constraintTop_toTopOf="@+id/admin_fab_adduser"
+        app:layout_constraintBottom_toBottomOf="@+id/admin_fab_adduser"
+        app:layout_constraintEnd_toStartOf="@+id/admin_fab_adduser"
+        android:layout_marginEnd="8dp"
+         />
+
+    <TextView
+        android:id="@+id/admintxtfabfaculty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add faculty"
+        app:layout_constraintBottom_toBottomOf="@+id/admin_fab_addfaculty"
+        app:layout_constraintTop_toTopOf="@+id/admin_fab_addfaculty"
+        app:layout_constraintEnd_toStartOf="@+id/admin_fab_addfaculty"
+        android:layout_marginEnd="8dp"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

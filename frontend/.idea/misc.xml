@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.13043478260869565" />
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_admin_edit_user.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_admin_manage_users.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_lec.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_lec_notification_open.xml" value="0.18" />
         <entry key="app/src/main/res/layout/activity_lec_send.xml" value="0.2" />
@@ -30,6 +31,7 @@
         <entry key="app/src/main/res/menu/admin_profile_menu.xml" value="0.28125" />
         <entry key="app/src/main/res/menu/lec_profile_menu.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/menu/lec_send_menu.xml" value="0.1890625" />
+        <entry key="app/src/main/res/menu/new_sms_actions.xml" value="0.1890625" />
         <entry key="app/src/main/res/menu/profile_menu.xml" value="0.1" />
       </map>
     </option>

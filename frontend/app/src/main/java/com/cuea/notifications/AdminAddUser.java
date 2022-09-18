@@ -1,11 +1,13 @@
 package com.cuea.notifications;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,14 +25,18 @@ public class AdminAddUser extends AppCompatActivity {
     TextView edphone ;
     TextView eddepartment;
     TextView edfaculty;
+    TextView edgender;
     Button btnupdate;
     Button btndelete;
+    SwitchCompat islec;
+    Boolean is_lec;
     MyVerification myVerification = new MyVerification();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_edit_user);
+        setContentView(R.layout.activity_admin_manage_users);
+        is_lec=false;
         edadmission = (TextView) findViewById(R.id.edadmissionno);
         edfirstname = (TextView) findViewById(R.id.edfirstname);
         edlastname = (TextView) findViewById(R.id.edlastname);
@@ -38,13 +44,38 @@ public class AdminAddUser extends AppCompatActivity {
         edphone = (TextView) findViewById(R.id.edphone);
         eddepartment = (TextView) findViewById(R.id.eddepartment);
         edfaculty = (TextView) findViewById(R.id.edfaculty);
+        edgender = (TextView) findViewById(R.id.edgender);
         btnupdate = (Button) findViewById(R.id.btnupdate);
         btndelete = (Button) findViewById(R.id.btndeleteuser);
+        islec = findViewById(R.id.btnislec);
 
+        islec.setVisibility(View.GONE);
         //hide the update button
         btnupdate.setVisibility(View.INVISIBLE);
         btndelete.setText("Add User");
 
+        //add a text listener to produce the is lec toggle
+        edusertype.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().equals("staff")){
+                    islec.setVisibility(View.VISIBLE);
+                }
+                else{
+                    islec.setChecked(false);
+                    islec.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         btndelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +114,7 @@ public class AdminAddUser extends AppCompatActivity {
                 }
                 else
                 {
-                    String adm,fname,lname,usrty,phone,dep,fac;
+                    String adm,fname,lname,usrty,phone,dep,fac,gender;
                     adm=edadmission.getText().toString();
                     fname=edfirstname.getText().toString();
                     lname=edlastname.getText().toString();
@@ -91,7 +122,8 @@ public class AdminAddUser extends AppCompatActivity {
                     phone=edphone.getText().toString();
                     dep=eddepartment.getText().toString();
                     fac=edfaculty.getText().toString();
-                    new CreateUser().execute(adm,fname,lname,usrty,phone,dep,fac);
+                    gender=edgender.getText().toString();
+                    new CreateUser().execute(adm,fname,lname,usrty,phone,dep,fac,gender);
                 }
 
             }
@@ -127,16 +159,18 @@ public class AdminAddUser extends AppCompatActivity {
             fname = strings[1];
             try {
                 JSONObject json = new JSONObject();
-                json.put("AdmissionNo", adm);
+                json.put("IdNo", adm);
                 json.put("FirstName", strings[1]);
                 json.put("LastName", strings[2]);
                 json.put("UserType", strings[3]);
                 json.put("PhoneNo", strings[4]);
                 json.put("DepartmentName", strings[5]);
                 json.put("Faculty", strings[6]);
-                if(strings[3].equals("student")){
-                    json.put("islec",false);
+                json.put("Gender",strings[7]);
+                if(islec.getVisibility()==View.VISIBLE){
+                    is_lec=islec.isChecked();
                 }
+                json.put("islec",is_lec);
                 SessionManager sessionManager = new SessionManager(AdminAddUser.this);
                 User user = sessionManager.getUser();
                 String token = user.getToken();

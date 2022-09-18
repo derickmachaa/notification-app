@@ -69,7 +69,7 @@ public class MyVerification {
 
     //check if usertype is valid
     public boolean isUsertypeValid(String usertype){
-        if(usertype.equals("student") || usertype.equals("admin")||usertype.equals("lecturer")){
+        if(usertype.equals("student") || usertype.equals("admin")||usertype.equals("staff")){
             return true;
         }
         else{
