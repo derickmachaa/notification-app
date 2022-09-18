@@ -3,22 +3,15 @@ package com.cuea.notifications;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,10 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class StudentActivity extends AppCompatActivity {
+public class StudentHomeActivity extends AppCompatActivity {
     //some variables
     EditText edsearch;
     ProgressDialog progressDialog;
@@ -73,7 +64,7 @@ public class StudentActivity extends AppCompatActivity {
         //initialise
         sessionManager = new SessionManager(this);
         //create a progress dialog
-        progressDialog = new ProgressDialog(StudentActivity.this);
+        progressDialog = new ProgressDialog(StudentHomeActivity.this);
         // create the instance of the ListView
         listView = (ListView) findViewById(R.id.st_sms_list);
         searchView = findViewById(R.id.student_searchView);
@@ -149,9 +140,9 @@ public class StudentActivity extends AppCompatActivity {
             ///process the messages;
             //Toast.makeText(StudentActivity.this,s,Toast.LENGTH_LONG).show();
             if(s.equals("Error")){
-                Toast.makeText(StudentActivity.this,"Something went Wrong",Toast.LENGTH_LONG).show();
+                Toast.makeText(StudentHomeActivity.this,"Something went Wrong",Toast.LENGTH_LONG).show();
             }else if(s=="unauthorized"||s=="notfound") {
-                Toast.makeText(StudentActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
+                Toast.makeText(StudentHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
             }else{
                 //try to decode the json object and render it
                 try{
@@ -182,11 +173,11 @@ public class StudentActivity extends AppCompatActivity {
                         arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
                     }
                     if(arrayList_copy.equals(arrayList)){
-                        Toast.makeText(StudentActivity.this, "Still the same", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentHomeActivity.this, "Still the same", Toast.LENGTH_SHORT).show();
                     }
                     // Now create the instance of the homeview adapter and pass
                     // the context and arrayList created above
-                    homeViewAdapter = new HomeViewAdapter(StudentActivity.this, arrayList);
+                    homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
 
                     // set the homeviewadapter for ListView
                     listView.setAdapter(homeViewAdapter);
@@ -204,14 +195,14 @@ public class StudentActivity extends AppCompatActivity {
                                 x.setImageResource(R.drawable.smsread);
                             }
                             //Toast.makeText(StudentActivity.this,notificationID.get(i),Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(StudentActivity.this,StNotificationOpen.class);
+                            Intent intent = new Intent(StudentHomeActivity.this, StudentNotificationOpenActivity.class);
                             intent.putExtra("notificationID",arrayList.get(i).getObjectid());
                             startActivity(intent);
                         }
                     });
 
                 }catch (JSONException e){
-                    Toast.makeText(StudentActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
+                    Toast.makeText(StudentHomeActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
                 }
             }
         }
@@ -235,7 +226,7 @@ public class StudentActivity extends AppCompatActivity {
     //this function will be used when user wants to logout
     public Void doLogout(MenuItem mi){
         //build a dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(StudentHomeActivity.this);
         builder.setMessage("Do you really want to logout?");
         //add a positive action
         builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
@@ -243,12 +234,12 @@ public class StudentActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //if the user has selected to logout clear the tokens in db and finish activity
                         //create an instance of session manager and clear
-                        sessionManager = new SessionManager(StudentActivity.this);
+                        sessionManager = new SessionManager(StudentHomeActivity.this);
                         sessionManager.logout();
                         //say good bye
-                        Toast.makeText(StudentActivity.this, "Good Bye", Toast.LENGTH_LONG).show();
+                        Toast.makeText(StudentHomeActivity.this, "Good Bye", Toast.LENGTH_LONG).show();
                         //redirect to main activity
-                        Intent intent = new Intent(StudentActivity.this,MainActivity.class);
+                        Intent intent = new Intent(StudentHomeActivity.this,MainActivity.class);
                         startActivity(intent);
                         //finish current activity
                         finish();//

@@ -51,10 +51,10 @@
             android:name=".StaffHomeActivity"
             android:exported="false" />
         <activity
-            android:name=".StNotificationOpen"
+            android:name=".StudentNotificationOpenActivity"
             android:exported="false" />
         <activity
-            android:name=".StudentActivity"
+            android:name=".StudentHomeActivity"
             android:exported="false" />
         <activity
             android:name=".VerifyActivity"

@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
             String usertype= user.getUsertype();
             ///if student go to student menu
             if(usertype.equals("student")){
-                Intent intent = new Intent(this,StudentActivity.class);
+                Intent intent = new Intent(this, StudentHomeActivity.class);
                 startActivity(intent);
                 finish(); //finish current activity
             }

@@ -20,6 +20,7 @@ public class StaffNotificationOpenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification_sent_layout);
+        setTitle("Sent Notification");
         //get intent
         Intent intent = getIntent();
         String notificationid=intent.getStringExtra("notificationID");

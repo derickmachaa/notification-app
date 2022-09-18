@@ -121,7 +121,7 @@ public class VerifyActivity extends AppCompatActivity {
                     //start
                     if(usertype.equals("student")){
                         /// redirect to student
-                        Intent stintent = new Intent(VerifyActivity.this,StudentActivity.class);
+                        Intent stintent = new Intent(VerifyActivity.this, StudentHomeActivity.class);
                         startActivity(stintent);
                         finish();
 

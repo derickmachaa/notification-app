@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 
-public class StNotificationOpen extends AppCompatActivity {
+public class StudentNotificationOpenActivity extends AppCompatActivity {
     TextView smsholder,senderholder,dayholder,timeholder,titleholder;
 
     @Override
@@ -36,7 +36,7 @@ public class StNotificationOpen extends AppCompatActivity {
 
     class ReadNotification extends AsyncTask<String,Void,String>{
         //create a progress dialog
-        ProgressDialog progressDialog = new ProgressDialog(StNotificationOpen.this);
+        ProgressDialog progressDialog = new ProgressDialog(StudentNotificationOpenActivity.this);
         @Override
         protected void onPreExecute() {
             progressDialog.setMessage("Opening message");
@@ -49,7 +49,7 @@ public class StNotificationOpen extends AppCompatActivity {
             //get url
             String id= strings[0];
             //get token
-            SessionManager sessionManager = new SessionManager(StNotificationOpen.this);
+            SessionManager sessionManager = new SessionManager(StudentNotificationOpenActivity.this);
             User user = sessionManager.getUser();
             String token= user.getToken();
             RequestHandler requestHandler = new RequestHandler();
@@ -83,7 +83,7 @@ public class StNotificationOpen extends AppCompatActivity {
                 timeholder.setText(time);
 
             }catch (JSONException e){e.printStackTrace();
-            Toast.makeText(StNotificationOpen.this,"Something went wrong try later",Toast.LENGTH_LONG).show();
+            Toast.makeText(StudentNotificationOpenActivity.this,"Something went wrong try later",Toast.LENGTH_LONG).show();
             }
 
         }
