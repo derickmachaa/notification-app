@@ -30,8 +30,8 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     $data=json_decode($predata,true);
     if($data){
         $role=$data['UserType'];
-        $sender=$data['AdmissionNo'];
-        if($role=="lecturer" or $role=="staff"){
+        $sender=$data['IdNo'];
+        if($role=="staff"){
             //get message the message to delete
             if(isset($_REQUEST['id'])){
                 $deleteid=$_REQUEST['id'];

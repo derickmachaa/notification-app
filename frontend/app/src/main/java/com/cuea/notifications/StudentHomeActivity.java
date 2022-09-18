@@ -1,6 +1,7 @@
 package com.cuea.notifications;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DiffUtil;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,9 +55,6 @@ public class StudentHomeActivity extends AppCompatActivity {
         return true;
     }
 
-    public void clearlist(){
-        arrayList.clear();
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +97,37 @@ public class StudentHomeActivity extends AppCompatActivity {
     }
 
 
+    //do display data
+    public void doDisplaySms(){
+        // Now create the instance of the homeview adapter and pass
+        // the context and arrayList created above
+        homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
+        searchView = (SearchView) findViewById(R.id.student_app_bar_search);
+
+        // set the homeviewadapter for ListView
+        listView.setAdapter(homeViewAdapter);
+        listView.setTextFilterEnabled(true);
+        setupSearch();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ImageView x = (ImageView) view.findViewById(R.id.img_homeview_icon);
+                //check if message unread
+                if(arrayList.get(i).getImageviewid()==R.drawable.smsnew){
+                    //set to read
+
+                    //Toast.makeText(StudentActivity.this, "Am here", Toast.LENGTH_SHORT).show();
+                    x.setImageResource(R.drawable.smsread);
+                }
+                //Toast.makeText(StudentActivity.this,notificationID.get(i),Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(StudentHomeActivity.this, StudentNotificationOpenActivity.class);
+                intent.putExtra("notificationID",arrayList.get(i).getObjectid());
+                startActivity(intent);
+
+            }
+        });
+    }
+    //done display data
 
     //Async task to request sms
     class NotificationsGet extends AsyncTask<Void,Void,String>{
@@ -119,6 +149,7 @@ public class StudentHomeActivity extends AppCompatActivity {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
             }
+            //add plus one
             notificationcheck+=1;
 
         }
@@ -132,7 +163,7 @@ public class StudentHomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            clearlist();
+            arrayList_copy.clear();
             super.onPostExecute(s);
             //stop process dialog
             progressDialog.dismiss();
@@ -169,38 +200,23 @@ public class StudentHomeActivity extends AppCompatActivity {
 
                         //get the id
                         String objectid = object.getString("Id");
-                        arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
+                        arrayList_copy.add(new HomeView(imgid,maintitle,subtitle,objectid));
                     }
-                    if(arrayList_copy.equals(arrayList)){
-                        Toast.makeText(StudentHomeActivity.this, "Still the same", Toast.LENGTH_SHORT).show();
+                    //check whether to update or not
+                    //check if array not of the same size then we need to update as there is a new file
+                    if(arrayList_copy.size()!=arrayList.size()){
+                        Toast.makeText(StudentHomeActivity.this, "We are here", Toast.LENGTH_SHORT).show();
+                        arrayList.clear();
+                        arrayList.addAll(arrayList_copy);
+                        doDisplaySms();
                     }
-                    // Now create the instance of the homeview adapter and pass
-                    // the context and arrayList created above
-                    homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
-                    searchView = (SearchView) findViewById(R.id.student_app_bar_search);
-
-
-                    // set the homeviewadapter for ListView
-                    listView.setAdapter(homeViewAdapter);
-                    listView.setTextFilterEnabled(true);
-                    setupSearch();
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            ImageView x = (ImageView) view.findViewById(R.id.img_homeview_icon);
-                            //check if message unread
-                            if(arrayList.get(i).getImageviewid()==R.drawable.smsnew){
-                                //set to read
-
-                                //Toast.makeText(StudentActivity.this, "Am here", Toast.LENGTH_SHORT).show();
-                                x.setImageResource(R.drawable.smsread);
-                            }
-                            //Toast.makeText(StudentActivity.this,notificationID.get(i),Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(StudentHomeActivity.this, StudentNotificationOpenActivity.class);
-                            intent.putExtra("notificationID",arrayList.get(i).getObjectid());
-                            startActivity(intent);
-                        }
-                    });
+                    //check new messages every one second
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            new NotificationsGet().execute();
+//                        }
+//                    },1000);
 
                 }catch (JSONException e){
                     Toast.makeText(StudentHomeActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
@@ -210,54 +226,21 @@ public class StudentHomeActivity extends AppCompatActivity {
     }
 
     //this function will handle the about page
-    public  Void doAbout(MenuItem mi){
+    public  void doAbout(MenuItem mi){
         //redirect to about acvitity
         Intent intent = new Intent(this,AboutActivity.class);
         startActivity(intent);
-        return null;
     }
     //this function will handle the generate report
-    public Void doReport (MenuItem mi){
+    public void doReport (MenuItem mi){
         //start the about activity
         Intent intent = new Intent(this,ReportActivity.class);
         startActivity(intent);
-        return null;
     }
 
     //this function will be used when user wants to logout
-    public Void doLogout(MenuItem mi){
-        //build a dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(StudentHomeActivity.this);
-        builder.setMessage("Do you really want to logout?");
-        //add a positive action
-        builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //if the user has selected to logout clear the tokens in db and finish activity
-                        //create an instance of session manager and clear
-                        sessionManager = new SessionManager(StudentHomeActivity.this);
-                        sessionManager.logout();
-                        //say good bye
-                        Toast.makeText(StudentHomeActivity.this, "Good Bye", Toast.LENGTH_LONG).show();
-                        //redirect to main activity
-                        Intent intent = new Intent(StudentHomeActivity.this,MainActivity.class);
-                        startActivity(intent);
-                        //finish current activity
-                        finish();//
-                    }
-                });
-
-        //add a negative action
-        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //do nothing
-                    }
-                });
-        //show the dialog
-        builder.show();
-
-        return null;
+    public void doLogout(MenuItem mi){
+        sessionManager.logout();
     }
 
 }

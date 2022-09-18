@@ -86,9 +86,9 @@ $notify12=new MongoDB\BSON\ObjectId();
 
 
 $notification=[
-    ["_id"=>$notify0,"SenderId"=>8000,"Description"=>"Definition of Api","Content"=>"An API is a set of definitions and protocols for building and integrating application software. It’s sometimes referred to as a contract between an information provider and an information user—establishing the content required from the consumer (the call) and the content required by the producer (the response).","Recipients"=>[1000,1001,1002,1003,1004,1005,1006,1007,1008,1009],"SendDate"=>1659301200],
+    ["_id"=>$notify0,"SenderId"=>8000,"Description"=>"Definition of Api","Content"=>"An API is a set of definitions and protocols for building and integrating application software. It’s sometimes referred to as a contract between an information provider and an information user—establishing the content required from the consumer (the call) and the content required by the producer (the response).","RecipientId"=>[1000,1001,1002,1003,1004,1005,1006,1007,1008,1009],"SendDate"=>1659301200],
     
-    ["_id"=>$notify,"SenderId"=>8001,"Description"=>"Cat Results are out","Content"=>"Please imporeve","RecipientId"=>[1000,1001,1002,1003,1004,1005,1006,1007,1008,1009],"SendDate"=>1659342200],
+    ["_id"=>$notify,"SenderId"=>8001,"Description"=>"Cat Results are out","Content"=>"Please improve","RecipientId"=>[1000,1001,1002,1003,1004,1005,1006,1007,1008,1009],"SendDate"=>1659342200],
     
     ["_id"=>$notify1,"SenderId"=>8000,"Description"=>"Linux is cool","Content"=>"Linux is one of the most prominent examples of free and open-source software collaboration. The source code may be used, modified and distributed commercially or non-commercially by anyone under the terms of its respective licenses, such as the GNU General Public License (GPL).","RecipientId"=>[1000,1001,1002,1003,1004,1005,1006,1007,1008,1009],"SendDate"=>1659343200],    
     

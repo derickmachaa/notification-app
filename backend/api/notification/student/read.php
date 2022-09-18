@@ -33,13 +33,13 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     if($data){
         //assign values
         $role=$data['UserType'];
-        $admissionNo=$data['AdmissionNo'];
+        $IdNo=$data['IdNo'];
         //check if truly is a student
         if($role=="student"){
             //then check whether to read one or many
             if(isset($_REQUEST['id'])){
                 //get one record
-                $sms=$notification->studentGetNotificationById($_REQUEST['id'],$admissionNo);
+                $sms=$notification->studentGetNotificationById($_REQUEST['id'],$IdNo);
                 //responde
                 if($sms){
                     http_response_code(200);
@@ -52,7 +52,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             {
                 //respond
             http_response_code(200);
-            echo json_encode($notification->studentGetNotification($admissionNo));
+            echo json_encode($notification->studentGetNotification($IdNo));
             }
         }
         else{
