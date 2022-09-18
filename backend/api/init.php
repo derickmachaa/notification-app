@@ -59,6 +59,7 @@ $users=[
 ["_id"=>1007,"FirstName"=>"Diana","LastName"=>"Peter","is_lec"=>false,"PhoneNo"=>"254712345676","DepartmentName"=>$theology, "Gender"=>"Female","UserType"=>"student"],
 ["_id"=>1008,"FirstName"=>"Denzel","LastName"=>"Michael","is_lec"=>false,"PhoneNo"=>"254712345677","DepartmentName"=>$religious, "Gender"=>"Male","UserType"=>"student"],
 ["_id"=>1009,"FirstName"=>"Daniel","LastName"=>"Mike","is_lec"=>false,"PhoneNo"=>"254712345678","DepartmentName"=>$pastoral, "Gender"=>"Male","UserType"=>"student"],
+["_id"=>1010,"FirstName"=>"Samuel","LastName"=>"Waweru","is_lec"=>false,"PhoneNo"=>"254712345675","DepartmentName"=>$compscience, "Gender"=>"Male","UserType"=>"student"],
 ["_id"=>8000,"FirstName"=>"Eden","LastName"=>"Maina","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$compscience,"Gender"=>"Male","UserType"=>"staff"],
 ["_id"=>8001,"FirstName"=>"Christiano","LastName"=>"Muthike","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$theology, "Gender"=>"Male","UserType"=>"staff"],
 ["_id"=>8002,"FirstName"=>"Ian","LastName"=>"Waweru","is_lec"=>false,"PhoneNo"=>"254712345679","DepartmentName"=>$creditdep, "Gender"=>"Male","UserType"=>"staff"],

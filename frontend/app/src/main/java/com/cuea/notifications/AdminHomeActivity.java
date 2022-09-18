@@ -53,6 +53,7 @@ public class AdminActivity extends AppCompatActivity {
     // to check whether sub FAB buttons are visible or not.
     Boolean isAllFabsVisible;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,7 +162,7 @@ public class AdminActivity extends AppCompatActivity {
         //get the list view
         listView = (ListView) findViewById(R.id.admin_user_list);
         //search view instance
-        searchView=(SearchView) findViewById(R.id.admin_searchView);
+        searchView=(SearchView) findViewById(R.id.admin_app_bar_search);
         homeViewAdapter=new HomeViewAdapter(this,arrayList);
 
 
@@ -190,7 +191,6 @@ public class AdminActivity extends AppCompatActivity {
         //add search options
         searchView.setQueryHint("Enter Name/Id");
         searchView.setSubmitButtonEnabled(false); //disable submit button
-        searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {

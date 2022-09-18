@@ -35,6 +35,8 @@ public class AdminAddUser extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //change title
+        setTitle("Add User");
         setContentView(R.layout.activity_admin_manage_users);
         is_lec=false;
         edadmission = (TextView) findViewById(R.id.edadmissionno);

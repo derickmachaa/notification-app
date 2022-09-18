@@ -29,7 +29,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     $data=json_decode($predata,true);
     if($data){
         $role=$data['UserType'];
-        $sender=$data['AdmissionNo'];
+        $sender=$data['IdNo'];
         if($role=="staff"){
             //get message from sender
             $postdata=json_decode(file_get_contents("php://input"));

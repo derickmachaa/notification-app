@@ -30,7 +30,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     if($decoded){
         //assignk values
         $role=$decoded['UserType'];
-        $admissionNo=$decoded['AdmissionNo'];
+        $IdNo=$decoded['IdNo'];
         //extract raw data from data from the body
         $postdata=json_decode(file_get_contents("php://input"));
         //decode
@@ -39,10 +39,10 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             if(isset($postdata->startdate)){$startdate=$postdata->startdate;}
             if(isset($postdata->enddate)){$enddate=$postdata->enddate;}
 
-            $filters=["SendDate"=>['$gte'=>$startdate,'$lte'=>$enddate],"SenderId"=>$admissionNo];
+            $filters=["SendDate"=>['$gte'=>$startdate,'$lte'=>$enddate],"SenderId"=>$IdNo];
             //return specific id
             if($role=='staff'){
-                $result=$notification->staffGenerateReportByDate($admissionNo,$startdate,$enddate);
+                $result=$notification->staffGenerateReportByDate($IdNo,$startdate,$enddate);
                 $header='NotificationId,SendDate,Content,Description,RecipientId,DeliveredDate,ReadDate'. "\n";
 		$body="";
                 if($result){

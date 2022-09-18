@@ -35,6 +35,7 @@ public class AdminEditUser extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Edit User");
         setContentView(R.layout.activity_admin_manage_users);
         edadmission = (TextView) findViewById(R.id.edadmissionno);
         edfirstname = (TextView) findViewById(R.id.edfirstname);
@@ -296,7 +297,6 @@ public class AdminEditUser extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progressDialog.dismiss();
-            Toast.makeText(AdminEditUser.this, s, Toast.LENGTH_SHORT).show();
             if (s.equals("Error")) {
                 Toast.makeText(AdminEditUser.this, "User Already deleted", Toast.LENGTH_SHORT).show();
             }

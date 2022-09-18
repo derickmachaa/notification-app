@@ -30,13 +30,12 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     if($decoded){
         //assign values
         $role=$decoded['UserType'];
-        $admissionNo=$decoded['AdmissionNo'];
+        $IdNo=$decoded['IdNo'];
         //check if is lecturer
             if($role=="staff"){
                 //get his department
-                $user->setUserProfile($admissionNo);
+                $user->setUserProfile($IdNo);
                 $departmentname=$user->getDepartmentName();
-		echo $departmentname;
                 //find all students in the database who are in the same department
                 $students=$user->getStudentsByDepartmentName($departmentname);
                 if($students){
