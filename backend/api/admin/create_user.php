@@ -32,7 +32,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             //get the posted data from 
             $postdata=json_decode(file_get_contents("php://input"));
             //try to get all the data in the form
-            $_AdmissionNo=$postdata->AdmissionNo;
+            $_IdNo=$postdata->IdNo;
             $_FirstName=$postdata->FirstName;
             $_LastName=$postdata->LastName;
             $_UserType=$postdata->UserType;
@@ -40,11 +40,12 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             $_Faculty=$postdata->Faculty;
             $_Department=$postdata->DepartmentName;
 	    $_islec=$postdata->islec;
+	    $_Gender=$postdata->Gender;
 
             //check if all fields required are present
-            if(isset($_AdmissionNo)&&isset($_FirstName)&&isset($_LastName)&&isset($_UserType)&&isset($_PhoneNo)&&isset($_Faculty)&&isset($_Department)){
+            if(isset($_IdNo)&&isset($_FirstName)&&isset($_LastName)&&isset($_UserType)&&isset($_PhoneNo)&&isset($_Faculty)&&isset($_Department)){
                 //set the user
-                $user->setIdNo($_AdmissionNo);
+                $user->setIdNo($_IdNo);
                 $user->setFirstName($_FirstName);
                 $user->setLastName($_LastName);
                 $user->setUserType($_UserType);
@@ -52,6 +53,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                 $user->setPhoneNo($_PhoneNo);
                 $user->setFaculty($_Faculty);
                 $user->setDepartmentName($_Department);
+		$user->setGender($_Gender);
 
                 $result=$user->createUser();
 

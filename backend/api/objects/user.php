@@ -7,6 +7,7 @@ class User{
 	private $_LastName;
 	private $_UserType;
     	private $_PhoneNo;
+	private $_Gender;
 	private $_Database;
     	private $_Faculty;
     	private $_DepartmentId;
@@ -112,6 +113,14 @@ class User{
     public function setIsLec($boolean){
         $this->_islec=$boolean;
     }
+    //get gender
+    public function getGender(){
+        return $this->_Gender;
+    }
+    
+    public function setGender($name){
+        $this->_Gender=$name;
+    }
 
     //function to create a new user in the system
     public function createUser(){
@@ -124,7 +133,8 @@ class User{
 	    "PhoneNo" => $this->getPhoneNo(),
 	    "is_lec" => $this->getIsLec(),
             "Faculty"=> $this->getFaculty(),
-            "DepartmentName"=> $this->getDepartmentName()
+            "DepartmentName"=> $this->getDepartmentName(),
+	    "Gender" => $this->getGender()
         ];
       
             $result=$this->_Database->createRecord($this->_CollectionName,$values);
@@ -179,9 +189,9 @@ class User{
 
     //function to get student according to departement
     public function getStudentsByDepartmentName($departmentname){
-        $filter=["DepartmentName"=>$departmentname];
+	    $filter=["DepartmentName"=>$departmentname,"UserType"=>"student"];
         $options=["projection"=>["_id"=>1]];
-        $result=$this->_Database->queryData('student',$filter,$options);
+        $result=$this->_Database->queryData('users',$filter,$options);
         if($result){
             return $result;
         }else{

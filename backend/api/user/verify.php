@@ -22,9 +22,9 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 //get data posted
 $data=json_decode(file_get_contents("php://input"));
 //check if required values are present
-if(isset($data->AdmissionNo) && isset($data->Token)){
+if(isset($data->IdNo) && isset($data->Token)){
     //set user profile
-    $user->setUserProfile($data->AdmissionNo);
+    $user->setUserProfile($data->IdNo);
     $localToken=$data->Token;
     $realToken=$user->getToken();
     //check if the data provided matches and login
@@ -32,8 +32,9 @@ if(isset($data->AdmissionNo) && isset($data->Token)){
         
         //create keys for usage
         $session=array(
-            "AdmissionNo"=>$data->AdmissionNo,
-            "UserType"=>$user->getUserType()
+            "IdNo"=>$data->IdNo,
+	    "UserType"=>$user->getUserType(),
+	    "is_lec" =>$user->getIsLec()
         );
         //create bearer
        $encoded=$auth->Encode(json_encode($session));
@@ -47,7 +48,8 @@ if(isset($data->AdmissionNo) && isset($data->Token)){
             "message"=>"authentication succesful",
 	    "bearer"=>$encoded,
 	    "lastname"=>$user->getLastName(),
-	    "usertype"=>$user->getUserType()
+	    "usertype"=>$user->getUserType(),
+	    "is_lec" => $user->getIsLec()
             )
         );
     }

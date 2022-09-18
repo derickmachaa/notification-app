@@ -44,9 +44,9 @@ $user = new User($database);
 //Get data send from post object
 $data = json_decode(file_get_contents("php://input"));
 
-if(isset($data->AdmissionNo)){
+if(isset($data->IdNo)){
     //Check if the admission exists in the database
-    $exists=$user->setUserProfile($data->AdmissionNo);
+    $exists=$user->setUserProfile($data->IdNo);
     if($exists){
 	 $fname=$user->getFirstName();
 	 $phone=$user->getPhoneNo();
@@ -66,6 +66,6 @@ if(isset($data->AdmissionNo)){
 }
 else{
     http_response_code(404);
-    echo json_encode(array("message"=>"missing _AdmissionNo "));
+    echo json_encode(array("message"=>"missing _IdNo "));
 }
 ?>
