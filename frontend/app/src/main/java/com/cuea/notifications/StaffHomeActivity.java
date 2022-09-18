@@ -2,36 +2,30 @@ package com.cuea.notifications;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class LecActivity extends AppCompatActivity {
+public class StaffHomeActivity extends AppCompatActivity {
     //define some list array to hold my data
     ArrayList<HomeView> arrayList;
     //create progressdialog object
@@ -50,6 +44,12 @@ public class LecActivity extends AppCompatActivity {
     HomeViewAdapter homeViewAdapter;
     //search view
     SearchView searchView;
+    //Boolean
+    Boolean is_lec,isAllFabsVisible;
+    //floating buttons
+    FloatingActionButton fab_newsms,fab_smsto_one,fab_smsto_dep,fab_smsto_faculty;
+    TextView txt_fab_smsto_one, txt_fab_smsto_dep, txt_fab_smsmto_faculty;
+
 
 
     public void clearlist(){
@@ -60,33 +60,101 @@ public class LecActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //set content
+        setContentView(R.layout.activity_staff_home);
+
         //create progress dialog
-        progressDialog = new ProgressDialog(LecActivity.this);
-        sessionManager = new SessionManager(LecActivity.this);
+        progressDialog = new ProgressDialog(StaffHomeActivity.this);
+        sessionManager = new SessionManager(StaffHomeActivity.this);
         //create sessionmanager
         user = sessionManager.getUser();
         //get user token
         token = user.getToken();
         //array list instance
         arrayList = new ArrayList<HomeView>();
-        setContentView(R.layout.activity_lec);
-        this.setTitle("Lecturer Profile");
+        //get the boolean if islec
+        is_lec=user.getIs_lec();
+
+        //change the title accordingly
+        if(is_lec){
+            setTitle("Lecturer Profile");
+        }else{
+            setTitle("Staff Profile");
+        }
         //get notififcations
         new NotificationsGet().execute();
 
+
+        //floating buttons settings
+        fab_newsms = (FloatingActionButton) findViewById(R.id.staff_fab);
+        fab_smsto_one = (FloatingActionButton) findViewById(R.id.fab_staff_btn_one);
+        fab_smsto_dep = (FloatingActionButton) findViewById(R.id.fab_staff_btndep);
+        fab_smsto_faculty = (FloatingActionButton) findViewById(R.id.fab_staff_btnfaculty);
+
+        txt_fab_smsto_one = (TextView) findViewById(R.id.txt_staff_fab_sendtoone);
+        txt_fab_smsto_dep = (TextView) findViewById(R.id.txt_staff_fab_sentodep);
+        txt_fab_smsmto_faculty = (TextView) findViewById(R.id.txt_staff_fab_sendtofaculty);
+
+        //hide the floating buttons until we click it
+        fab_smsto_one.setVisibility(View.GONE);
+        fab_smsto_dep.setVisibility(View.GONE);
+        fab_smsto_faculty.setVisibility(View.GONE);
+        txt_fab_smsto_one.setVisibility(View.GONE);
+        txt_fab_smsto_dep.setVisibility(View.GONE);
+        txt_fab_smsmto_faculty.setVisibility(View.GONE);
+        isAllFabsVisible=false;
+
+        //floating bar onlick
+        fab_newsms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isAllFabsVisible){
+                    //show when clicked
+                    fab_smsto_one.show();
+                    fab_smsto_dep.show();
+                    fab_smsto_faculty.show();
+                    //change bckground icon to cancel
+                    fab_newsms.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                    //show text view
+                    txt_fab_smsto_one.setVisibility(View.VISIBLE);
+                    txt_fab_smsto_dep.setVisibility(View.VISIBLE);
+                    txt_fab_smsmto_faculty.setVisibility(View.VISIBLE);
+                    //toggle they are visible
+                    isAllFabsVisible=true;
+                }
+                else{
+                    //hide because clicked
+                    fab_smsto_one.hide();
+                    fab_smsto_dep.hide();
+                    fab_smsto_faculty.hide();
+                    //return default image
+                    fab_newsms.setImageResource(android.R.drawable.ic_dialog_email);
+                    //
+
+                    txt_fab_smsto_one.setVisibility(View.GONE);
+                    txt_fab_smsto_dep.setVisibility(View.GONE);
+                    txt_fab_smsmto_faculty.setVisibility(View.GONE);
+                    isAllFabsVisible=false;
+                }
+            }
+        });
+
+        //add user onclick for send to one
+        fab_smsto_one.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StaffHomeActivity.this, StaffSendToOneActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this,v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.new_sms_actions, popup.getMenu());
-        popup.show();
-    }
 
     //action bar hacks
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.lec_profile_menu,menu);
+        getMenuInflater().inflate(R.menu.staff_profile_menu,menu);
         return true;
     }
 
@@ -104,48 +172,17 @@ public class LecActivity extends AppCompatActivity {
     }
 
     public void doLogout(MenuItem item) {
-        perFormLogout();
+        sessionManager.logout();
     }
 
     public void doCreateNotification(MenuItem item) {
-        Intent intent = new Intent(this,LecSendActivity.class);
+        Intent intent = new Intent(this, StaffSendToOneActivity.class);
         startActivity(intent);
     }
     public void doAddUser(MenuItem item) {
 
     }
     //end action bar hacks
-
-
-    //function to perform logout
-    public void perFormLogout(){
-
-        //build a dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you really want to logout?");
-        //add a positive action
-        builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //if the user has selected to logout clear the tokens in db and finish activity
-                //create an instance of session manager and clear
-                sessionManager.logout();
-                //say good bye
-                Toast.makeText(LecActivity.this, "Good Bye", Toast.LENGTH_LONG).show();
-                //redirect to main activity
-                Intent intent = new Intent(LecActivity.this,MainActivity.class);
-                startActivity(intent);
-                //finish current activity
-                finish();//
-            }
-        });
-
-        //add a negative action
-        builder.setNegativeButton(R.string.Cancel,null);
-        //show the dialog
-        builder.show();
-
-    }
 
     //function to perform sms deletion
     public void doDeleteSms(String id){
@@ -175,11 +212,9 @@ public class LecActivity extends AppCompatActivity {
     //function to display sms
     public void doDisplayNotification(){
             //get the list view
-            listView = (ListView) findViewById(R.id.lec_sms_list);
-            //search view instance
-            searchView=(SearchView) findViewById(R.id.lec_searchView);
+            listView = (ListView) findViewById(R.id.staff_sms_list);
             homeViewAdapter=new HomeViewAdapter(this,arrayList);
-
+            searchView=findViewById(R.id.staff_app_bar_search);
 
             //create handle on click
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -187,7 +222,7 @@ public class LecActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     //get the homeview
                     HomeView homeView = arrayList.get(i);
-                    Intent intent = new Intent(LecActivity.this,LecNotificationOpen.class);
+                    Intent intent = new Intent(StaffHomeActivity.this, StaffNotificationOpenActivity.class);
                     intent.putExtra("notificationID",homeView.getObjectid());
                     startActivity(intent);
                 }
@@ -206,7 +241,6 @@ public class LecActivity extends AppCompatActivity {
             //add search options
             searchView.setQueryHint("Enter Content/Description");
             searchView.setSubmitButtonEnabled(false); //disable submit button
-            searchView.setIconifiedByDefault(false);
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -262,9 +296,9 @@ public class LecActivity extends AppCompatActivity {
             //stop process dialog
             progressDialog.dismiss();
             if(s.equals("Error")){
-                Toast.makeText(LecActivity.this,"Something went Wrong",Toast.LENGTH_LONG).show();
+                Toast.makeText(StaffHomeActivity.this,"Something went Wrong",Toast.LENGTH_LONG).show();
             }else if(s=="unauthorized"||s=="notfound") {
-                Toast.makeText(LecActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
+                Toast.makeText(StaffHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
             }else{
                 //try to decode the json object and send it to get rendered
                 try{
@@ -300,7 +334,7 @@ public class LecActivity extends AppCompatActivity {
                     //now display
                     doDisplayNotification();
                 }catch (JSONException e){
-                    Toast.makeText(LecActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
+                    Toast.makeText(StaffHomeActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
                 }
 
             }
@@ -325,10 +359,10 @@ public class LecActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try{
                 JSONObject json= new JSONObject(s);
-                Toast.makeText(LecActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffHomeActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
 
             }catch (Exception e){
-                Toast.makeText(LecActivity.this, "Something went Wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffHomeActivity.this, "Something went Wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }

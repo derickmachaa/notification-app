@@ -18,7 +18,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AdminEditUser extends AppCompatActivity {
+public class AdminEditUserActivity extends AppCompatActivity {
 
     TextView edadmission ;
     TextView edfirstname;
@@ -158,7 +158,7 @@ public class AdminEditUser extends AppCompatActivity {
 
     ///function to get the user profile
     class getUserDetails extends AsyncTask<Integer,Void,String>{
-        ProgressDialog progressDialog = new ProgressDialog(AdminEditUser.this);
+        ProgressDialog progressDialog = new ProgressDialog(AdminEditUserActivity.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -172,7 +172,7 @@ public class AdminEditUser extends AppCompatActivity {
         protected String doInBackground(Integer... integers) {
             String admissionno = Integer.toString(integers[0]);
             //get session manager
-            SessionManager sessionManager = new SessionManager(AdminEditUser.this);
+            SessionManager sessionManager = new SessionManager(AdminEditUserActivity.this);
             User user = sessionManager.getUser();
             String token=user.getToken();
             RequestHandler requestHandler= new RequestHandler();
@@ -209,7 +209,7 @@ public class AdminEditUser extends AppCompatActivity {
 
             }catch (JSONException e){
                 e.printStackTrace();
-                Toast.makeText(AdminEditUser.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminEditUserActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -217,7 +217,7 @@ public class AdminEditUser extends AppCompatActivity {
 
     ///function to get the user profile
     class updateUserDetails extends AsyncTask<String,Void,String>{
-        ProgressDialog progressDialog = new ProgressDialog(AdminEditUser.this);
+        ProgressDialog progressDialog = new ProgressDialog(AdminEditUserActivity.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -242,7 +242,7 @@ public class AdminEditUser extends AppCompatActivity {
                 json.put("PhoneNo", strings[4]);
                 json.put("Department", strings[5]);
                 json.put("Faculty", strings[6]);
-                SessionManager sessionManager = new SessionManager(AdminEditUser.this);
+                SessionManager sessionManager = new SessionManager(AdminEditUserActivity.this);
                 User user = sessionManager.getUser();
                 String token = user.getToken();
                 RequestHandler requestHandler = new RequestHandler();
@@ -257,20 +257,20 @@ public class AdminEditUser extends AppCompatActivity {
             super.onPostExecute(s);
             progressDialog.dismiss();
             if(s.equals("created")){
-                Toast.makeText(AdminEditUser.this, "User Has Been updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminEditUserActivity.this, "User Has Been updated", Toast.LENGTH_SHORT).show();
             }
             else if(s.equals("notmodified")){
-                Toast.makeText(AdminEditUser.this, "User Already up to date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminEditUserActivity.this, "User Already up to date", Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(AdminEditUser.this, "Something Went Wrong Try Again Later", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminEditUserActivity.this, "Something Went Wrong Try Again Later", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     //class to delete user
     class DeleteUSer extends AsyncTask<String,Void,String> {
-        ProgressDialog progressDialog = new ProgressDialog(AdminEditUser.this);
+        ProgressDialog progressDialog = new ProgressDialog(AdminEditUserActivity.this);
 
         @Override
         protected void onPreExecute() {
@@ -286,7 +286,7 @@ public class AdminEditUser extends AppCompatActivity {
             String adm;
             //get admission
             adm = strings[0];
-            SessionManager sessionManager = new SessionManager(AdminEditUser.this);
+            SessionManager sessionManager = new SessionManager(AdminEditUserActivity.this);
             User user = sessionManager.getUser();
             String token = user.getToken();
             RequestHandler requestHandler = new RequestHandler();
@@ -298,10 +298,10 @@ public class AdminEditUser extends AppCompatActivity {
             super.onPostExecute(s);
             progressDialog.dismiss();
             if (s.equals("Error")) {
-                Toast.makeText(AdminEditUser.this, "User Already deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminEditUserActivity.this, "User Already deleted", Toast.LENGTH_SHORT).show();
             }
             else {
-                Toast.makeText(AdminEditUser.this, "User has been deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminEditUserActivity.this, "User has been deleted", Toast.LENGTH_SHORT).show();
             }
         }
     }

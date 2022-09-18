@@ -24,19 +24,19 @@
             android:name=".LecReportActivity"
             android:exported="false" />
         <activity
-            android:name=".LecNotificationOpen"
+            android:name=".StaffNotificationOpenActivity"
             android:exported="false" />
         <activity
             android:name=".ReportViewActivity"
             android:exported="false" />
         <activity
-            android:name=".LecSendActivity"
+            android:name=".StaffSendToOneActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminAddUser"
+            android:name=".AdminAddUserActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminEditUser"
+            android:name=".AdminEditUserActivity"
             android:exported="false" />
         <activity
             android:name=".ReportActivity"
@@ -45,10 +45,10 @@
             android:name=".AboutActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminActivity"
+            android:name=".AdminHomeActivity"
             android:exported="false" />
         <activity
-            android:name=".LecActivity"
+            android:name=".StaffHomeActivity"
             android:exported="false" />
         <activity
             android:name=".StNotificationOpen"

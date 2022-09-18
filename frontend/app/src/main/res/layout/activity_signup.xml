@@ -7,7 +7,7 @@
     tools:context=".SignupActivity">
 
     <TextView
-        android:id="@+id/txsignin"
+        android:id="@+id/txtsignin"
         android:layout_width="315dp"
         android:layout_height="60dp"
         android:layout_marginStart="20dp"
@@ -25,12 +25,13 @@
         android:id="@+id/edAdmission"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="82dp"
         android:ems="10"
         android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/txtsignin"
+        app:layout_constraintTop_toBottomOf="@id/txtsignin"
         app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/txsignin" />
+        />
 
     <TextView
         android:id="@+id/textView2"
@@ -38,11 +39,11 @@
         android:layout_height="47dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="100dp"
-        android:text="IdNo:"
+        android:text="ID NO:"
         android:textAlignment="center"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txsignin" />
+        app:layout_constraintStart_toStartOf="@+id/txtsignin"
+        app:layout_constraintTop_toBottomOf="@+id/txtsignin" />
 
     <Button
         android:id="@+id/btnsignin"

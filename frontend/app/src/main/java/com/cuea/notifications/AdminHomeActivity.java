@@ -2,19 +2,15 @@ package com.cuea.notifications;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminHomeActivity extends AppCompatActivity {
     //define some list array to hold my data
     ArrayList<HomeView> arrayList;
     //create progressdialog object
@@ -66,18 +61,18 @@ public class AdminActivity extends AppCompatActivity {
         token = user.getToken();
         //array list instance
         arrayList = new ArrayList<HomeView>();
-        setContentView(R.layout.activity_admin);
+        setContentView(R.layout.activity_admin_home);
 
         //set different title
         this.setTitle("CUEA Admin");
         //get users
         new getAllUsers().execute();
 
-        fab_add = (FloatingActionButton) findViewById(R.id.admin_fab);
-        fab_useradd = (FloatingActionButton) findViewById(R.id.admin_fab_adduser);
-        fab_facultyadd = (FloatingActionButton) findViewById(R.id.admin_fab_addfaculty);
-        adduseraction = (TextView) findViewById(R.id.admintxtuser);
-        addfacultyaction = findViewById(R.id.admintxtfabfaculty);
+        fab_add = (FloatingActionButton) findViewById(R.id.staff_fab);
+        fab_useradd = (FloatingActionButton) findViewById(R.id.fab_staff_btndep);
+        fab_facultyadd = (FloatingActionButton) findViewById(R.id.fab_staff_btn_one);
+        adduseraction = (TextView) findViewById(R.id.txt_staff_fab_sentodep);
+        addfacultyaction = findViewById(R.id.txt_staff_fab_sendtoone);
 
         //hide the floating buttons until we click it
         fab_facultyadd.setVisibility(View.GONE);
@@ -118,7 +113,7 @@ public class AdminActivity extends AppCompatActivity {
         fab_useradd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AdminActivity.this,AdminAddUser.class);
+                Intent intent = new Intent(AdminHomeActivity.this, AdminAddUserActivity.class);
                 startActivity(intent);
             }
         });
@@ -134,7 +129,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void doReport(MenuItem item) {
-        Intent intent = new Intent(AdminActivity.this,AdminReportActivity.class);
+        Intent intent = new Intent(AdminHomeActivity.this,AdminReportActivity.class);
         startActivity(intent);
     }
 
@@ -172,7 +167,7 @@ public class AdminActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //get the homeview
                 HomeView homeView = arrayList.get(i);
-                Intent intent = new Intent(AdminActivity.this,AdminEditUser.class);
+                Intent intent = new Intent(AdminHomeActivity.this, AdminEditUserActivity.class);
                 intent.putExtra("id",arrayList.get(i).getObjectid());
                 startActivity(intent);
             }
@@ -247,10 +242,10 @@ public class AdminActivity extends AppCompatActivity {
             //Toast.makeText(AdminActivity.this, s, Toast.LENGTH_SHORT).show();
             //get the reponse
             if(s.equals("Error")){
-                Toast.makeText(AdminActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminHomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
             else if(s.equals("notfound")||s.equals("notauthorized")){
-                Toast.makeText(AdminActivity.this, "Not authorized", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminHomeActivity.this, "Not authorized", Toast.LENGTH_SHORT).show();
             }
             else{
                 //try to parse the json now
@@ -294,7 +289,7 @@ public class AdminActivity extends AppCompatActivity {
 
 
                 }catch(JSONException e){
-                    Toast.makeText(AdminActivity.this, "Something went wrong try again later", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminHomeActivity.this, "Something went wrong try again later", Toast.LENGTH_SHORT).show();
                 }
             }
         }

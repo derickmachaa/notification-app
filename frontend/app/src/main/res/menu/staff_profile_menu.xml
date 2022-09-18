@@ -12,14 +12,14 @@
         android:onClick="doAbout"
         />
     <item
+        android:id="@+id/staff_app_bar_search"
+        android:icon="@android:drawable/ic_search_category_default"
+        android:title="Search"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView" />
+    <item
         android:id="@+id/lec_logout"
         android:title="Log Out"
         android:onClick="doLogout"
-        />
-    <item
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="@+id/lec_addnotification"
-        android:onClick="doCreateNotification"
-        app:showAsAction="always"
         />
 </menu>

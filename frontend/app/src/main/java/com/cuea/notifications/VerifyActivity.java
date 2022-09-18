@@ -14,8 +14,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
 public class VerifyActivity extends AppCompatActivity {
     //declare some variables
     TextView textView;
@@ -129,12 +127,12 @@ public class VerifyActivity extends AppCompatActivity {
 
                     }else
                     if(usertype.equals("staff")){
-                        Intent intent = new Intent(VerifyActivity.this,LecActivity.class);
+                        Intent intent = new Intent(VerifyActivity.this, StaffHomeActivity.class);
                         startActivity(intent);
                         finish();//finish current
                     }else
                         if(usertype.equals("admin")){
-                            Intent intent=new Intent(VerifyActivity.this,AdminActivity.class);
+                            Intent intent=new Intent(VerifyActivity.this, AdminHomeActivity.class);
                             startActivity(intent);
                             finish();
                         }

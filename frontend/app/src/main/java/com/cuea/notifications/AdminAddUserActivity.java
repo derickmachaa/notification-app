@@ -16,7 +16,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class AdminAddUser extends AppCompatActivity {
+public class AdminAddUserActivity extends AppCompatActivity {
 
     TextView edadmission ;
     TextView edfirstname;
@@ -143,7 +143,7 @@ public class AdminAddUser extends AppCompatActivity {
 
     ///function to get the user profile
     class CreateUser extends AsyncTask<String,Void,String> {
-        ProgressDialog progressDialog = new ProgressDialog(AdminAddUser.this);
+        ProgressDialog progressDialog = new ProgressDialog(AdminAddUserActivity.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -173,7 +173,7 @@ public class AdminAddUser extends AppCompatActivity {
                     is_lec=islec.isChecked();
                 }
                 json.put("islec",is_lec);
-                SessionManager sessionManager = new SessionManager(AdminAddUser.this);
+                SessionManager sessionManager = new SessionManager(AdminAddUserActivity.this);
                 User user = sessionManager.getUser();
                 String token = user.getToken();
                 RequestHandler requestHandler = new RequestHandler();
@@ -188,13 +188,13 @@ public class AdminAddUser extends AppCompatActivity {
             super.onPostExecute(s);
             progressDialog.dismiss();
             if(s.equals("created")){
-                Toast.makeText(AdminAddUser.this, "User Has Been Created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminAddUserActivity.this, "User Has Been Created", Toast.LENGTH_SHORT).show();
             }
             else if(s.equals("notmodified")){
-                Toast.makeText(AdminAddUser.this, "User Already up to date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminAddUserActivity.this, "User Already up to date", Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(AdminAddUser.this, "Something Went Wrong Try Again Later", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminAddUserActivity.this, "Something Went Wrong Try Again Later", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -4,9 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -24,12 +21,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish(); //finish current activity
             }
-            else if(usertype.equals("lecturer")){
-                Intent intent = new Intent(this,LecActivity.class);
+            else if(usertype.equals("staff")){
+                Intent intent = new Intent(this, StaffHomeActivity.class);
                 startActivity(intent);
                 finish();
             }else if(usertype.equals("admin")){
-                Intent intent = new Intent(this,AdminActivity.class);
+                Intent intent = new Intent(this, AdminHomeActivity.class);
                 startActivity(intent);
                 finish();//
             }

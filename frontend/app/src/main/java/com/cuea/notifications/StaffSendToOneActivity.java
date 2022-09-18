@@ -12,19 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class LecSendActivity extends AppCompatActivity {
+public class StaffSendToOneActivity extends AppCompatActivity {
     //some variables
     String students[];
     boolean studentschecked[];
@@ -57,7 +51,7 @@ public class LecSendActivity extends AppCompatActivity {
         description=(EditText) findViewById(R.id.edtxtdescription);
         destination=(EditText) findViewById(R.id.edtxtadmission);
         editxtsms=(EditText) findViewById(R.id.editxtsms);
-        progressDialog = new ProgressDialog(LecSendActivity.this);
+        progressDialog = new ProgressDialog(StaffSendToOneActivity.this);
 
         //get the student list
         new doGetStudents().execute();
@@ -116,7 +110,7 @@ public class LecSendActivity extends AppCompatActivity {
         // initially set the null for the text preview
         destination.setText(null);
         // initialise the alert dialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(LecSendActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(StaffSendToOneActivity.this);
         // set the title for the alert dialog
         builder.setTitle("Choose Student ID");
       //  Toast.makeText(this, Integer.toString(students.length), Toast.LENGTH_SHORT).show();
@@ -221,7 +215,7 @@ public class LecSendActivity extends AppCompatActivity {
             progressDialog.dismiss();
             try {
                 JSONObject json = new JSONObject(s);
-                Toast.makeText(LecSendActivity.this, json.getString("message"), Toast.LENGTH_LONG).show();
+                Toast.makeText(StaffSendToOneActivity.this, json.getString("message"), Toast.LENGTH_LONG).show();
                 //clear the writing
                 editxtsms.setText("");
                 description.setText("");
@@ -229,7 +223,7 @@ public class LecSendActivity extends AppCompatActivity {
 
             }catch(Exception e)
             {
-                Toast.makeText(LecSendActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffSendToOneActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }

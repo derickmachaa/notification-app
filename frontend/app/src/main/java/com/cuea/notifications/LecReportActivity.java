@@ -196,21 +196,23 @@ public class LecReportActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 if(s.contains("csv")) {
-                    //get the default external storage dir
-                    File dir = Environment.getExternalStorageDirectory();
-                    //create a new file object with the default st
-                    File storagename = new File(dir + "/" + Environment.DIRECTORY_DOWNLOADS, edfiltername.getText().toString()+".csv");
-                    //use the download manager to download
-                    DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                    Uri uri = Uri.parse(MyLinks.DOC_ROOT + s);
+                    //download the file now
 
-                    //downloadmanager to download the files
-                    DownloadManager.Request request = new DownloadManager.Request(uri);
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-                    request.setVisibleInDownloadsUi(true);
-                    request.setDestinationUri(Uri.fromFile(storagename));
-                    long reference=manager.enqueue(request);
-                    manager.addCompletedDownload("Report","downloaded",true,"application/octet-stream",storagename.toString(),reference,true);
+                    //get the download manager service
+                    DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    //get the download link from response
+                    Uri uri = Uri.parse(MyLinks.DOC_ROOT+s);
+                    DownloadManager.Request  request = new DownloadManager.Request(uri);
+                    //set the description
+                    request.setDescription("Downloading Report");
+                    request.allowScanningByMediaScanner();
+                    //add title
+                    request.setTitle("Requested Report");
+                    //specifiy the storage dir
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,edfiltername.getText().toString()+".csv");
+                    //show when done
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    downloadManager.enqueue(request);
                 }
                 else{
                     Toast.makeText(LecReportActivity.this,"No reports available", Toast.LENGTH_LONG).show();
