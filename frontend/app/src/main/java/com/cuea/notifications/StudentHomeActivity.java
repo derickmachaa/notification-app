@@ -1,9 +1,16 @@
 package com.cuea.notifications;
 
+import static com.cuea.notifications.MainActivity.NOTIFICATION_CHANNEL;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.DiffUtil;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +56,10 @@ public class StudentHomeActivity extends AppCompatActivity {
     //searchview
     SearchView searchView;
 
+    //add handler
+    Handler handler;
+    Runnable runnable;
+    int delay=1000;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.student_profile_menu,menu);
@@ -59,7 +70,14 @@ public class StudentHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_home);
-
+        //add timer for handler
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                new NotificationsGet().execute();
+            }
+        };
         //initialise
         sessionManager = new SessionManager(this);
         //create a progress dialog
@@ -71,12 +89,8 @@ public class StudentHomeActivity extends AppCompatActivity {
         //get notifications
         new NotificationsGet().execute();
 
-    }
 
-    @Override
-    protected void onResume(){
-        new NotificationsGet().execute();
-        super.onResume();
+
     }
 
     public void setupSearch(){
@@ -107,7 +121,6 @@ public class StudentHomeActivity extends AppCompatActivity {
         // set the homeviewadapter for ListView
         listView.setAdapter(homeViewAdapter);
         listView.setTextFilterEnabled(true);
-        setupSearch();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -126,6 +139,7 @@ public class StudentHomeActivity extends AppCompatActivity {
 
             }
         });
+        setupSearch();
     }
     //done display data
 
@@ -174,7 +188,7 @@ public class StudentHomeActivity extends AppCompatActivity {
             }else if(s=="unauthorized"||s=="notfound") {
                 Toast.makeText(StudentHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
             }else{
-                //try to decode the json object and render it
+                //try to decode the json object and place it in arraylist
                 try{
                     JSONObject json = new JSONObject(s);
                     JSONArray array = json.getJSONArray("result");
@@ -200,24 +214,52 @@ public class StudentHomeActivity extends AppCompatActivity {
 
                         //get the id
                         String objectid = object.getString("Id");
-                        arrayList_copy.add(new HomeView(imgid,maintitle,subtitle,objectid));
+
+                        //if this is the first run just add to list directly
+                        if(notificationcheck==1){
+                            arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
+                        }else{
+                            //add to copy for comparison
+                            arrayList_copy.add(new HomeView(imgid,maintitle,subtitle,objectid));
+                        }
                     }
-                    //check whether to update or not
-                    //check if array not of the same size then we need to update as there is a new file
-                    if(arrayList_copy.size()!=arrayList.size()){
-                        Toast.makeText(StudentHomeActivity.this, "We are here", Toast.LENGTH_SHORT).show();
-                        arrayList.clear();
-                        arrayList.addAll(arrayList_copy);
+
+                    //now its time to display
+                    if(notificationcheck==1){
+                        //if this is the first run just display
                         doDisplaySms();
                     }
-                    //check new messages every one second
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            new NotificationsGet().execute();
-//                        }
-//                    },1000);
+                    else{
+                        //check whether to update or not
+                        //check if array not of the same size then we need to update as there is a new change
+                            if(arrayList_copy.size()!=arrayList.size() && searchView.isIconified()) {
 
+                                if(arrayList_copy.size()> arrayList.size()){
+                                //alert the user of a new message
+                                //build our notification give it title
+                                NotificationCompat.Builder notification = new NotificationCompat.Builder(StudentHomeActivity.this, NOTIFICATION_CHANNEL);
+                                notification.setContentTitle("New Notification");
+                                notification.setContentText("Tap to open");
+                                notification.setDefaults(Notification.DEFAULT_ALL);
+                                notification.setSmallIcon(R.drawable.ic_launcher_foreground);
+                                //allow the notification to exit on tap
+                                notification.setAutoCancel(true);
+                                //done
+                                //add action
+                                Intent intent = new Intent(StudentHomeActivity.this, StudentHomeActivity.class);
+                                PendingIntent pendingIntent = PendingIntent.getActivity(StudentHomeActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                                notification.setContentIntent(pendingIntent);
+                                //done
+                                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(StudentHomeActivity.this);
+                                notificationManagerCompat.notify(1, notification.build());
+                                }
+                                arrayList.clear();
+                                arrayList.addAll(arrayList_copy);
+                                doDisplaySms();
+                            }
+                    }
+                    //check new messages every one second
+                    handler.postDelayed(runnable,delay);
                 }catch (JSONException e){
                     Toast.makeText(StudentHomeActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
                 }

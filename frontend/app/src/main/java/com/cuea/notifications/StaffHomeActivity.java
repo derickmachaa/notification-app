@@ -8,9 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 public class StaffHomeActivity extends AppCompatActivity {
     //define some list array to hold my data
     ArrayList<HomeView> arrayList;
+    ArrayList<HomeView> arrayList_copy; //a copy of the array list to help in updating the new one
     //create progressdialog object
     ProgressDialog progressDialog;
     //create session manager object
@@ -50,11 +53,9 @@ public class StaffHomeActivity extends AppCompatActivity {
     FloatingActionButton fab_newsms,fab_smsto_one,fab_smsto_dep,fab_smsto_faculty;
     TextView txt_fab_smsto_one, txt_fab_smsto_dep, txt_fab_smsmto_faculty;
 
+    //the number of times we have checked for new sms update
+    int numberofchecksdone;
 
-
-    public void clearlist(){
-        arrayList.clear();
-    }
 
 
     @Override
@@ -63,6 +64,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         //set content
         setContentView(R.layout.activity_staff_home);
 
+        numberofchecksdone=0;
         //create progress dialog
         progressDialog = new ProgressDialog(StaffHomeActivity.this);
         sessionManager = new SessionManager(StaffHomeActivity.this);
@@ -72,6 +74,7 @@ public class StaffHomeActivity extends AppCompatActivity {
         token = user.getToken();
         //array list instance
         arrayList = new ArrayList<HomeView>();
+        arrayList_copy = new ArrayList<HomeView>();
         //get the boolean if islec
         is_lec=user.getIs_lec();
 
@@ -185,7 +188,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     //end action bar hacks
 
     //function to perform sms deletion
-    public void doDeleteSms(String id){
+    public void doDeleteSms(String id,int position){
 
         //build a dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -196,8 +199,12 @@ public class StaffHomeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 //delete the sms
                 new NotificationDelete().execute(id);
-                clearlist();
-                new NotificationsGet().execute();
+                //get the position of the item being deleted
+                HomeView homeView = arrayList.get(position);
+                //delete it
+                homeViewAdapter.remove(homeView);
+                //refresh the views
+                homeViewAdapter.notifyDataSetInvalidated();
             }
         });
         //add a negative action
@@ -231,7 +238,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                     HomeView homeView = arrayList.get(i);
-                    doDeleteSms(homeView.getObjectid());
+                    doDeleteSms(homeView.getObjectid(),i);
                     homeViewAdapter.notifyDataSetChanged();
                     return true;
                 }
@@ -258,86 +265,118 @@ public class StaffHomeActivity extends AppCompatActivity {
     }
     //end display
 
-
-    //refresh list on resume
-    @Override
-    protected void onResume() {
-        super.onResume();
-        new NotificationsGet().execute();
-
-    }
-
     //Async task to request sms
     class NotificationsGet extends AsyncTask<Void,Void,String> {
         @Override
         protected void onPreExecute() {
-            //clear the list before fetching new data
-            clearlist();
+            //check if to show progress since we are running for the first time
             super.onPreExecute();
-            //create dialog
-            progressDialog.setMessage("Getting your messages");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            if (numberofchecksdone == 0) {
+                //create dialog process
+                progressDialog.setMessage("Getting your messages");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
+            numberofchecksdone += 1;
 
         }
 
         @Override
         protected String doInBackground(Void... voids) {
             //do checking
-            return requestHandler.GetRequest(MyLinks.LEC_URL_READ,token);
+            return requestHandler.GetRequest(MyLinks.LEC_URL_READ, token);
         }
 
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            //clear list that holds the data
-            clearlist();
             //stop process dialog
             progressDialog.dismiss();
-            if(s.equals("Error")){
-                Toast.makeText(StaffHomeActivity.this,"Something went Wrong",Toast.LENGTH_LONG).show();
-            }else if(s=="unauthorized"||s=="notfound") {
+
+            //ensure the list that holds the data is empty
+            arrayList_copy.clear();
+            if (s.equals("Error")) {
+                Toast.makeText(StaffHomeActivity.this, "Something went Wrong", Toast.LENGTH_LONG).show();
+            } else if (s == "unauthorized" || s == "notfound") {
                 Toast.makeText(StaffHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
-            }else{
+            } else {
                 //try to decode the json object and send it to get rendered
-                try{
+                try {
                     JSONObject json = new JSONObject(s);
                     JSONArray array = json.getJSONArray("result");
                     //iterate through the json array
-                    for(int i=0;i<array.length();i++){
+                    for (int i = 0; i < array.length(); i++) {
                         int imgid;
                         JSONObject object = array.getJSONObject(i);
                         //get the description of the notification
-                        String maintitle=object.getString("Description");
+                        String maintitle = object.getString("Description");
                         //get content
                         String subtitle = object.getString("Content");
-                        try{
+                        try {
                             JSONObject status = object.getJSONObject("Status");
                             //get the status
                             int progress = status.getInt("progress");
                             //get total
-                            if(progress==100){
-                                imgid=R.drawable.ic_sms_read;
-                            }else
-                            if(progress>=50 && progress < 100){
-                                imgid=R.drawable.ic_sms_delivered;
+                            if (progress == 100) {
+                                imgid = R.drawable.ic_sms_read;
+                            } else if (progress >= 50 && progress < 100) {
+                                imgid = R.drawable.ic_sms_delivered;
+                            } else {
+                                imgid = R.drawable.ic_sms_sent;
                             }
-                            else{
-                                imgid=R.drawable.ic_sms_sent;
-                            }}catch (Exception e){
-                            imgid=R.drawable.ic_sms_sent;
+                        } catch (Exception e) {
+                            imgid = R.drawable.ic_sms_sent;
                         }//update list with the id
                         String objectid = object.getString("Id");
-                        arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
+
+                        //if this is the first time just add to arrayList
+                        if(numberofchecksdone==1){
+                            arrayList.add(new HomeView(imgid, maintitle, subtitle, objectid));
+                        }
+                        else {
+                            arrayList_copy.add(new HomeView(imgid, maintitle, subtitle, objectid));
+                        }
                     }
-                    //now display
-                    doDisplayNotification();
-                }catch (JSONException e){
-                    Toast.makeText(StaffHomeActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
+                    //now display here is the catch
+                    //if first time
+                    if(numberofchecksdone==1){
+                        doDisplayNotification();
+                    }
+                    else {
+                        if (arrayList.size() != arrayList_copy.size() && searchView.isIconified()) {
+                            //here a new sms has come
+                            //clear current list
+                            arrayList.clear();
+                            arrayList.addAll(arrayList_copy);
+                            doDisplayNotification();
+                        } else {
+                            //Toast.makeText(StaffHomeActivity.this, "We here", Toast.LENGTH_SHORT).show();
+                            //run through each message individually updating the current status
+                            for (int i = 0; i < arrayList.size(); i++) {
+                                //get current icon status
+                                int currenticon = homeViewAdapter.getItem(i).getImageviewid();
+                                int newicon = arrayList_copy.get(i).getImageviewid();
+                                if (newicon != currenticon) {
+                                    Toast.makeText(StaffHomeActivity.this, "Not same", Toast.LENGTH_SHORT).show();
+                                    //update the icon
+                                    homeViewAdapter.getItem(i).setImageviewid(newicon);
+                                    homeViewAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(StaffHomeActivity.this, "Something went wrong try again", Toast.LENGTH_LONG);
                 }
 
             }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    new NotificationsGet().execute();
+                }
+            },1000);
         }
     }
 

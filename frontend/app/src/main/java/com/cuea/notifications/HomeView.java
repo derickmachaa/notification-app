@@ -27,6 +27,10 @@ public class HomeView {
     public int getImageviewid() {
         return imageviewid;
     }
+    //setter for setting the imageview
+    public void setImageviewid(int imageviewid) {
+        this.imageviewid = imageviewid;
+    }
 
     //getter method for returning the maintitle
     public String getMaintitle() {
