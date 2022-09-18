@@ -31,7 +31,7 @@ public class VerifyActivity extends AppCompatActivity {
         //get the firstname from intent
         Intent intent = getIntent();
         this.firstname = intent.getStringExtra("FirstName");
-        this.admissionno = intent.getIntExtra("AdmissionNo",-1);
+        this.admissionno = intent.getIntExtra("IdNo",-1);
         String phoneno = intent.getStringExtra("PhoneNo");
 
         //place it on screen
@@ -82,7 +82,7 @@ public class VerifyActivity extends AppCompatActivity {
             RequestHandler requestHandler = new RequestHandler();
             //put data to json
             try{
-                json.put("AdmissionNo", admission);
+                json.put("IdNo", admission);
                 json.put("Token", token);
                 return requestHandler.PostRequest(MyLinks.URL_VERIFY,json,""); //return data to postexecute
             }catch (JSONException e){
@@ -114,8 +114,9 @@ public class VerifyActivity extends AppCompatActivity {
                     String lastname=jsonresponse.getString("lastname");
                     String token=jsonresponse.getString("bearer");
                     String usertype=jsonresponse.getString("usertype");
+                    Boolean islec=jsonresponse.getBoolean("is_lec");
                     //create a user instance
-                    User user = new User(firstname,lastname,usertype,token);
+                    User user = new User(firstname,lastname,usertype,token,islec);
                     //create session
                     SessionManager sessionManager = new SessionManager(VerifyActivity.this);
                     sessionManager.storeSession(user);
@@ -127,7 +128,7 @@ public class VerifyActivity extends AppCompatActivity {
                         finish();
 
                     }else
-                    if(usertype.equals("lecturer")){
+                    if(usertype.equals("staff")){
                         Intent intent = new Intent(VerifyActivity.this,LecActivity.class);
                         startActivity(intent);
                         finish();//finish current

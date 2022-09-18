@@ -42,6 +42,7 @@ public class StudentActivity extends AppCompatActivity {
     ArrayList<HomeView> arrayList = new ArrayList<HomeView>();
     ArrayList<HomeView> arrayList_copy = new ArrayList<HomeView>();
 
+
     //some classes
     //get session manager
     SessionManager sessionManager;

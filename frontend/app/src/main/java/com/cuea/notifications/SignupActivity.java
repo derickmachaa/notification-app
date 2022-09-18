@@ -63,7 +63,7 @@ public class SignupActivity extends AppCompatActivity {
             //create json object
             try {
                 //put data in json
-                json.put("AdmissionNo", admissionno);
+                json.put("IdNo", admissionno);
                 //create request instance
                 RequestHandler requestHandler = new RequestHandler();
                 //call request
@@ -102,7 +102,7 @@ public class SignupActivity extends AppCompatActivity {
                     Intent intent = new Intent(SignupActivity.this,VerifyActivity.class);
                     intent.putExtra("FirstName",firstname);
                     intent.putExtra("PhoneNo",phoneno);
-                    intent.putExtra("AdmissionNo",json.getInt("AdmissionNo"));
+                    intent.putExtra("IdNo",json.getInt("IdNo"));
                     startActivity(intent);
                     finish();//finish current activity
 

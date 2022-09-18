@@ -63,7 +63,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                     foreach($result as $row){
                         //create an array for each record
                         $newarray=array(
-                            "AdmissionNo" => $row->_id,
+                            "IdNo" => $row->_id,
                             "FirstName" =>  $row->FirstName,
                             "LastName" =>  $row->LastName,
                             "PhoneNo" =>  $row->PhoneNo,

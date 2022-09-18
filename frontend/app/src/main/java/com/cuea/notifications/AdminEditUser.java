@@ -193,7 +193,7 @@ public class AdminEditUser extends AppCompatActivity {
                 String department = json.getString("DepartmentName");
                 String faculty = json.getString("Faculty");
                 String gender = json.getString("Gender");
-                is_lec = json.getBoolean("islec");
+                is_lec = json.getBoolean("is_lec");
                 ///fill current screen with required info
                 edadmission.setText(admission.toString());
                 edfirstname.setText(firstname);

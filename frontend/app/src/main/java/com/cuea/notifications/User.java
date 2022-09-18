@@ -5,6 +5,7 @@ public class User {
     private String lastname;
     private String token;
     private String usertype;
+    private Boolean is_lec;
 
     public String getUsertype() {
         return usertype;
@@ -14,12 +15,22 @@ public class User {
         this.usertype = usertype;
     }
 
+    //getter and setter for is lec
+    public Boolean getIs_lec() {
+        return is_lec;
+    }
+
+    public void setIs_lec(Boolean is_lec) {
+        this.is_lec = is_lec;
+    }
+
     //constructor class
-    public User(String firstname, String lastname,String usertype, String token) {
+    public User(String firstname, String lastname,String usertype, String token,Boolean is_lec) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.usertype = usertype;
         this.token = token;
+        this.is_lec = is_lec;
 
     }
 

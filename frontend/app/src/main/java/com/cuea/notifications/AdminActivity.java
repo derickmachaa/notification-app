@@ -145,7 +145,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void doLogout(MenuItem item) {
-        perFormLogout();
+        sessionManager.logout();
     }
     //end action bar hacks
 
@@ -269,13 +269,13 @@ public class AdminActivity extends AppCompatActivity {
                         JSONObject object = userarray.getJSONObject(i);
 
                         //add the admission number
-                        maintitle = object.getString("AdmissionNo");
+                        maintitle = object.getString("IdNo");
 
                         //get the firstname ad lastname
                         subtitle=object.getString("FirstName")+" "+object.getString("LastName");
 
                         //get the icon to use
-                        Objectid=Integer.toString(object.getInt("AdmissionNo"));
+                        Objectid=Integer.toString(object.getInt("IdNo"));
 
                         //check if is student or lecturer
                         if(object.getString("UserType").equals("student")){
@@ -298,44 +298,6 @@ public class AdminActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-
-    //function to perform logout
-    public Void perFormLogout(){
-
-        //build a dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(AdminActivity.this);
-        builder.setMessage("Do you really want to logout?");
-        //add a positive action
-        builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //if the user has selected to logout clear the tokens in db and finish activity
-                //create an instance of session manager and clear
-                SessionManager sessionManager = new SessionManager(AdminActivity.this);
-                sessionManager.logout();
-                //say good bye
-                Toast.makeText(AdminActivity.this, "Good Bye", Toast.LENGTH_LONG).show();
-                //redirect to main activity
-                Intent intent = new Intent(AdminActivity.this,MainActivity.class);
-                startActivity(intent);
-                //finish current activity
-                finish();//
-            }
-        });
-
-        //add a negative action
-        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //do nothing
-            }
-        });
-        //show the dialog
-        builder.show();
-
-        return null;
     }
 
 }
