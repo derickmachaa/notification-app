@@ -49,7 +49,7 @@ public class StudentHomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_menu,menu);
+        getMenuInflater().inflate(R.menu.student_profile_menu,menu);
         return true;
     }
 
@@ -59,7 +59,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student);
+        setContentView(R.layout.activity_student_home);
 
         //initialise
         sessionManager = new SessionManager(this);
@@ -67,11 +67,11 @@ public class StudentHomeActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(StudentHomeActivity.this);
         // create the instance of the ListView
         listView = (ListView) findViewById(R.id.st_sms_list);
-        searchView = findViewById(R.id.student_searchView);
         //change title
         this.setTitle("CUEA Student");
         //get notifications
         new NotificationsGet().execute();
+
     }
 
     @Override
@@ -81,7 +81,6 @@ public class StudentHomeActivity extends AppCompatActivity {
     }
 
     public void setupSearch(){
-        searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -178,6 +177,8 @@ public class StudentHomeActivity extends AppCompatActivity {
                     // Now create the instance of the homeview adapter and pass
                     // the context and arrayList created above
                     homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
+                    searchView = (SearchView) findViewById(R.id.student_app_bar_search);
+
 
                     // set the homeviewadapter for ListView
                     listView.setAdapter(homeViewAdapter);

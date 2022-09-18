@@ -12,6 +12,12 @@
         android:onClick="doAbout"
         />
     <item
+        android:id="@+id/student_app_bar_search"
+        android:icon="@android:drawable/ic_search_category_default"
+        android:title="Search"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView" />
+    <item
         android:id="@+id/logout"
         android:title="Log Out"
         android:onClick="doLogout"
