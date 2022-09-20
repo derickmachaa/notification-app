@@ -38,10 +38,12 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
             $_UserType=$postdata->UserType;
             $_PhoneNo=$postdata->PhoneNo;
             $_Faculty=$postdata->Faculty;
-            $_Department=$postdata->Department;
+            $_DepartmentName=$postdata->DepartmentName;
+	    $_islec=$postdata->is_lec;
+	    $gender=$postdata->Gender;
 
             //check if all fields required are present
-            if(isset($_AdmissionNo)&&isset($_FirstName)&&isset($_LastName)&&isset($_UserType)&&isset($_PhoneNo)&&isset($_Faculty)&&isset($_Department)){
+            if(isset($_AdmissionNo)&&isset($_FirstName)&&isset($_LastName)&&isset($_UserType)&&isset($_PhoneNo)&&isset($_Faculty)&&isset($_DepartmentName)){
                 //set the user
                 $user->setIdNo($_AdmissionNo);
                 $user->setFirstName($_FirstName);
@@ -49,7 +51,9 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                 $user->setUserType($_UserType);
                 $user->setPhoneNo($_PhoneNo);
                 $user->setFaculty($_Faculty);
-                $user->setDepartmentName($_Department);
+                $user->setDepartmentName($_DepartmentName);
+		$user->setIsLec($_islec);
+		$user->setGender($gender);
 
                 $result=$user->updateUser();
 

@@ -24,6 +24,7 @@ public class VerifyActivity extends AppCompatActivity {
     EditText editText;
     String firstname;
     int admissionno;
+    int delay=90000;
     String token;
     Button btnverify,btnregeneratetk;
     CountDownTimer regenerateTimer;
@@ -36,7 +37,9 @@ public class VerifyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.firstname = intent.getStringExtra("FirstName");
         this.admissionno = intent.getIntExtra("IdNo",-1);
+        this.delay = intent.getIntExtra("wait",delay)*1000;
         String phoneno = intent.getStringExtra("PhoneNo");
+        editText = (EditText) findViewById(R.id.edverifycode);
 
         //place it on screen
         textView = (TextView) findViewById(R.id.tvfname);
@@ -49,20 +52,13 @@ public class VerifyActivity extends AppCompatActivity {
                 doVerify(view);
             }
         });
-        startTimer();
+       startTimer();
 
     }
 
     public void startTimer(){
-        btnregeneratetk.setAlpha(0.1f);
-        btnregeneratetk.setClickable(false);
-        btnregeneratetk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new doRequestToken().execute();
-            }
-        });
-        regenerateTimer = new CountDownTimer(90000,1000) {
+        disableRegen();
+        regenerateTimer = new CountDownTimer(delay,1000) {
             @Override
             public void onTick(long millisecondstofinish) {
                 btnregeneratetk.setText("Generate in :"+millisecondstofinish/1000+"s");
@@ -70,14 +66,30 @@ public class VerifyActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                btnregeneratetk.setText("New Token");
-                btnregeneratetk.setAlpha(1);
-                btnregeneratetk.setClickable(true);
+                enableRegen();
             }
-        };
-        regenerateTimer.start();
+        }.start();
     }
 
+    //method to disable regenerate button
+    public void disableRegen(){
+        btnregeneratetk.setAlpha(0.1f);
+        btnregeneratetk.setClickable(false);
+    }
+    //method to enable regenerate button
+    public  void enableRegen(){
+        btnregeneratetk.setText("New Token");
+        btnregeneratetk.setAlpha(1);
+        btnregeneratetk.setClickable(true);
+        btnregeneratetk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new doRequestToken().execute();
+            }
+        });
+    }
+
+    //function to verify
     public void doVerify(View view) {
         editText = (EditText) findViewById(R.id.edverifycode);
         ///do some verification
@@ -140,52 +152,54 @@ public class VerifyActivity extends AppCompatActivity {
                 //Toast about an error
                 Toast.makeText(VerifyActivity.this,"Something Went Wrong Check internet or Try later ",Toast.LENGTH_LONG).show();
             }
-            else if(s=="unauthorized"){
-                editText = (EditText) findViewById(R.id.edverifycode);
-                editText.setError("Invalid Token");
-                editText.requestFocus();
-            }
-            else{
-                //try to form json object
+            else
                 try{
                     JSONObject jsonresponse = new JSONObject(s);
-                    String lastname=jsonresponse.getString("lastname");
-                    String token=jsonresponse.getString("bearer");
-                    String usertype=jsonresponse.getString("usertype");
-                    Boolean islec=jsonresponse.getBoolean("is_lec");
-                    //create a user instance
-                    User user = new User(firstname,lastname,usertype,token,islec);
-                    //create session
-                    SessionManager sessionManager = new SessionManager(VerifyActivity.this);
-                    sessionManager.storeSession(user);
-                    //start
-                    if(usertype.equals("student")){
-                        /// redirect to student
-                        Intent stintent = new Intent(VerifyActivity.this, StudentHomeActivity.class);
-                        startActivity(stintent);
-                        finish();
+                    String response = jsonresponse.getString("message");
+                    if(response.contains("successful")){
+                        Toast.makeText(VerifyActivity.this, response, Toast.LENGTH_SHORT).show();
+                        String lastname=jsonresponse.getString("lastname");
+                        String token=jsonresponse.getString("bearer");
+                        String usertype=jsonresponse.getString("usertype");
+                        Boolean islec=jsonresponse.getBoolean("is_lec");
+                        //create a user instance
+                        User user = new User(firstname,lastname,usertype,token,islec);
+                        //create session
+                        SessionManager sessionManager = new SessionManager(VerifyActivity.this);
+                        sessionManager.storeSession(user);
+                        //start
+                        if(usertype.equals("student")){
+                            /// redirect to student
+                            Intent stintent = new Intent(VerifyActivity.this, StudentHomeActivity.class);
+                            startActivity(stintent);
+                            finish();
 
-                    }else
-                    if(usertype.equals("staff")){
-                        Intent intent = new Intent(VerifyActivity.this, StaffHomeActivity.class);
-                        startActivity(intent);
-                        finish();//finish current
-                    }else
+                        }else
+                        if(usertype.equals("staff")){
+                            Intent intent = new Intent(VerifyActivity.this, StaffHomeActivity.class);
+                            startActivity(intent);
+                            finish();//finish current
+                        }else
                         if(usertype.equals("admin")){
                             Intent intent=new Intent(VerifyActivity.this, AdminHomeActivity.class);
                             startActivity(intent);
                             finish();
                         }
+                    }
+                    else
+                    {
+                        editText.setError(response);
+                        editText.requestFocus();
+                    }
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
             }
         }
-    }
 
-    class doRequestToken extends  AsyncTask<Void,Void,Void> {
+    class doRequestToken extends  AsyncTask<Void,Void,String> {
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected String doInBackground(Void... voids) {
             JSONObject json = new JSONObject();
             try {
                 //put data in json
@@ -194,6 +208,7 @@ public class VerifyActivity extends AppCompatActivity {
                 RequestHandler requestHandler = new RequestHandler();
                 //call request
                 String response = requestHandler.PostRequest(MyLinks.URL_REGISTER, json, " ");
+                return response;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -201,9 +216,15 @@ public class VerifyActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void unused) {
-            super.onPostExecute(unused);
-            startTimer();
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+            try{
+                JSONObject js = new JSONObject(response);
+                delay = js.getInt("wait")*1000;
+                startTimer();
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
         }
     }
 }

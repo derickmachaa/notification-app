@@ -104,11 +104,13 @@ public class SignupActivity extends AppCompatActivity {
                     else {
                         String firstname = jsonresponse.getString("firstname");
                         String phoneno = jsonresponse.getString("phoneno");
+                        int wait = jsonresponse.getInt("wait");
                         //launch the verify activity
                         Intent intent = new Intent(SignupActivity.this, VerifyActivity.class);
                         intent.putExtra("FirstName", firstname);
                         intent.putExtra("PhoneNo", phoneno);
                         intent.putExtra("IdNo", json.getInt("IdNo"));
+                        intent.putExtra("wait",wait);
                         startActivity(intent);
                         finish();//finish current activity
                     }

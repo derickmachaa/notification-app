@@ -48,6 +48,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     SearchView searchView;
     //Boolean
     Boolean is_lec, isAllFabsVisible;
+    Boolean continuechecking=true;
     //floating buttons
     FloatingActionButton fab_newsms, fab_smsto_one, fab_smsto_dep, fab_smsto_faculty;
     TextView txt_fab_smsto_one, txt_fab_smsto_dep, txt_fab_smsmto_faculty;
@@ -96,7 +97,6 @@ public class StaffHomeActivity extends AppCompatActivity {
         }
         //get notififcations
         new NotificationsGet().execute();
-
 
         //floating buttons settings
         fab_newsms = (FloatingActionButton) findViewById(R.id.staff_fab);
@@ -402,11 +402,11 @@ public class StaffHomeActivity extends AppCompatActivity {
                             case "Invalid Token":
                                 Toast.makeText(StaffHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
                                 sessionManager.logout(false);
-                                handler.removeCallbacks(runnable);
+                                continuechecking=false;
                             case "Not Allowed":
                                 Toast.makeText(StaffHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
                                 sessionManager.logout(false);
-                                handler.removeCallbacks(runnable);
+                                 continuechecking=false;
                                 break;
                             case "Not found":
                                 if (notificationchecksdone <= 1) {
@@ -424,8 +424,13 @@ public class StaffHomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            //run every delay
-            handler.postDelayed(runnable, delay);
+            if(continuechecking) {
+                //run every delay
+                handler.postDelayed(runnable, delay);
+            }
+            else {
+                handler.removeCallbacks(runnable);
+            }
 
         }
     }

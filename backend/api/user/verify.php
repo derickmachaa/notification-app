@@ -28,8 +28,13 @@ if(isset($data->IdNo) && isset($data->Token)){
     $localToken=$data->Token;
     $realToken=$user->getToken();
     //check if the data provided matches and login
-    if($localToken==$realToken){
-        
+    if($localToken==$realToken->Token){
+	    //check if the token is expired    
+	    if(time()>$realToken->expiry){
+		    http_response_code(400);
+		    echo json_encode(array("message"=>"Token has expired please regenerate token"));
+	    }
+	    else{
         //create keys for usage
         $session=array(
             "IdNo"=>$data->IdNo,
@@ -45,13 +50,14 @@ if(isset($data->IdNo) && isset($data->Token)){
        //give feedback
        echo json_encode(
         array(
-            "message"=>"authentication succesful",
+            "message"=>"authentication successful",
 	    "bearer"=>$encoded,
 	    "lastname"=>$user->getLastName(),
 	    "usertype"=>$user->getUserType(),
 	    "is_lec" => $user->getIsLec()
             )
         );
+	    }
     }
     else{
         http_response_code(403);

@@ -60,6 +60,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     //some variables for homeview
     int imgid;
     String maintitle,subtitle,objectid;
+    Boolean continuechecking=true;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.student_profile_menu,menu);
@@ -84,6 +85,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(StudentHomeActivity.this);
         // create the instance of the ListView
         listView = (ListView) findViewById(R.id.st_sms_list);
+        homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
         //change title
         this.setTitle("CUEA Student");
         //get notifications
@@ -94,6 +96,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     }
 
     public void setupSearch(){
+        searchView = (SearchView) findViewById(R.id.student_app_bar_search);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -114,9 +117,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     //do display data
     public void doDisplaySms(){
         // Now create the instance of the homeview adapter and pass
-        // the context and arrayList created above
-        homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
-        searchView = (SearchView) findViewById(R.id.student_app_bar_search);
+        // the context and arrayList created abov
 
         // set the homeviewadapter for ListView
         listView.setAdapter(homeViewAdapter);
@@ -277,11 +278,11 @@ public class StudentHomeActivity extends AppCompatActivity {
                             case "Invalid Token":
                                 Toast.makeText(StudentHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
                                 sessionManager.logout(false);
-                                handler.removeCallbacks(runnable);
+                                continuechecking=false;
                             case "Not Allowed"://no break
                                 Toast.makeText(StudentHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
                                 sessionManager.logout(false);
-                                handler.removeCallbacks(runnable);
+                                continuechecking=false;
                                 break;
                             case "Not found":
                                 if (notificationchecksdone < 1) {
@@ -300,7 +301,12 @@ public class StudentHomeActivity extends AppCompatActivity {
                 }
             }
             //run every delay
+            if(continuechecking){
             handler.postDelayed(runnable,delay);
+            }
+            else{
+                handler.removeCallbacks(runnable);
+            }
 
         }
     }

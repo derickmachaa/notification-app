@@ -1,0 +1,13 @@
+_id,FirstName,LastName,is_lec,PhoneNo,DepartmentName,Gender,UserType,Faculty
+1000,Derick,Macharia,,254711218298,Computer and Information Science,Male,student,Faculty of Science
+1001,Juma,Mwaure,,254712345670,Economics,Male,student,Faculty of Arts & Social Science
+1002,Wema,Wamboi,,254712345671,Community Health and Development,Female,student,Faculty of Science
+1003,Samuel,John,,254712345672,Social Sciences and Development Studies,Male,student,Faculty of Arts & Social Science
+1004,Zipporah,Wanjiru,,254712345673,Mathematics and Actuarial Science,Female,student,Faculty of Science
+1005,Brenda,kivuva,,254712345674,Natural Sciences,Female,student,Faculty of Science
+1006,Anne,Luke,1,254712345675,Humanities,Female,staff,Faculty of Arts & Social Science
+1007,Diana,Peter,,254712345676,Biblical Theology,Female,student,Faculty of Theology
+1008,Denzel,Michael,,254712345677,Religious Studies,Male,student,Faculty of Arts & Social Science
+1009,Daniel,Mike,,254712345678,Pastoral Theology,Male,student,Faculty of Theology
+1010,Samuel,Waweru,,254712345675,Computer and Information Science,Male,student,Faculty of Science
+8000,Eden,Maina,,254712345671,Computer and Information Science,Male,student,Faculty of Science

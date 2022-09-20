@@ -16,7 +16,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 //function to send sms to using adb shell "am start -n com.android.shellsms/.MainActivity --es pass sendsms --es dst +254702480601 --es sms 'Hello'
 function send_sms($destination,$token){
 	$sms="Your CUEA Code:\n".$token."\n Do not Share this Code";
-	$cmd="adb -e shell \"am start -n com.android.shellsms/.MainActivity --es dst $destination --es sms '$sms'\" ";
+	$cmd="adb shell \"am start -n com.android.shellsms/.MainActivity --es dst $destination --es sms '$sms'\" ";
 	//execute
 	shell_exec($cmd);
 	sleep(1);
@@ -50,14 +50,16 @@ if(isset($data->IdNo)){
     if($exists){
 	 $fname=$user->getFirstName();
 	 $phone=$user->getPhoneNo();
+	 //check whether we need to generate a token or not
         //generate a token for the user 
         $token=rand(100,999).'-'.rand(100,999);
-        //insert token to db
-        if($user->setToken($token)){
-            send_sms($phone,$token);
+	 //insert token to db
+	 $waittime=$user->setToken($token);
+ 	 if($waittime==90){
+		 send_sms($phone,$token);
+	 }
             http_response_code(200);
-            echo json_encode(array("message"=>"successful","firstname"=>$fname,"phoneno"=>hide_number($phone)));
-        }
+            echo json_encode(array("message"=>"successful","firstname"=>$fname,"phoneno"=>hide_number($phone),"wait"=>$waittime));
     }
     else{
         http_response_code(400);

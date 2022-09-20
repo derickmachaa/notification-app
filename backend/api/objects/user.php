@@ -156,7 +156,9 @@ class User{
             "UserType"=> $this->getUserType(),
             "PhoneNo" => $this->getPhoneNo(),
             "Faculty"=> $this->getFaculty(),
-            "DepartmentName"=> $this->getDepartmentName()
+            "DepartmentName"=> $this->getDepartmentName(),
+	    "is_lec" => $this->getIsLec(),
+	    "Gender" => $this->getGender()
         ];
       
             $result=$this->_Database->updateOne($this->_CollectionName,$from,$to);
@@ -247,25 +249,44 @@ class User{
     }
 
 
-    //function to set the login token for the user
+    //function to create a new token for the user
+    //check if exists
     public function setToken($token){
-        $from=["_id"=>$this->_Id];
-        $to=['$set'=>["Token"=>$token]];
-        $value=$this->_Database->upsertOne('token',$from,$to);
-        if($value){
-            return TRUE;
-        }else{
-            return FALSE;
-        }
-    }
+        $values=["_id"=>$this->_Id];
+	$options=[];
+        $query=$this->_Database->queryData('token',$values,$options);
+        if($query){
+		$validtill=$query[0]->expiry;
+		$now=time();
+		$expiry=$validtill-$now;
+		if($validtill>$now){
+			return $expiry;
+		}
+		else{
+		
+		//create the token
+        	$from=["_id"=>$this->_Id];
+		$to=['$set'=>["Token"=>$token,"expiry"=>time()+90]];
+		$value=$this->_Database->upsertOne('token',$from,$to);
+		return 90;
+		}
+	}
+	else{
+		//create the token
+        	$from=["_id"=>$this->_Id];
+		$to=['$set'=>["Token"=>$token,"expiry"=>time()+90]];
+		$value=$this->_Database->upsertOne('token',$from,$to);
+		return 90;
+		}
+	}
 
-    //function to get and return the user token
+//function to get and return the user token
     public function getToken(){
         $match=["_id"=>$this->_Id];
-        $options=["projection"=>["Token"=>1,"_id"=>0]];
+        $options=["projection"=>["Token"=>1,"expiry"=>1,"_id"=>0]];
         $query=$this->_Database->queryData('token',$match,$options);
         if($query){
-            return $query[0]->Token;
+            return $query[0];
         }
         else{
             return FALSE;

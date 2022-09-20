@@ -240,8 +240,10 @@ public class AdminEditUserActivity extends AppCompatActivity {
                 json.put("LastName", strings[2]);
                 json.put("UserType", strings[3]);
                 json.put("PhoneNo", strings[4]);
-                json.put("Department", strings[5]);
+                json.put("DepartmentName", strings[5]);
                 json.put("Faculty", strings[6]);
+                json.put("Gender",strings[7]);
+                json.put("is_lec",islec.isChecked());
                 SessionManager sessionManager = new SessionManager(AdminEditUserActivity.this);
                 User user = sessionManager.getUser();
                 String token = user.getToken();
@@ -256,14 +258,23 @@ public class AdminEditUserActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progressDialog.dismiss();
-            if(s.equals("created")){
-                Toast.makeText(AdminEditUserActivity.this, "User Has Been updated", Toast.LENGTH_SHORT).show();
-            }
-            else if(s.equals("notmodified")){
-                Toast.makeText(AdminEditUserActivity.this, "User Already up to date", Toast.LENGTH_SHORT).show();
+            if(s.equals("Error")){
+                Toast.makeText(AdminEditUserActivity.this, "Try again later", Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(AdminEditUserActivity.this, "Something Went Wrong Try Again Later", Toast.LENGTH_SHORT).show();
+                try{
+                    String response;
+                    JSONObject json = new JSONObject(s);
+                    response=json.getString("message");
+                    if(response.contains("successful")){
+                        Toast.makeText(AdminEditUserActivity.this, "User Has Been updated", Toast.LENGTH_SHORT).show();
+                    }else
+                    if(response.contains("duplicate")){
+                        Toast.makeText(AdminEditUserActivity.this, "User Already up to date", Toast.LENGTH_SHORT).show();
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
             }
         }
     }
