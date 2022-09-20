@@ -60,12 +60,12 @@ $users=[
 ["_id"=>1008,"FirstName"=>"Denzel","LastName"=>"Michael","is_lec"=>false,"PhoneNo"=>"254712345677","DepartmentName"=>$religious, "Gender"=>"Male","UserType"=>"student"],
 ["_id"=>1009,"FirstName"=>"Daniel","LastName"=>"Mike","is_lec"=>false,"PhoneNo"=>"254712345678","DepartmentName"=>$pastoral, "Gender"=>"Male","UserType"=>"student"],
 ["_id"=>1010,"FirstName"=>"Samuel","LastName"=>"Waweru","is_lec"=>false,"PhoneNo"=>"254712345675","DepartmentName"=>$compscience, "Gender"=>"Male","UserType"=>"student"],
-["_id"=>8000,"FirstName"=>"Eden","LastName"=>"Maina","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$compscience,"Gender"=>"Male","UserType"=>"staff"],
+["_id"=>8000,"FirstName"=>"Eden","LastName"=>"Maina","is_lec"=>true,"PhoneNo"=>"254712345671","DepartmentName"=>$compscience,"Gender"=>"Male","UserType"=>"staff"],
 ["_id"=>8001,"FirstName"=>"Christiano","LastName"=>"Muthike","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$theology, "Gender"=>"Male","UserType"=>"staff"],
-["_id"=>8002,"FirstName"=>"Ian","LastName"=>"Waweru","is_lec"=>false,"PhoneNo"=>"254712345679","DepartmentName"=>$creditdep, "Gender"=>"Male","UserType"=>"staff"],
-["_id"=>8003,"FirstName"=>"James","LastName"=>"Njoroge","is_lec"=>false,"PhoneNo"=>"254712345679","DepartmentName"=>$registrydep, "Gender"=>"Male","UserType"=>"staff"],
-["_id"=>8004,"FirstName"=>"Mercy","LastName"=>"Wamboi","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$maths,"Gender"=>"Female","UserType"=>"staff"],
-["_id"=>8005,"FirstName"=>"Diana","LastName"=>"Akinyi","is_lec"=>true,"PhoneNo"=>"254712345679","DepartmentName"=>$theology, "Gender"=>"Female","UserType"=>"staff"],
+["_id"=>8002,"FirstName"=>"Ian","LastName"=>"Waweru","is_lec"=>false,"PhoneNo"=>"254712345670","DepartmentName"=>$creditdep, "Gender"=>"Male","UserType"=>"staff"],
+["_id"=>8003,"FirstName"=>"James","LastName"=>"Njoroge","is_lec"=>false,"PhoneNo"=>"254712345672","DepartmentName"=>$registrydep, "Gender"=>"Male","UserType"=>"staff"],
+["_id"=>8004,"FirstName"=>"Mercy","LastName"=>"Wamboi","is_lec"=>true,"PhoneNo"=>"254712345673","DepartmentName"=>$maths,"Gender"=>"Female","UserType"=>"staff"],
+["_id"=>8005,"FirstName"=>"Diana","LastName"=>"Akinyi","is_lec"=>true,"PhoneNo"=>"254712345674","DepartmentName"=>$theology, "Gender"=>"Female","UserType"=>"staff"],
 ["_id"=>8006,"FirstName"=>"Derick","LastName"=>"Kamoro","is_lec"=>false,"PhoneNo"=>"254701873605","DepartmentName"=>$ictdep, "Gender"=>"Male","UserType"=>"staff"],
 ];
 

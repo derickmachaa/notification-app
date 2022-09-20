@@ -31,7 +31,7 @@ public class AdminEditUserActivity extends AppCompatActivity {
     SwitchCompat islec;
     Boolean is_lec;
     //myverification class
-    MyVerification myVerification = new MyVerification();
+    MyValidation myValidation = new MyValidation();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,31 +82,31 @@ public class AdminEditUserActivity extends AppCompatActivity {
 
     public void doUpdateUser(View view) {
         //check verification
-        if(!myVerification.isAdmissionNoValid(edadmission.getText().toString())){
+        if(!myValidation.isAdmissionNoValid(edadmission.getText().toString())){
             edadmission.setError("Invalid Admission Number");
             edadmission.requestFocus();
         }else
-        if(!myVerification.isFirstNameValid(edfirstname.getText().toString())){
+        if(!myValidation.isFirstNameValid(edfirstname.getText().toString())){
                 edfirstname.setError("Invalid firstname");
                 edfirstname.requestFocus();
         }else
-        if(!myVerification.isLastNameValid(edlastname.getText().toString())){
+        if(!myValidation.isLastNameValid(edlastname.getText().toString())){
                     edlastname.setError("Invalid LastName");
                     edlastname.requestFocus();
         }else
-        if(!myVerification.isUsertypeValid(edusertype.getText().toString())){
+        if(!myValidation.isUsertypeValid(edusertype.getText().toString())){
             edusertype.setError("Invalid UserType");
             edusertype.requestFocus();
         }else
-        if(!myVerification.isDepartmentValid(eddepartment.getText().toString())){
+        if(!myValidation.isDepartmentValid(eddepartment.getText().toString())){
             eddepartment.setError("Invalid Department");
             eddepartment.requestFocus();
         }else
-        if(!myVerification.isFacultyValid(edfaculty.getText().toString())){
+        if(!myValidation.isFacultyValid(edfaculty.getText().toString())){
             edfaculty.setError("Invalid Faculty");
         }else
 
-        if(!myVerification.isPhoneNoValid(edphone.getText().toString())){
+        if(!myValidation.isPhoneNoValid(edphone.getText().toString())){
             edphone.setError("Invalid Phone");
         }
         else
@@ -134,7 +134,7 @@ public class AdminEditUserActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(!myVerification.isAdmissionNoValid(edadmission.getText().toString())){
+                if(!myValidation.isAdmissionNoValid(edadmission.getText().toString())){
                     edadmission.setError("Invalid Admission Number");
                     edadmission.requestFocus();
                 }else{

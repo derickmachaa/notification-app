@@ -30,7 +30,7 @@ public class AdminAddUserActivity extends AppCompatActivity {
     Button btndelete;
     SwitchCompat islec;
     Boolean is_lec;
-    MyVerification myVerification = new MyVerification();
+    MyValidation myValidation = new MyValidation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,32 +85,32 @@ public class AdminAddUserActivity extends AppCompatActivity {
                 //do add user
 
                 //check verification
-                if(!myVerification.isAdmissionNoValid(edadmission.getText().toString())){
+                if(!myValidation.isAdmissionNoValid(edadmission.getText().toString())){
                     edadmission.setError("Invalid Admission Number");
                     edadmission.requestFocus();
                 }else
-                if(!myVerification.isFirstNameValid(edfirstname.getText().toString())){
+                if(!myValidation.isFirstNameValid(edfirstname.getText().toString())){
                     edfirstname.setError("Invalid firstname");
                     edfirstname.requestFocus();
                 }else
-                if(!myVerification.isLastNameValid(edlastname.getText().toString())){
+                if(!myValidation.isLastNameValid(edlastname.getText().toString())){
                     edlastname.setError("Invalid LastName");
                     edlastname.requestFocus();
                 }else
-                if(!myVerification.isUsertypeValid(edusertype.getText().toString())){
+                if(!myValidation.isUsertypeValid(edusertype.getText().toString())){
                     edusertype.setError("Invalid UserType");
                     edusertype.requestFocus();
                 }else
-                if(!myVerification.isDepartmentValid(eddepartment.getText().toString())){
+                if(!myValidation.isDepartmentValid(eddepartment.getText().toString())){
                     eddepartment.setError("Invalid Department");
                     eddepartment.requestFocus();
                 }else
-                if(!myVerification.isFacultyValid(edfaculty.getText().toString())){
+                if(!myValidation.isFacultyValid(edfaculty.getText().toString())){
                     edfaculty.setError("Invalid Faculty");
                     edfaculty.requestFocus();
                 }else
 
-                if(!myVerification.isPhoneNoValid(edphone.getText().toString())){
+                if(!myValidation.isPhoneNoValid(edphone.getText().toString())){
                     edphone.setError("Invalid Phone");
                     edfaculty.requestFocus();
                 }

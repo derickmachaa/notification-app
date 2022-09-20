@@ -3,18 +3,12 @@ package com.cuea.notifications;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.material.transition.MaterialContainerTransform;
 
 import org.json.JSONObject;
 
@@ -32,7 +26,7 @@ public class SignupActivity extends AppCompatActivity {
         EditText edAmission = (EditText) findViewById(R.id.edAdmission);
         //do some validation before posting
             String admissionno = edAmission.getText().toString();
-            MyVerification myverification = new MyVerification();
+            MyValidation myverification = new MyValidation();
         if (!myverification.isAdmissionNoValid(admissionno)) {
             edAmission.setError("invalid admission");
             edAmission.requestFocus();

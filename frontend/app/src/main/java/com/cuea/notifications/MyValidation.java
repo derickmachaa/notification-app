@@ -6,12 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 //this class will be used for verification
-public class MyVerification {
+public class MyValidation {
     //the date format i will be using
     final static String DATE_FORMAT = "/MM/dd/yyyy";
 
     //constructor
-    public MyVerification() {
+    public MyValidation() {
     }
 
     //check if date is valid

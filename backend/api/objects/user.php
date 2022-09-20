@@ -173,18 +173,26 @@ class User{
     //function to get user by admision number 
     public function getUserById($idNo){
         //go through all the databases to check if a user is valid
-        $userdatabases=['users','admin'];
+	$usertables=['users','admin'];
         $filter=['_id'=>$idNo];
         $options=[];
-        foreach($userdatabases as $collection){
-            $result=$this->_Database->queryData($collection,$filter,$options);
-            if($result){
-		    //return result
-                return $result[0];
-                break;
-            }
-        }
-        return FALSE;
+	foreach ($usertables as $table){
+		
+		$result=$this->_Database->queryData($table,$filter,$options);
+	
+		if($result){
+
+			//return result
+			
+			return $result[0];
+	
+			break;
+       
+	    	}
+       
+	}
+
+	return FALSE;
     }
 
     //function to get student according to departement

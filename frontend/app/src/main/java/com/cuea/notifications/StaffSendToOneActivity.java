@@ -73,7 +73,7 @@ public class StaffSendToOneActivity extends AppCompatActivity {
     }
 
     public void sendSMS(){
-        MyVerification verification = new MyVerification();
+        MyValidation verification = new MyValidation();
         //split using , for sendtomany option
         boolean isdestinationvalid=true;
         String[] receivers=destination.getText().toString().split(",");

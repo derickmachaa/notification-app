@@ -184,9 +184,14 @@ public class StudentHomeActivity extends AppCompatActivity {
             ///process the messages;
             //Toast.makeText(StudentActivity.this,s,Toast.LENGTH_LONG).show();
             if(s.equals("Error")){
-                Toast.makeText(StudentHomeActivity.this,"Something went Wrong",Toast.LENGTH_LONG).show();
+                //check if first time run
+                if(notificationcheck==1) {
+                    Toast.makeText(StudentHomeActivity.this, "Something went Wrong try again later", Toast.LENGTH_LONG).show();
+                    handler.removeCallbacks(runnable);
+                }
             }else if(s=="unauthorized"||s=="notfound") {
                 Toast.makeText(StudentHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
+                handler.removeCallbacks(runnable);
             }else{
                 //try to decode the json object and place it in arraylist
                 try{
@@ -225,7 +230,7 @@ public class StudentHomeActivity extends AppCompatActivity {
                     }
 
                     //now its time to display
-                    if(notificationcheck==1){
+                    if(notificationcheck==1 || arrayList_copy.isEmpty() ){
                         //if this is the first run just display
                         doDisplaySms();
                     }
@@ -258,12 +263,14 @@ public class StudentHomeActivity extends AppCompatActivity {
                                 doDisplaySms();
                             }
                     }
-                    //check new messages every one second
-                    handler.postDelayed(runnable,delay);
+
                 }catch (JSONException e){
-                    Toast.makeText(StudentHomeActivity.this,"Something went wrong try again",Toast.LENGTH_LONG);
-                }
+                        Toast.makeText(StudentHomeActivity.this, "Something went wrong", Toast.LENGTH_LONG);
+                    }
+                //check new messages every one second
+                handler.postDelayed(runnable,delay);
             }
+
         }
     }
 

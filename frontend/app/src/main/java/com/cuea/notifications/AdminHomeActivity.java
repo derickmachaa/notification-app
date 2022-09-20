@@ -156,8 +156,6 @@ public class AdminHomeActivity extends AppCompatActivity {
     public void doDisplayUsers(){
         //get the list view
         listView = (ListView) findViewById(R.id.admin_user_list);
-        //search view instance
-        searchView=(SearchView) findViewById(R.id.admin_app_bar_search);
         homeViewAdapter=new HomeViewAdapter(this,arrayList);
 
 
@@ -184,6 +182,8 @@ public class AdminHomeActivity extends AppCompatActivity {
         //connect to the  adapter now
         listView.setAdapter(homeViewAdapter);
         //add search options
+        //search view instance
+        searchView=(SearchView) findViewById(R.id.admin_app_bar_search);
         searchView.setQueryHint("Enter Name/Id");
         searchView.setSubmitButtonEnabled(false); //disable submit button
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

@@ -55,6 +55,9 @@ public class StaffHomeActivity extends AppCompatActivity {
 
     //the number of times we have checked for new sms update
     int numberofchecksdone;
+    Handler handler;
+    Runnable runnable;
+    int delay;
 
 
 
@@ -65,6 +68,14 @@ public class StaffHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_staff_home);
 
         numberofchecksdone=0;
+        delay=1000;
+        handler = new Handler();
+        runnable=new Runnable() {
+            @Override
+            public void run() {
+                new NotificationsGet().execute();
+            }
+        };
         //create progress dialog
         progressDialog = new ProgressDialog(StaffHomeActivity.this);
         sessionManager = new SessionManager(StaffHomeActivity.this);
@@ -296,11 +307,13 @@ public class StaffHomeActivity extends AppCompatActivity {
 
             //ensure the list that holds the data is empty
             arrayList_copy.clear();
-            if (s.equals("Error")) {
-                Toast.makeText(StaffHomeActivity.this, "Something went Wrong", Toast.LENGTH_LONG).show();
+            if (s.equals("Error") && numberofchecksdone == 1) {
+                Toast.makeText(StaffHomeActivity.this, "Something went Wrong Try again later", Toast.LENGTH_LONG).show();
+                handler.removeCallbacks(runnable);
             } else if (s == "unauthorized" || s == "notfound") {
                 Toast.makeText(StaffHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
             } else {
+                //check for the message every now and then
                 //try to decode the json object and send it to get rendered
                 try {
                     JSONObject json = new JSONObject(s);
@@ -367,16 +380,12 @@ public class StaffHomeActivity extends AppCompatActivity {
                         }
                     }
                 } catch (JSONException e) {
-                    Toast.makeText(StaffHomeActivity.this, "Something went wrong try again", Toast.LENGTH_LONG);
-                }
-
+                        Toast.makeText(StaffHomeActivity.this, "Something went wrong try again later", Toast.LENGTH_LONG);
+                    }
+                //check every delay
+                handler.postDelayed(runnable,delay);
             }
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    new NotificationsGet().execute();
-                }
-            },1000);
+
         }
     }
 
