@@ -202,6 +202,93 @@ class Notification{
         }
 
     }
+    
+    //function to send to department
+    public function sendToDep($message,$departmentname,$sender,$description){
+	//get all user id in that department
+	$recipients=array();
+	$values=["UserType"=>"student","DepartmentName"=>$departmentname];
+	$options=["projection"=>["id"=>1]];
+	$result=$this->_Database->queryData("users",$values,$options);
+	if($result){
+		foreach($result as $student){
+			array_push($recipients,$student->_id);
+		}
+	}else{
+		return FALSE;
+	}
+        //create a new id
+        $notificationid=new MongoDB\BSON\ObjectId();
+        //create a new record in the notification table
+        //insert the message to db
+            $values=[
+                "_id"=>$notificationid,
+                "SenderId"=>$sender,
+                "RecipientId"=>$recipients,
+                "Content"=>$message,
+                "Description"=>$description,
+                "SendDate"=>time()
+            ];
+            $result=$this->_Database->createRecord($this->_CollectionName,$values);
+            //now iterate through the status db and set as sent
+            if($result){
+                //update all the status as inserted
+                $_CollectionName='notificationstatus';
+                foreach($recipients as $receiver){
+                    $values=[
+                    "NotificationId"=>$notificationid,
+                    "RecipientId"=>$receiver,
+                    "CurrentStatus"=>1,
+                    "ReadDate"=>0,
+                    "DeliveredDate"=>0
+                    ];
+            $this->_Database->createRecord($_CollectionName,$values);
+	    }
+	    return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+
+    }
+
+
+
+    public function sendNotificationToFaculty($message,$recipients,$sender,$description){
+        //create a new id
+        $notificationid=new MongoDB\BSON\ObjectId();
+        //create a new record in the notification table
+        //insert the message to db
+            $values=[
+                "_id"=>$notificationid,
+                "SenderId"=>$sender,
+                "RecipientId"=>$recipients,
+                "Content"=>$message,
+                "Description"=>$description,
+                "SendDate"=>time()
+            ];
+            $result=$this->_Database->createRecord($this->_CollectionName,$values);
+            //now iterate through the status db and set as sent
+            if($result){
+                //update all the status as inserted
+                $_CollectionName='notificationstatus';
+                foreach($recipients as $receiver){
+                    $values=[
+                    "NotificationId"=>$notificationid,
+                    "RecipientId"=>$receiver,
+                    "CurrentStatus"=>1,
+                    "ReadDate"=>0,
+                    "DeliveredDate"=>0
+                    ];
+            $this->_Database->createRecord($_CollectionName,$values);
+	    }
+	    return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+
+    }
 
     //function to delete a notification
     public function deleteNotification($notificationid,$admissionNo){

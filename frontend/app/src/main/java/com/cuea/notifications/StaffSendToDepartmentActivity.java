@@ -1,7 +1,5 @@
 package com.cuea.notifications;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -14,14 +12,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class StaffSendToOneActivity extends AppCompatActivity {
+public class StaffSendToDepartmentActivity extends AppCompatActivity {
     //some variables
-    String students[];
-    boolean studentschecked[];
+    String departments[];
+    boolean departmentschecked[];
     Button btnsend;
     EditText destination;
     EditText description;
@@ -50,11 +50,12 @@ public class StaffSendToOneActivity extends AppCompatActivity {
         btnsend=(Button) findViewById(R.id.btnsend);
         description=(EditText) findViewById(R.id.edtxtdescription);
         destination=(EditText) findViewById(R.id.edtxtadmission);
+        destination.setHint("Department name");
         editxtsms=(EditText) findViewById(R.id.editxtsms);
-        progressDialog = new ProgressDialog(StaffSendToOneActivity.this);
+        progressDialog = new ProgressDialog(StaffSendToDepartmentActivity.this);
 
         //get the student list
-        new doGetStudents().execute();
+        new doGetDepartments().execute();
 
         ////add an onclic listener for sending text
         btnsend.setOnClickListener(new View.OnClickListener() {
@@ -77,30 +78,30 @@ public class StaffSendToOneActivity extends AppCompatActivity {
         //split using , for sendtomany option
         boolean isdestinationvalid=true;
         String[] receivers=destination.getText().toString().split(",");
-        for(int i=0;i<receivers.length;i++){
-            //check if each digit is valid
-            if(!verification.isAdmissionNoValid(receivers[i])){
-                isdestinationvalid=false;
-                break;
-            }
-        }
+//        for(int i=0;i<receivers.length;i++){
+//            //check if each digit is valid
+//            if(!verification.isAdmissionNoValid(receivers[i])){
+//                isdestinationvalid=false;
+//                break;
+//            }
+//        }
         String allreceivers=destination.getText().toString();
         String desc = description.getText().toString();
         String sms = editxtsms.getText().toString();
-        if(!isdestinationvalid){
-            destination.setError("Invalid admission detected");
-            destination.requestFocus();
-        }else
-        if (!verification.isDescriptionValid(desc)) {
-            description.setError("Description should more than two characters and less than 60 characters");
-            description.requestFocus();
-        } else if (!verification.isSMSValid(sms)) {
-            editxtsms.setError("Sms is too short");
-            editxtsms.requestFocus();
-        } else {
+//        if(!isdestinationvalid){
+//            destination.setError("Invalid admission detected");
+//            destination.requestFocus();
+//        }else
+//        if (!verification.isDescriptionValid(desc)) {
+//            description.setError("Description should more than two characters and less than 60 characters");
+//            description.requestFocus();
+//        } else if (!verification.isSMSValid(sms)) {
+//            editxtsms.setError("Sms is too short");
+//            editxtsms.requestFocus();
+//        } else {
             //call the async class now
             new doSendNotification().execute(sms,desc,allreceivers);
-        }
+//        }
     }
 
 
@@ -110,18 +111,18 @@ public class StaffSendToOneActivity extends AppCompatActivity {
         // initially set the null for the text preview
         destination.setText(null);
         // initialise the alert dialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(StaffSendToOneActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(StaffSendToDepartmentActivity.this);
         // set the title for the alert dialog
-        builder.setTitle("Choose Student ID");
+        builder.setTitle("Choose Department");
       //  Toast.makeText(this, Integer.toString(students.length), Toast.LENGTH_SHORT).show();
         // set the icon for the alert dialog
         builder.setIcon(R.drawable.cuea);
         // now this is the function which sets the alert dialog for multiple item selection ready
-        builder.setMultiChoiceItems(students, studentschecked, new DialogInterface.OnMultiChoiceClickListener() {
+        builder.setMultiChoiceItems(departments, departmentschecked, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i, boolean isChecked) {
-                studentschecked[i] = isChecked;
-                String currentitem=students[i];
+                departmentschecked[i] = isChecked;
+                String currentitem= departments[i];
             }
         });
 
@@ -133,10 +134,10 @@ public class StaffSendToOneActivity extends AppCompatActivity {
             // @SuppressLint("SetTextI18n")
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (int i = 0; i < studentschecked.length; i++) {
-                    if (studentschecked[i]) {
+                for (int i = 0; i < departmentschecked.length; i++) {
+                    if (departmentschecked[i]) {
                         //add to view
-                            destination.setText(destination.getText() + students[i] + ",");
+                            destination.setText(destination.getText() + departments[i] + ",");
                         }
                     }
             }
@@ -155,8 +156,8 @@ public class StaffSendToOneActivity extends AppCompatActivity {
         builder.setNeutralButton("CLEAR ALL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                for (int i = 0; i < studentschecked.length; i++) {
-                    studentschecked[i] = false;
+                for (int i = 0; i < departmentschecked.length; i++) {
+                    departmentschecked[i] = false;
                 }
             }
         });
@@ -183,22 +184,14 @@ public class StaffSendToOneActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
                 String sms=strings[0];
                 String desc=strings[1];
-                String[] receivers= strings[2].split(",");
-
-                 int receiver[]=new int[receivers.length];
-                //create an array of receivers
-                    for (int i=0;i<receivers.length;i++){
-                        receiver[i]=Integer.parseInt(receivers[i]);
-                    }
-
+                String[] departments= strings[2].split(",");
 
                 //create a json object to hold the message
                 try {
                     JSONObject json = new JSONObject();
                     json.put("message",sms);
                     json.put("description",desc);
-                    JSONArray array = new JSONArray(receiver);
-                    json.put("recipients",array);
+                    json.put("departmentname",departments[0]);
                     //now post
                     return requestHandler.PostRequest(MyLinks.LEC_URL_SEND,json,token);
 
@@ -215,7 +208,7 @@ public class StaffSendToOneActivity extends AppCompatActivity {
             progressDialog.dismiss();
             try {
                 JSONObject json = new JSONObject(s);
-                Toast.makeText(StaffSendToOneActivity.this, json.getString("message"), Toast.LENGTH_LONG).show();
+                Toast.makeText(StaffSendToDepartmentActivity.this, json.getString("message"), Toast.LENGTH_LONG).show();
                 //clear the writing
                 editxtsms.setText("");
                 description.setText("");
@@ -223,13 +216,13 @@ public class StaffSendToOneActivity extends AppCompatActivity {
 
             }catch(Exception e)
             {
-                Toast.makeText(StaffSendToOneActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StaffSendToDepartmentActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     //get the students
-    class doGetStudents extends AsyncTask<Void,Void,String>{
+    class doGetDepartments extends AsyncTask<Void,Void,String>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -237,21 +230,22 @@ public class StaffSendToOneActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            return requestHandler.GetRequest(MyLinks.LEC_URL_LIST_STUDENT,token);
+            return requestHandler.GetRequest(MyLinks.LEC_URL_LIST_DEPARTMENT,token);
         }
 
         @Override
         protected void onPostExecute(String s) {
+            Toast.makeText(StaffSendToDepartmentActivity.this, s, Toast.LENGTH_SHORT).show();
             super.onPostExecute(s);
             try{
                 JSONObject json = new JSONObject(s);
                // Toast.makeText(LecSendActivity.this, s, Toast.LENGTH_SHORT).show();
                 JSONArray array = json.getJSONArray("result");
                 //create an array of equal size
-              students = new String[array.length()];
-              studentschecked = new boolean[array.length()];
+              departments = new String[array.length()];
+              departmentschecked = new boolean[array.length()];
                 for(int i=0;i<array.length();i++){
-                    students[i]=(Integer.toString(array.getInt(i)));
+                    departments[i]=(array.getString(i));
                 }
             }
             catch(Exception e){

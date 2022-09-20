@@ -141,7 +141,7 @@ public class AdminHomeActivity extends AppCompatActivity {
     }
 
     public void doLogout(MenuItem item) {
-        sessionManager.logout();
+        sessionManager.logout(true);
     }
     //end action bar hacks
 

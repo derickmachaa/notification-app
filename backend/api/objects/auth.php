@@ -1,5 +1,6 @@
 <?php
 //This file will handle authentication features 
+include_once 'database.php';
 class Auth{
     private $key;
     private $iv;
@@ -24,7 +25,13 @@ class Auth{
     public function Decode($cipher){
         $decrypted=openssl_decrypt($cipher,$this->encryptionScheme,$this->key,$options=0,$this->iv);
         if($decrypted){
-            return $decrypted;
+    	    $data=json_decode($decrypted);
+	    if($this->isValid($data->IdNo)){
+		    return $decrypted;
+	    }
+	    else{
+		    return FALSE;
+	    }
         }
         else{
             return FALSE;
@@ -33,11 +40,17 @@ class Auth{
 
     //function to check if is an admin
 
-    public function CheckRole($cipher){
-        $decoded=$this->Decode($cipher);
-        if($decoded){
-            return $decoded['UserType'];
-        }
+    public function isValid($idNo){
+	$database=new Database();
+	$usertables=['users','admin'];
+   	$filter=['_id'=>$idNo];
+      	$options=[];
+	foreach ($usertables as $table){
+		$result=$database->queryData($table,$filter,$options);
+		if($result){
+			return TRUE;
+		}
+	}
     }
 }
 ?>

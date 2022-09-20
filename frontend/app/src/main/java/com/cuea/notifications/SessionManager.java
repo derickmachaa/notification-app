@@ -68,43 +68,57 @@ public class SessionManager {
         }
     }
 
-    public void logout(){
-        //this function will be used by all users to logout
-        //build a dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(mycontext);
-        builder.setMessage("Do you really want to logout?");
-        //add a positive action
-        builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //preference instance
-                SharedPreferences sharedPreferences = mycontext.getSharedPreferences(mypreference,mycontext.MODE_PRIVATE);
-                //create preference editor
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                //clear the storage ares
-                editor.clear();
-                //commit
-                editor.commit();
-                //say good bye
-                Toast.makeText(mycontext, "Good Bye", Toast.LENGTH_LONG).show();
-                //redirect to main activity
-                Intent intent = new Intent(mycontext,MainActivity.class);
-                mycontext.startActivity(intent);
-                //finish current activity
-                ((Activity)mycontext).finish();
-
-            }
-        });
-
-        //add a negative action
-        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //do nothing
-            }
-        });
-        //show the dialog
-        builder.show();
+    private void clear(){
+        //preference instance
+        SharedPreferences sharedPreferences = mycontext.getSharedPreferences(mypreference, mycontext.MODE_PRIVATE);
+        //create preference editor
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //clear the storage ares
+        editor.clear();
+        //commit
+        editor.commit();
     }
+
+    private void redirectomain(){
+        //say good bye
+        Toast.makeText(mycontext, "Good Bye", Toast.LENGTH_SHORT).show();
+        //redirect to main activity
+        Intent intent = new Intent(mycontext, MainActivity.class);
+        mycontext.startActivity(intent);
+        //finish current activity
+        ((Activity) mycontext).finish();
+
+    }
+
+    public void logout(Boolean interactive) {
+        //this function will be used by all users to logout
+        if (interactive) {
+            //build a dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(mycontext);
+            builder.setMessage("Do you really want to logout?");
+            //add a positive action
+            builder.setPositiveButton(R.string.Accept, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    clear();
+                    redirectomain();
+                }
+            });
+
+            //add a negative action
+            builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //do nothing
+                }
+            });
+            //show the dialog
+            builder.show();
+        }else{
+            Toast.makeText(mycontext, "You have been logged out by admin", Toast.LENGTH_LONG).show();
+            clear();
+            redirectomain();
+        }
+        }
 
 }

@@ -43,16 +43,16 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                 //responde
                 if($sms){
                     http_response_code(200);
-                    echo json_encode($sms);
+                    echo json_encode(array("message"=>"succesful","content"=>$sms));
                     }else{
-                        http_response_code(204);
+                        http_response_code(400);
                         echo json_encode(array("message"=>"Not found"));
                     }
             }else
             {
                 //respond
             http_response_code(200);
-            echo json_encode($notification->senderGetAll($IdNo));
+            echo json_encode(array("message"=>"successful","content"=>$notification->senderGetAll($IdNo)));
             }
         }
         else{
@@ -63,7 +63,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     }else{
         //say invalid token provided
         http_response_code(403);
-        $message="Invalid token";
+        $message="Invalid Token";
         echo json_encode(array("message"=>$message));
     }
 }

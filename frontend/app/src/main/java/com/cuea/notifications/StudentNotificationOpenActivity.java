@@ -63,7 +63,8 @@ public class StudentNotificationOpenActivity extends AppCompatActivity {
             progressDialog.dismiss();
             try{
                 JSONObject json=new JSONObject(s);
-                JSONObject result = json.getJSONObject("result");
+                JSONObject content = json.getJSONObject("content");
+                JSONObject result = content.getJSONObject("result");
                 //get the values
                 String sms=result.getString("Content");
                 String sender=result.getString("FullNames");

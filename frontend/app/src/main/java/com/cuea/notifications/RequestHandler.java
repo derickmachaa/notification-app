@@ -42,18 +42,14 @@ public class RequestHandler {
             Connection.setRequestProperty("Authorization","Bearer "+rqtoken); //set Authorization
             //set input stream
             Connection.setDoInput(true);
-            //write to input stream if sucess
-            InputStream inputStream = Connection.getInputStream();
-            if(Connection.getResponseCode()==200){
+            if(Connection.getResponseCode()>=100 && Connection.getResponseCode()<=399){
+                //write to input stream if sucess
+                InputStream inputStream = Connection.getInputStream();
                 response = InputstreamToString(inputStream);
             }
-            else if(Connection.getResponseCode()==400){
-                response="notfound";
+            else{
+                response = InputstreamToString(Connection.getErrorStream());
             }
-            else if(Connection.getResponseCode()==403){
-                response="unauthorized";
-            }
-
             //close the connection
             Connection.disconnect();
         }catch (Exception e){
@@ -89,28 +85,17 @@ public class RequestHandler {
 
 
             //check response code
-            if(Connection.getResponseCode()==HttpURLConnection.HTTP_OK){
+            if(Connection.getResponseCode()>=100 && Connection.getResponseCode()<=399){
                 //if ok continue
                 InputStream is = Connection.getInputStream();
                 //convert to string
                 response = InputstreamToString(is);
             }
-            else if(Connection.getResponseCode()==403){
-                response="unauthorized";
-
-            }
-            else if(Connection.getResponseCode()==HttpURLConnection.HTTP_NO_CONTENT || Connection.getResponseCode()==404){
-                response="notfound";
-            }
-            else if(Connection.getResponseCode()==201){
-                response="created";
-            }
-            else if(Connection.getResponseCode()==304){
-                response="notmodified";
+            else {
+                response=InputstreamToString(Connection.getErrorStream());
             }
             //close connection
             Connection.disconnect();
-
 
         }catch(Exception e){
             e.printStackTrace();

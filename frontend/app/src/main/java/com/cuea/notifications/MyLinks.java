@@ -33,5 +33,6 @@ public class MyLinks {
 
     //user lists
     public static final String LEC_URL_LIST_STUDENT = NOTIFICATION_ROOT_URL + "lecturer/student_list.php";
+    public static final String LEC_URL_LIST_DEPARTMENT = NOTIFICATION_ROOT_URL + "lecturer/department_list.php";
 
 }

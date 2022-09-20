@@ -33,6 +33,9 @@
             android:name=".StaffSendToOneActivity"
             android:exported="false" />
         <activity
+            android:name=".StaffSendToDepartmentActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdminAddUserActivity"
             android:exported="false" />
         <activity

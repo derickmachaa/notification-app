@@ -5,14 +5,10 @@ import static com.cuea.notifications.MainActivity.NOTIFICATION_CHANNEL;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.recyclerview.widget.DiffUtil;
 
-import android.app.AlertDialog;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,7 +47,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     HomeViewAdapter homeViewAdapter;
 
     //notification count
-    int notificationcheck=0;
+    int notificationchecksdone =0;
 
     //searchview
     SearchView searchView;
@@ -60,6 +56,10 @@ public class StudentHomeActivity extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
     int delay=1000;
+
+    //some variables for homeview
+    int imgid;
+    String maintitle,subtitle,objectid;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.student_profile_menu,menu);
@@ -158,13 +158,13 @@ public class StudentHomeActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             //create dialog if this is the first time we are checking for messages
-            if(notificationcheck==0){
+            if(notificationchecksdone ==0){
                 progressDialog.setMessage("Getting your messages");
                 progressDialog.setCancelable(false);
                 progressDialog.show();
             }
             //add plus one
-            notificationcheck+=1;
+            notificationchecksdone +=1;
 
         }
 
@@ -177,99 +177,130 @@ public class StudentHomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
+            //Toast.makeText(StudentHomeActivity.this, s, Toast.LENGTH_SHORT).show();
             arrayList_copy.clear();
             super.onPostExecute(s);
             //stop process dialog
             progressDialog.dismiss();
             ///process the messages;
-            //Toast.makeText(StudentActivity.this,s,Toast.LENGTH_LONG).show();
-            if(s.equals("Error")){
-                //check if first time run
-                if(notificationcheck==1) {
-                    Toast.makeText(StudentHomeActivity.this, "Something went Wrong try again later", Toast.LENGTH_LONG).show();
-                    handler.removeCallbacks(runnable);
-                }
-            }else if(s=="unauthorized"||s=="notfound") {
-                Toast.makeText(StudentHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
+            //Toast.makeText(StudentHomeActivity.this,s,Toast.LENGTH_LONG).show();
+            if(s.equals("Error") && notificationchecksdone ==1) {
+                Toast.makeText(StudentHomeActivity.this, "Something went Wrong Check internet and try later", Toast.LENGTH_LONG).show();
                 handler.removeCallbacks(runnable);
-            }else{
-                //try to decode the json object and place it in arraylist
-                try{
+            }else {
+                //try to decode the values
+                String response="empty";
+                try {
                     JSONObject json = new JSONObject(s);
-                    JSONArray array = json.getJSONArray("result");
-                    int imgid;
-                    //iterate through the json array
-                    for(int i=0;i<array.length();i++){
-                        JSONObject object = array.getJSONObject(i);
-                        //get the name of the sender
-                        String maintitle=object.getString("FullNames");
-                        //get the description of the notification
-                        String subtitle=object.getString("Description");
-                        //get the status of the notification
-                        try{
-                            int status = object.getInt("Status");
-                            if(status!=3){
-                                imgid=R.drawable.smsnew;
+                    response = json.getString("message");
+
+
+                    //check if we were successful
+                    if(response.equals("successful")){
+                        JSONObject result = json.getJSONObject("content");
+                        //parse the result
+                        JSONArray array = result.getJSONArray("result");
+                        //iterate through the json array and create array list
+                        for(int i=0;i<array.length();i++) {
+                            JSONObject object = array.getJSONObject(i);
+                            //get the name of the sender
+                             maintitle = object.getString("FullNames");
+                            //get the description of the notification
+                             subtitle = object.getString("Description");
+                            //get the status of the notification
+                            try {
+                                int status = object.getInt("Status");
+                                if (status != 3) {
+                                    imgid = R.drawable.smsnew;
+                                } else {
+                                    imgid = R.drawable.smsread;
+                                }
+                            } catch (Exception e) {
+                                imgid = R.drawable.smsnew;
                             }
-                            else{
-                                imgid=R.drawable.smsread;
-                            }}catch (Exception e){
-                            imgid=R.drawable.smsnew;
+                            //get the id
+                             objectid = object.getString("Id");
+                            //if first time add directly to list
+                            if(notificationchecksdone ==1){
+                                arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
+                            }else {
+                                //add to copy for comparison
+                                arrayList_copy.add(new HomeView(imgid, maintitle, subtitle, objectid));
+                            }
                         }
+                        //done iteration
 
-                        //get the id
-                        String objectid = object.getString("Id");
-
-                        //if this is the first run just add to list directly
-                        if(notificationcheck==1){
-                            arrayList.add(new HomeView(imgid,maintitle,subtitle,objectid));
-                        }else{
-                            //add to copy for comparison
-                            arrayList_copy.add(new HomeView(imgid,maintitle,subtitle,objectid));
-                        }
-                    }
-
-                    //now its time to display
-                    if(notificationcheck==1 || arrayList_copy.isEmpty() ){
+                        //now display
                         //if this is the first run just display
-                        doDisplaySms();
-                    }
-                    else{
-                        //check whether to update or not
-                        //check if array not of the same size then we need to update as there is a new change
-                            if(arrayList_copy.size()!=arrayList.size() && searchView.isIconified()) {
+                       if(notificationchecksdone ==1) {
+                           doDisplaySms();
+                       }
+                       else if(arrayList.isEmpty()){
+                           progressDialog.show();
+                           //Toast.makeText(StudentHomeActivity.this, "We", Toast.LENGTH_SHORT).show();
+                           arrayList.addAll(arrayList_copy);
+                           doDisplaySms();
+                       }
+                       else{
+                            //check whether to update or not
+                            //check if array not of the same size then we need to update as there is a new change
+                            if (arrayList_copy.size() != arrayList.size() && searchView.isIconified()) {
 
-                                if(arrayList_copy.size()> arrayList.size()){
-                                //alert the user of a new message
-                                //build our notification give it title
-                                NotificationCompat.Builder notification = new NotificationCompat.Builder(StudentHomeActivity.this, NOTIFICATION_CHANNEL);
-                                notification.setContentTitle("New Notification");
-                                notification.setContentText("Tap to open");
-                                notification.setDefaults(Notification.DEFAULT_ALL);
-                                notification.setSmallIcon(R.drawable.ic_launcher_foreground);
-                                //allow the notification to exit on tap
-                                notification.setAutoCancel(true);
-                                //done
-                                //add action
-                                Intent intent = new Intent(StudentHomeActivity.this, StudentHomeActivity.class);
-                                PendingIntent pendingIntent = PendingIntent.getActivity(StudentHomeActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-                                notification.setContentIntent(pendingIntent);
-                                //done
-                                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(StudentHomeActivity.this);
-                                notificationManagerCompat.notify(1, notification.build());
+                                if (arrayList_copy.size() > arrayList.size()) {
+                                    //alert the user of a new message
+                                    //build our notification give it title
+                                    NotificationCompat.Builder notification = new NotificationCompat.Builder(StudentHomeActivity.this, NOTIFICATION_CHANNEL);
+                                    notification.setContentTitle("New Notification");
+                                    notification.setContentText("Tap to open");
+                                    notification.setDefaults(Notification.DEFAULT_ALL);
+                                    notification.setSmallIcon(R.drawable.ic_launcher_foreground);
+                                    //allow the notification to exit on tap
+                                    notification.setAutoCancel(true);
+                                    //done
+                                    //add action
+                                    Intent intent = new Intent(StudentHomeActivity.this, StudentHomeActivity.class);
+                                    PendingIntent pendingIntent = PendingIntent.getActivity(StudentHomeActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                                    notification.setContentIntent(pendingIntent);
+                                    //done
+                                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(StudentHomeActivity.this);
+                                    notificationManagerCompat.notify(1, notification.build());
                                 }
                                 arrayList.clear();
                                 arrayList.addAll(arrayList_copy);
                                 doDisplaySms();
                             }
+                        }
                     }
+                    else{
+                        //check what went wrong
+                        switch (response) {
+                            case "Invalid Token":
+                                Toast.makeText(StudentHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
+                                sessionManager.logout(false);
+                                handler.removeCallbacks(runnable);
+                            case "Not Allowed"://no break
+                                Toast.makeText(StudentHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
+                                sessionManager.logout(false);
+                                handler.removeCallbacks(runnable);
+                                break;
+                            case "Not found":
+                                if (notificationchecksdone < 1) {
+                                    Toast.makeText(StudentHomeActivity.this, "No New messages", Toast.LENGTH_LONG).show();
+                                }
+                                break;
+                            default:
+                                if (notificationchecksdone < 1) {
+                                    Toast.makeText(StudentHomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                }
+                        }
 
-                }catch (JSONException e){
-                        Toast.makeText(StudentHomeActivity.this, "Something went wrong", Toast.LENGTH_LONG);
-                    }
-                //check new messages every one second
-                handler.postDelayed(runnable,delay);
+                        }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+            //run every delay
+            handler.postDelayed(runnable,delay);
 
         }
     }
@@ -289,7 +320,7 @@ public class StudentHomeActivity extends AppCompatActivity {
 
     //this function will be used when user wants to logout
     public void doLogout(MenuItem mi){
-        sessionManager.logout();
+        sessionManager.logout(true);
     }
 
 }

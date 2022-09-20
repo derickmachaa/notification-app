@@ -56,12 +56,12 @@ if(isset($data->IdNo)){
         if($user->setToken($token)){
             send_sms($phone,$token);
             http_response_code(200);
-            echo json_encode(array("message"=>"proceed to verification","firstname"=>$fname,"phoneno"=>hide_number($phone)));
+            echo json_encode(array("message"=>"successful","firstname"=>$fname,"phoneno"=>hide_number($phone)));
         }
     }
     else{
-        http_response_code(204);
-       // echo json_encode(array("message"=>"user does not exist"));
+        http_response_code(400);
+        echo json_encode(array("message"=>"user does not exist"));
     }
 }
 else{

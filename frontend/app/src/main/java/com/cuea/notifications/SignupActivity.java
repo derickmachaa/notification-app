@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,22 +15,32 @@ import org.json.JSONObject;
 
 
 public class SignupActivity extends AppCompatActivity {
+    EditText edIdNo;
+    Button btnsignin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        edIdNo = (EditText) findViewById(R.id.edAdmission);
+        btnsignin = (Button) findViewById(R.id.btnsignin);
+
+        btnsignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DoSingin(view);
+            }
+        });
     }
 
     //This function will handle what action to take when button has been pressed
     public void DoSingin(View view) {
         //select edit text
-        EditText edAmission = (EditText) findViewById(R.id.edAdmission);
         //do some validation before posting
-            String admissionno = edAmission.getText().toString();
+            String admissionno = edIdNo.getText().toString();
             MyValidation myverification = new MyValidation();
         if (!myverification.isAdmissionNoValid(admissionno)) {
-            edAmission.setError("invalid admission");
-            edAmission.requestFocus();
+            edIdNo.setError("invalid admission");
+            edIdNo.requestFocus();
         } else {
             int adm = Integer.parseInt(admissionno);
             new DoRequestSignup().execute(adm);
@@ -53,11 +64,11 @@ public class SignupActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Integer... integers) {
             //get admission no
-            int admissionno = integers[0];
+            int idno = integers[0];
             //create json object
             try {
                 //put data in json
-                json.put("IdNo", admissionno);
+                json.put("IdNo", idno);
                 //create request instance
                 RequestHandler requestHandler = new RequestHandler();
                 //call request
@@ -77,30 +88,30 @@ public class SignupActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
             //check if response was successful
-            if(s=="Error"){
-                Toast.makeText(SignupActivity.this, "Something Went Wrong", Toast.LENGTH_LONG).show();
+            if(s.equals("Error")){
+                Toast.makeText(SignupActivity.this, "Something Went Wrong Check internet or try later", Toast.LENGTH_LONG).show();
 //
             }
-            else if(s=="notfound"){
-                EditText edAmission = (EditText) findViewById(R.id.edAdmission);
-                edAmission.setError("The admission number does not exist");
-                edAmission.requestFocus();
-            }
-            else {
-                try {
+            else{
+                try{
                     //decode if is js
                     JSONObject jsonresponse = new JSONObject(s);
-                    String firstname = jsonresponse.getString("firstname");
-                    String phoneno = jsonresponse.getString("phoneno");
-                    //launch the verify activity
-                    Intent intent = new Intent(SignupActivity.this,VerifyActivity.class);
-                    intent.putExtra("FirstName",firstname);
-                    intent.putExtra("PhoneNo",phoneno);
-                    intent.putExtra("IdNo",json.getInt("IdNo"));
-                    startActivity(intent);
-                    finish();//finish current activity
-
-
+                    String success = jsonresponse.getString("message");
+                    if(!success.contains("successful")) {
+                        edIdNo.setError(success);
+                        edIdNo.requestFocus();
+                    }
+                    else {
+                        String firstname = jsonresponse.getString("firstname");
+                        String phoneno = jsonresponse.getString("phoneno");
+                        //launch the verify activity
+                        Intent intent = new Intent(SignupActivity.this, VerifyActivity.class);
+                        intent.putExtra("FirstName", firstname);
+                        intent.putExtra("PhoneNo", phoneno);
+                        intent.putExtra("IdNo", json.getInt("IdNo"));
+                        startActivity(intent);
+                        finish();//finish current activity
+                    }
 
                 } catch (Exception e) {
                     Toast.makeText(SignupActivity.this, "Something Went Wrong", Toast.LENGTH_LONG).show();

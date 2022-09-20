@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -36,7 +35,7 @@ public class StaffHomeActivity extends AppCompatActivity {
     //create session manager object
     SessionManager sessionManager;
     //create user object
-    User user ;
+    User user;
     //the token to use for requests
     String token;
     //request handler
@@ -48,17 +47,17 @@ public class StaffHomeActivity extends AppCompatActivity {
     //search view
     SearchView searchView;
     //Boolean
-    Boolean is_lec,isAllFabsVisible;
+    Boolean is_lec, isAllFabsVisible;
     //floating buttons
-    FloatingActionButton fab_newsms,fab_smsto_one,fab_smsto_dep,fab_smsto_faculty;
+    FloatingActionButton fab_newsms, fab_smsto_one, fab_smsto_dep, fab_smsto_faculty;
     TextView txt_fab_smsto_one, txt_fab_smsto_dep, txt_fab_smsmto_faculty;
 
     //the number of times we have checked for new sms update
-    int numberofchecksdone;
+    int notificationchecksdone;
     Handler handler;
     Runnable runnable;
-    int delay;
-
+    int delay, imgid;
+    String maintitle, subtitle, objectid;
 
 
     @Override
@@ -67,10 +66,10 @@ public class StaffHomeActivity extends AppCompatActivity {
         //set content
         setContentView(R.layout.activity_staff_home);
 
-        numberofchecksdone=0;
-        delay=1000;
+        notificationchecksdone = 0;
+        delay = 1000;
         handler = new Handler();
-        runnable=new Runnable() {
+        runnable = new Runnable() {
             @Override
             public void run() {
                 new NotificationsGet().execute();
@@ -87,12 +86,12 @@ public class StaffHomeActivity extends AppCompatActivity {
         arrayList = new ArrayList<HomeView>();
         arrayList_copy = new ArrayList<HomeView>();
         //get the boolean if islec
-        is_lec=user.getIs_lec();
+        is_lec = user.getIs_lec();
 
         //change the title accordingly
-        if(is_lec){
+        if (is_lec) {
             setTitle("Lecturer Profile");
-        }else{
+        } else {
             setTitle("Staff Profile");
         }
         //get notififcations
@@ -116,13 +115,13 @@ public class StaffHomeActivity extends AppCompatActivity {
         txt_fab_smsto_one.setVisibility(View.GONE);
         txt_fab_smsto_dep.setVisibility(View.GONE);
         txt_fab_smsmto_faculty.setVisibility(View.GONE);
-        isAllFabsVisible=false;
+        isAllFabsVisible = false;
 
         //floating bar onlick
         fab_newsms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isAllFabsVisible){
+                if (!isAllFabsVisible) {
                     //show when clicked
                     fab_smsto_one.show();
                     fab_smsto_dep.show();
@@ -134,9 +133,8 @@ public class StaffHomeActivity extends AppCompatActivity {
                     txt_fab_smsto_dep.setVisibility(View.VISIBLE);
                     txt_fab_smsmto_faculty.setVisibility(View.VISIBLE);
                     //toggle they are visible
-                    isAllFabsVisible=true;
-                }
-                else{
+                    isAllFabsVisible = true;
+                } else {
                     //hide because clicked
                     fab_smsto_one.hide();
                     fab_smsto_dep.hide();
@@ -148,7 +146,7 @@ public class StaffHomeActivity extends AppCompatActivity {
                     txt_fab_smsto_one.setVisibility(View.GONE);
                     txt_fab_smsto_dep.setVisibility(View.GONE);
                     txt_fab_smsmto_faculty.setVisibility(View.GONE);
-                    isAllFabsVisible=false;
+                    isAllFabsVisible = false;
                 }
             }
         });
@@ -162,44 +160,53 @@ public class StaffHomeActivity extends AppCompatActivity {
             }
         });
 
+        //add send to department action
+        fab_smsto_dep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StaffHomeActivity.this, StaffSendToDepartmentActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
     //action bar hacks
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.staff_profile_menu,menu);
+        getMenuInflater().inflate(R.menu.staff_profile_menu, menu);
         return true;
     }
 
     public void doReport(MenuItem item) {
         //start the report activity
-        Intent intent = new Intent(this,LecReportActivity.class);
+        Intent intent = new Intent(this, LecReportActivity.class);
         startActivity(intent);
     }
 
     public void doAbout(MenuItem item) {
         //start about activity
         //redirect to about acvitity
-        Intent intent = new Intent(this,AboutActivity.class);
+        Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
 
     public void doLogout(MenuItem item) {
-        sessionManager.logout();
+        sessionManager.logout(true);
     }
 
     public void doCreateNotification(MenuItem item) {
         Intent intent = new Intent(this, StaffSendToOneActivity.class);
         startActivity(intent);
     }
+
     public void doAddUser(MenuItem item) {
 
     }
     //end action bar hacks
 
     //function to perform sms deletion
-    public void doDeleteSms(String id,int position){
+    public void doDeleteSms(String id, int position) {
 
         //build a dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -219,7 +226,7 @@ public class StaffHomeActivity extends AppCompatActivity {
             }
         });
         //add a negative action
-        builder.setNeutralButton(R.string.Cancel,null);
+        builder.setNeutralButton(R.string.Cancel, null);
         //show the dialog
         builder.show();
 
@@ -228,38 +235,38 @@ public class StaffHomeActivity extends AppCompatActivity {
 
 
     //function to display sms
-    public void doDisplayNotification(){
-            //get the list view
-            listView = (ListView) findViewById(R.id.staff_sms_list);
-            homeViewAdapter=new HomeViewAdapter(this,arrayList);
-            searchView=findViewById(R.id.staff_app_bar_search);
+    public void doDisplayNotification() {
+        //get the list view
+        listView = (ListView) findViewById(R.id.staff_sms_list);
+        homeViewAdapter = new HomeViewAdapter(this, arrayList);
+        searchView = findViewById(R.id.staff_app_bar_search);
 
-            //create handle on click
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    //get the homeview
-                    HomeView homeView = arrayList.get(i);
-                    Intent intent = new Intent(StaffHomeActivity.this, StaffNotificationOpenActivity.class);
-                    intent.putExtra("notificationID",homeView.getObjectid());
-                    startActivity(intent);
-                }
-            });
-            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    HomeView homeView = arrayList.get(i);
-                    doDeleteSms(homeView.getObjectid(),i);
-                    homeViewAdapter.notifyDataSetChanged();
-                    return true;
-                }
-            });
-            //connect to the  adapter now
-            listView.setAdapter(homeViewAdapter);
-            //add search options
-            searchView.setQueryHint("Enter Content/Description");
-            searchView.setSubmitButtonEnabled(false); //disable submit button
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        //create handle on click
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //get the homeview
+                HomeView homeView = arrayList.get(i);
+                Intent intent = new Intent(StaffHomeActivity.this, StaffNotificationOpenActivity.class);
+                intent.putExtra("notificationID", homeView.getObjectid());
+                startActivity(intent);
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                HomeView homeView = arrayList.get(i);
+                doDeleteSms(homeView.getObjectid(), i);
+                homeViewAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+        //connect to the  adapter now
+        listView.setAdapter(homeViewAdapter);
+        //add search options
+        searchView.setQueryHint("Enter Content/Description");
+        searchView.setSubmitButtonEnabled(false); //disable submit button
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 return false;
@@ -277,18 +284,18 @@ public class StaffHomeActivity extends AppCompatActivity {
     //end display
 
     //Async task to request sms
-    class NotificationsGet extends AsyncTask<Void,Void,String> {
+    class NotificationsGet extends AsyncTask<Void, Void, String> {
         @Override
         protected void onPreExecute() {
             //check if to show progress since we are running for the first time
             super.onPreExecute();
-            if (numberofchecksdone == 0) {
+            if (notificationchecksdone == 0) {
                 //create dialog process
                 progressDialog.setMessage("Getting your messages");
                 progressDialog.setCancelable(false);
                 progressDialog.show();
             }
-            numberofchecksdone += 1;
+            notificationchecksdone += 1;
 
         }
 
@@ -307,84 +314,118 @@ public class StaffHomeActivity extends AppCompatActivity {
 
             //ensure the list that holds the data is empty
             arrayList_copy.clear();
-            if (s.equals("Error") && numberofchecksdone == 1) {
+            if (s.equals("Error") && notificationchecksdone == 1) {
                 Toast.makeText(StaffHomeActivity.this, "Something went Wrong Try again later", Toast.LENGTH_LONG).show();
                 handler.removeCallbacks(runnable);
-            } else if (s == "unauthorized" || s == "notfound") {
-                Toast.makeText(StaffHomeActivity.this, "Not authorized logout", Toast.LENGTH_LONG).show();
             } else {
-                //check for the message every now and then
-                //try to decode the json object and send it to get rendered
+                //try to decode the values
+                String response = "empty";
                 try {
                     JSONObject json = new JSONObject(s);
-                    JSONArray array = json.getJSONArray("result");
-                    //iterate through the json array
-                    for (int i = 0; i < array.length(); i++) {
-                        int imgid;
-                        JSONObject object = array.getJSONObject(i);
-                        //get the description of the notification
-                        String maintitle = object.getString("Description");
-                        //get content
-                        String subtitle = object.getString("Content");
-                        try {
-                            JSONObject status = object.getJSONObject("Status");
-                            //get the status
-                            int progress = status.getInt("progress");
-                            //get total
-                            if (progress == 100) {
-                                imgid = R.drawable.ic_sms_read;
-                            } else if (progress >= 50 && progress < 100) {
-                                imgid = R.drawable.ic_sms_delivered;
-                            } else {
-                                imgid = R.drawable.ic_sms_sent;
-                            }
-                        } catch (Exception e) {
-                            imgid = R.drawable.ic_sms_sent;
-                        }//update list with the id
-                        String objectid = object.getString("Id");
+                    response = json.getString("message");
 
-                        //if this is the first time just add to arrayList
-                        if(numberofchecksdone==1){
-                            arrayList.add(new HomeView(imgid, maintitle, subtitle, objectid));
+                    //check if we were successful
+                    if (response.equals("successful")) {
+                        JSONObject result = json.getJSONObject("content");
+                        //parse the result
+                        JSONArray array = result.getJSONArray("result");
+                        //iterate through the json array and create array list
+                        for (int i = 0; i < array.length(); i++) {
+                            int imgid;
+                            JSONObject object = array.getJSONObject(i);
+                            //get the description of the notification
+                            String maintitle = object.getString("Description");
+                            //get content
+                            String subtitle = object.getString("Content");
+                            try {
+                                JSONObject status = object.getJSONObject("Status");
+                                //get the status
+                                int progress = status.getInt("progress");
+                                //get total
+                                if (progress == 100) {
+                                    imgid = R.drawable.ic_sms_read;
+                                } else if (progress >= 50 && progress < 100) {
+                                    imgid = R.drawable.ic_sms_delivered;
+                                } else {
+                                    imgid = R.drawable.ic_sms_sent;
+                                }
+                            } catch (Exception e) {
+                                imgid = R.drawable.ic_sms_sent;
+                            }//update list with the id
+                            String objectid = object.getString("Id");
+
+                            //if this is the first time just add to arrayList
+                            if (notificationchecksdone == 1) {
+                                arrayList.add(new HomeView(imgid, maintitle, subtitle, objectid));
+                            } else {
+                                arrayList_copy.add(new HomeView(imgid, maintitle, subtitle, objectid));
+                            }
                         }
-                        else {
-                            arrayList_copy.add(new HomeView(imgid, maintitle, subtitle, objectid));
-                        }
-                    }
-                    //now display here is the catch
-                    //if first time
-                    if(numberofchecksdone==1){
-                        doDisplayNotification();
-                    }
-                    else {
-                        if (arrayList.size() != arrayList_copy.size() && searchView.isIconified()) {
-                            //here a new sms has come
-                            //clear current list
-                            arrayList.clear();
+
+                        //done parsing
+                        //now display
+                        //if this is the first run just display
+                        if (notificationchecksdone == 1) {
+                            doDisplayNotification();
+                        } else if (arrayList.isEmpty()) {
+                            progressDialog.show();
+                            //Toast.makeText(StudentHomeActivity.this, "We", Toast.LENGTH_SHORT).show();
                             arrayList.addAll(arrayList_copy);
                             doDisplayNotification();
                         } else {
-                            //Toast.makeText(StaffHomeActivity.this, "We here", Toast.LENGTH_SHORT).show();
-                            //run through each message individually updating the current status
-                            for (int i = 0; i < arrayList.size(); i++) {
-                                //get current icon status
-                                int currenticon = homeViewAdapter.getItem(i).getImageviewid();
-                                int newicon = arrayList_copy.get(i).getImageviewid();
-                                if (newicon != currenticon) {
-                                    Toast.makeText(StaffHomeActivity.this, "Not same", Toast.LENGTH_SHORT).show();
-                                    //update the icon
-                                    homeViewAdapter.getItem(i).setImageviewid(newicon);
-                                    homeViewAdapter.notifyDataSetChanged();
+                            if (arrayList.size() != arrayList_copy.size() && searchView.isIconified()) {
+                                //here a new sms has come
+                                //clear current list
+                                arrayList.clear();
+                                arrayList.addAll(arrayList_copy);
+                                doDisplayNotification();
+                            } else {
+                                //Toast.makeText(StaffHomeActivity.this, "We here", Toast.LENGTH_SHORT).show();
+                                //run through each message individually updating the current status
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    //get current icon status
+                                    int currenticon = homeViewAdapter.getItem(i).getImageviewid();
+                                    int newicon = arrayList_copy.get(i).getImageviewid();
+                                    if (newicon != currenticon) {
+                                        Toast.makeText(StaffHomeActivity.this, "Not same", Toast.LENGTH_SHORT).show();
+                                        //update the icon
+                                        homeViewAdapter.getItem(i).setImageviewid(newicon);
+                                        homeViewAdapter.notifyDataSetChanged();
+                                    }
                                 }
                             }
                         }
+
+                    } else {
+                        //check what went wrong
+                        switch (response) {
+                            case "Invalid Token":
+                                Toast.makeText(StaffHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
+                                sessionManager.logout(false);
+                                handler.removeCallbacks(runnable);
+                            case "Not Allowed":
+                                Toast.makeText(StaffHomeActivity.this, "Not authorized please login", Toast.LENGTH_LONG).show();
+                                sessionManager.logout(false);
+                                handler.removeCallbacks(runnable);
+                                break;
+                            case "Not found":
+                                if (notificationchecksdone <= 1) {
+                                    Toast.makeText(StaffHomeActivity.this, "Create New messages", Toast.LENGTH_LONG).show();
+                                }
+                                break;
+                            default:
+                                if (notificationchecksdone < 1) {
+                                    Toast.makeText(StaffHomeActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                                }
+                        }
+
                     }
                 } catch (JSONException e) {
-                        Toast.makeText(StaffHomeActivity.this, "Something went wrong try again later", Toast.LENGTH_LONG);
-                    }
-                //check every delay
-                handler.postDelayed(runnable,delay);
+                    e.printStackTrace();
+                }
             }
+            //run every delay
+            handler.postDelayed(runnable, delay);
 
         }
     }
