@@ -237,7 +237,11 @@ public class StudentHomeActivity extends AppCompatActivity {
                            doDisplaySms();
                        }
                        else if(arrayList.isEmpty()){
-                           progressDialog.show();
+                           if(notificationchecksdone <= 1) {
+                               //show progress
+                               progressDialog.show();
+                               Toast.makeText(StudentHomeActivity.this, "No New Messages", Toast.LENGTH_SHORT).show();
+                           }
                            //Toast.makeText(StudentHomeActivity.this, "We", Toast.LENGTH_SHORT).show();
                            arrayList.addAll(arrayList_copy);
                            doDisplaySms();
