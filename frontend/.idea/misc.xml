@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/layout/activity_signup.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_st_notification_open.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/layout/activity_staff_home.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_staff_notification_report.xml" value="0.13043478260869565" />
         <entry key="app/src/main/res/layout/activity_student.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_student_home.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_verify.xml" value="0.25" />
@@ -28,7 +29,7 @@
         <entry key="app/src/main/res/layout/homeview_array_list.xml" value="0.13043478260869565" />
         <entry key="app/src/main/res/layout/lec_array_list.xml" value="0.13043478260869565" />
         <entry key="app/src/main/res/layout/notification_received_layout.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/notification_sent_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/notification_sent_layout.xml" value="0.22" />
         <entry key="app/src/main/res/layout/reciever_sms.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/layout/report_array_list.xml" value="0.1970260223048327" />
         <entry key="app/src/main/res/menu/admin_profile_menu.xml" value="0.28125" />
@@ -36,6 +37,7 @@
         <entry key="app/src/main/res/menu/lec_send_menu.xml" value="0.1890625" />
         <entry key="app/src/main/res/menu/new_sms_actions.xml" value="0.1890625" />
         <entry key="app/src/main/res/menu/profile_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/staff_notification_open.xml" value="0.1890625" />
         <entry key="app/src/main/res/menu/staff_profile_menu.xml" value="0.19010416666666666" />
         <entry key="app/src/main/res/menu/student_profile_menu.xml" value="0.19010416666666666" />
       </map>

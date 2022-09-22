@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,17 @@ public class StaffNotificationOpenActivity extends AppCompatActivity {
         new ReadNotification().execute(notificationid);
     }
 
+    //set a different menu item
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.staff_notification_open,menu);
+        return true;
+    }
+
+    public void doReport(MenuItem mi){
+        Intent intent = new Intent(this,StaffNotificationReport.class);
+        startActivity(intent);
+    }
 
     class ReadNotification extends AsyncTask<String,Void,String> {
         //create a progress dialog
@@ -61,8 +74,16 @@ public class StaffNotificationOpenActivity extends AppCompatActivity {
                 JSONObject result = content.getJSONObject("result");
                 //get the values
                 String sms=result.getString("Content");
+                JSONObject status = result.getJSONObject("Status");
                 //convert epoc to date
                 Long epoc = result.getLong("Date");
+                //get the recipient count
+                int totalsent,totalread,totaldelivered,all;
+                totalsent=status.getInt("sent");
+                totaldelivered=status.getInt("delivered");
+                totalread=status.getInt("read");
+                all=totaldelivered+totalread+totalsent;
+
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String date=simpleDateFormat.format(epoc*1000);
@@ -75,10 +96,13 @@ public class StaffNotificationOpenActivity extends AppCompatActivity {
                 TextView txtsms= (TextView)findViewById(R.id.txt_sender_sms);
                 TextView txtday = (TextView)findViewById(R.id.txt_sender_date);
                 TextView txttime = (TextView)findViewById(R.id.txt_sender_time);
+                TextView txtrep =  (TextView) findViewById(R.id.txt_sender_report);
 
                 txtsms.setText(sms);
                 txtday.setText(day);
                 txttime.setText(time);
+                String report="SentTo: "+Integer.toString(all)+"\n"+"OpenedBy: " + Integer.toString(totalread);
+                txtrep.setText(report);
 
             }catch (JSONException e){e.printStackTrace();
                 Toast.makeText(StaffNotificationOpenActivity.this,"Something went wrong try later",Toast.LENGTH_LONG).show();

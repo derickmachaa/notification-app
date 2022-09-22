@@ -20,6 +20,7 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("CUEA LOGIN");
         setContentView(R.layout.activity_signup);
         edIdNo = (EditText) findViewById(R.id.edAdmission);
         btnsignin = (Button) findViewById(R.id.btnsignin);
