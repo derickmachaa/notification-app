@@ -61,7 +61,7 @@ class User{
         if($record){
             $this->_Faculty=$record[0]->FacultyName;
         }else{
-            //check in staffdepartment
+            //faculty not available staffdepartment
             $this->_Faculty="";
         }
         
@@ -195,6 +195,20 @@ class User{
 	}
 
 	return FALSE;
+    }
+
+    //function to get all students 
+    public function getAllStudents(){
+        //go through all the databases to check if a user is valid
+        $filter=['UserType'=>"student"];
+        $options=[];
+	$result=$this->_Database->queryData($this->_CollectionName,$filter,$options);
+	if($result){
+		return $result;
+    
+	}else{
+	return FALSE;
+    }
     }
 
     //function to get student according to departement
@@ -344,6 +358,27 @@ class User{
         else{
             return FALSE;
         }
+    }
+
+    //function to return departments available in the faculty
+    public function getDepartmentsInFaculty($faculty){
+	    //create an array to hold the departments
+	    $departments=array();
+	    $values=["FacultyName"=>$faculty];
+    	    $options=["projection"=>["Department"=>1,"_id"=>0]];
+	    $result=$this->_Database->queryData('faculty',$values,$options)[0];
+	    if($result){
+		    //departmentname is nested iterate twice
+		    foreach($result as $departmentarray){
+			    foreach($departmentarray as $row){
+				    array_push($departments,$row->DepartmentName);
+			    }
+		    }
+	    return $departments;
+	    }
+	    else{
+		    return FALSE;
+	    }
     }
 
 }

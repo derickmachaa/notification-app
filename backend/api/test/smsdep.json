@@ -1,5 +1,6 @@
 {
 	"message":"Shared Preferences allows activities and applications to keep preferences, in the form of key-value pairs similar to a Map that will persist even when the user closes the application. Android stores Shared Preferences settings as XML file in shared_prefs folder under DATA/data/{application package} directory. The DATA folder can be obtained by calling Environment.getDataDirectory(). SharedPreferences is application specific, i.e. the data is lost on performing one of the following",
-	"departmentname":"Computer and Information Science",
-	"description":"Reader"
+	"description":"Reader",
+	"departmentname":["Computer and Information Science"]
 }
+

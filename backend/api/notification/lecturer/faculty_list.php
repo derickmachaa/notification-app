@@ -30,29 +30,32 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
     if($decoded){
         //assign values
         $role=$decoded['UserType'];
-        $IdNo=$decoded['IdNo'];
+	$IdNo=$decoded['IdNo'];
+	$islec=$decoded['is_lec'];
         //check if is lecturer
             if($role=="staff"){
                 //set the user profile
 		    $user->setUserProfile($IdNo);
-		    //now get all departments in the faculty
-		    $departments=$user->getDepartmentsInFaculty($user->getFaculty());
-                //if true return the departments
-                if($departments){
-	            http_response_code(200);
-        	    echo json_encode(array("result"=>$departments));
-                }else{
+		    //now get the faculty
+		    $faculty=$user->getFaculty();
+		    if($islec){
+			    //only return the current facult
+			    http_response_code(200);
+			    echo json_encode(array("result"=>[$faculty]));
+		    }else{
+			    //get all the faculties
                     http_response_code(200);
                     echo json_encode(array("message"=>"Not found"));
-                }
-            }
+
+		    }
+	    }
+    }
             else{
                 http_response_code(403);
                 echo json_encode(array("message"=>"invalid bearer token"));
             }
            
         }      
-    }
 else{
     http_response_code(400);
     echo json_encode(array("message"=>"Authorization required"));

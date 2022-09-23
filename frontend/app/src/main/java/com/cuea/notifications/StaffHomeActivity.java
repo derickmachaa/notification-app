@@ -50,8 +50,8 @@ public class StaffHomeActivity extends AppCompatActivity {
     Boolean is_lec, isAllFabsVisible;
     Boolean continuechecking=true;
     //floating buttons
-    FloatingActionButton fab_newsms, fab_smsto_one, fab_smsto_dep, fab_smsto_faculty;
-    TextView txt_fab_smsto_one, txt_fab_smsto_dep, txt_fab_smsmto_faculty;
+    FloatingActionButton fab_newsms, fab_smsto_one, fab_smsto_dep, fab_smsto_school;
+    TextView txt_fab_smsto_one, txt_fab_smsto_dep, txt_fab_smsmto_school;
 
     //the number of times we have checked for new sms update
     int notificationchecksdone;
@@ -102,19 +102,19 @@ public class StaffHomeActivity extends AppCompatActivity {
         fab_newsms = (FloatingActionButton) findViewById(R.id.staff_fab);
         fab_smsto_one = (FloatingActionButton) findViewById(R.id.fab_staff_btn_one);
         fab_smsto_dep = (FloatingActionButton) findViewById(R.id.fab_staff_btndep);
-        fab_smsto_faculty = (FloatingActionButton) findViewById(R.id.fab_staff_btnfaculty);
+        fab_smsto_school = (FloatingActionButton) findViewById(R.id.fab_staff_btnschool);
 
         txt_fab_smsto_one = (TextView) findViewById(R.id.txt_staff_fab_sendtoone);
         txt_fab_smsto_dep = (TextView) findViewById(R.id.txt_staff_fab_sentodep);
-        txt_fab_smsmto_faculty = (TextView) findViewById(R.id.txt_staff_fab_sendtofaculty);
+        txt_fab_smsmto_school = (TextView) findViewById(R.id.txt_staff_fab_sendtoall);
 
         //hide the floating buttons until we click it
         fab_smsto_one.setVisibility(View.GONE);
         fab_smsto_dep.setVisibility(View.GONE);
-        fab_smsto_faculty.setVisibility(View.GONE);
+        fab_smsto_school.setVisibility(View.GONE);
         txt_fab_smsto_one.setVisibility(View.GONE);
         txt_fab_smsto_dep.setVisibility(View.GONE);
-        txt_fab_smsmto_faculty.setVisibility(View.GONE);
+        txt_fab_smsmto_school.setVisibility(View.GONE);
         isAllFabsVisible = false;
 
         //floating bar onlick
@@ -125,27 +125,27 @@ public class StaffHomeActivity extends AppCompatActivity {
                     //show when clicked
                     fab_smsto_one.show();
                     fab_smsto_dep.show();
-                    fab_smsto_faculty.show();
+                    fab_smsto_school.show();
                     //change bckground icon to cancel
                     fab_newsms.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
                     //show text view
                     txt_fab_smsto_one.setVisibility(View.VISIBLE);
                     txt_fab_smsto_dep.setVisibility(View.VISIBLE);
-                    txt_fab_smsmto_faculty.setVisibility(View.VISIBLE);
+                    txt_fab_smsmto_school.setVisibility(View.VISIBLE);
                     //toggle they are visible
                     isAllFabsVisible = true;
                 } else {
                     //hide because clicked
                     fab_smsto_one.hide();
                     fab_smsto_dep.hide();
-                    fab_smsto_faculty.hide();
+                    fab_smsto_school.hide();
                     //return default image
                     fab_newsms.setImageResource(android.R.drawable.ic_dialog_email);
                     //
 
                     txt_fab_smsto_one.setVisibility(View.GONE);
                     txt_fab_smsto_dep.setVisibility(View.GONE);
-                    txt_fab_smsmto_faculty.setVisibility(View.GONE);
+                    txt_fab_smsmto_school.setVisibility(View.GONE);
                     isAllFabsVisible = false;
                 }
             }
@@ -165,6 +165,14 @@ public class StaffHomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(StaffHomeActivity.this, StaffSendToDepartmentActivity.class);
+                startActivity(intent);
+            }
+        });
+        //add send to school action
+        fab_smsto_school.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StaffHomeActivity.this,StaffSendToSchoolActivity.class);
                 startActivity(intent);
             }
         });

@@ -57,7 +57,7 @@
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_staff_btnfaculty"
+        android:id="@+id/fab_staff_btnschool"
         android:layout_width="wrap_content"
         android:backgroundTint="@color/cardview_light_background"
         android:layout_height="wrap_content"
@@ -93,16 +93,15 @@
         app:layout_constraintTop_toTopOf="@+id/fab_staff_btn_one" />
 
     <TextView
-        android:id="@+id/txt_staff_fab_sendtofaculty"
+        android:id="@+id/txt_staff_fab_sendtoall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/maroon"
-        android:text="Send to Faculty"
-        app:layout_constraintTop_toTopOf="@+id/fab_staff_btnfaculty"
-        app:layout_constraintBottom_toBottomOf="@+id/fab_staff_btnfaculty"
-        app:layout_constraintEnd_toStartOf="@+id/fab_staff_btnfaculty"
         android:layout_marginEnd="8dp"
-        />
+        android:text="Send to School"
+        android:textColor="@color/maroon"
+        app:layout_constraintBottom_toBottomOf="@+id/fab_staff_btnschool"
+        app:layout_constraintEnd_toStartOf="@+id/fab_staff_btnschool"
+        app:layout_constraintTop_toTopOf="@+id/fab_staff_btnschool" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

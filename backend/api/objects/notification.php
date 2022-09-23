@@ -206,8 +206,10 @@ class Notification{
     //function to send to department
     public function sendToDep($message,$departmentname,$sender,$description){
 	//get all user id in that department
-	$recipients=array();
-	$values=["UserType"=>"student","DepartmentName"=>$departmentname];
+	    $recipients=array();
+	    foreach($departmentname as $department){
+	//iterate through the array
+	$values=["UserType"=>"student","DepartmentName"=>$department];
 	$options=["projection"=>["id"=>1]];
 	$result=$this->_Database->queryData("users",$values,$options);
 	if($result){
@@ -216,6 +218,7 @@ class Notification{
 		}
 	}else{
 		return FALSE;
+	}
 	}
         //create a new id
         $notificationid=new MongoDB\BSON\ObjectId();
@@ -251,10 +254,16 @@ class Notification{
         }
 
     }
-
-
-
-    public function sendNotificationToFaculty($message,$recipients,$sender,$description){
+    //function to send to school
+    public function sendToSchool($message,$sender,$description){
+	//get all students in the system
+	    $recipients=array();
+	    $students=$this->user->getAllStudents();
+	    if($students){
+	    foreach($students as $student){
+		//iterate through the array
+		array_push($recipients,$student->_id);
+		}
         //create a new id
         $notificationid=new MongoDB\BSON\ObjectId();
         //create a new record in the notification table
@@ -287,8 +296,13 @@ class Notification{
         else{
             return FALSE;
         }
+	    }
+	    else{
+		    return FALSE;
+	    }
 
     }
+
 
     //function to delete a notification
     public function deleteNotification($notificationid,$admissionNo){

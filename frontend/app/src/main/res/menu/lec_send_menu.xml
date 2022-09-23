@@ -6,5 +6,6 @@
         android:icon="@drawable/ic_adduser_bg"
         android:onClick="selectDestination"
         app:showAsAction="always"
+        android:id="@+id/staff_add_user_menu"
         />
 </menu>

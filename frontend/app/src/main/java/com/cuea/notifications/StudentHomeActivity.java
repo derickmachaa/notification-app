@@ -83,13 +83,13 @@ public class StudentHomeActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         //create a progress dialog
         progressDialog = new ProgressDialog(StudentHomeActivity.this);
-        // create the instance of the ListView
-        listView = (ListView) findViewById(R.id.st_sms_list);
-        homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
-        //change title
-        this.setTitle("CUEA Student");
         //get notifications
         new NotificationsGet().execute();
+        // create the instance of the ListView
+        listView = (ListView) findViewById(R.id.st_sms_list);
+        //change title
+        this.setTitle("CUEA Student");
+
 
 
 
@@ -117,8 +117,8 @@ public class StudentHomeActivity extends AppCompatActivity {
     //do display data
     public void doDisplaySms(){
         // Now create the instance of the homeview adapter and pass
-        // the context and arrayList created abov
-
+        // the context and arrayList created above
+        homeViewAdapter = new HomeViewAdapter(StudentHomeActivity.this, arrayList);
         // set the homeviewadapter for ListView
         listView.setAdapter(homeViewAdapter);
         listView.setTextFilterEnabled(true);
@@ -331,6 +331,8 @@ public class StudentHomeActivity extends AppCompatActivity {
     //this function will be used when user wants to logout
     public void doLogout(MenuItem mi){
         sessionManager.logout(true);
+        //stop the checking
+        continuechecking=false;
     }
 
 }

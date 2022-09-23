@@ -31,7 +31,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
         $role=$data['UserType'];
         $sender=$data['IdNo'];
         if($role=="staff"){
-		$faculty="";
+		$toschool="";
 		$message="";
 		$description="";
 		$departmentname="";
@@ -43,14 +43,14 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                 $message=$postdata->message;
                 $recipients=$postdata->recipients;
                 $description=$postdata->description;
-		$faculty=$postdata->faculty;
+		$toschool=$postdata->toschool;
 		$departmentname=$postdata->departmentname;
 		if(isset($recipients)){
 			$result=$notifications->sendNotification($message,$recipients,$sender,$description);
 		}elseif(isset($departmentname)){
 			$result=$notifications->sendToDep($message,$departmentname,$sender,$description);
-		}elseif(isset($faculty)){
-			$result=$notifications->sendNotificationToFaculty($message,$facultyname,$sender,$description);
+		}elseif(isset($toschool)){
+			$result=$notifications->sendToSchool($message,$sender,$description);
 		}
                 if($result){
                     http_response_code(200);
@@ -58,7 +58,7 @@ if(isset($_SERVER['HTTP_AUTHORIZATION'])){
                 }
                 else{
                     http_response_code(500);
-                    echo json_encode(array("message"=>"something went wrong"));
+                    echo json_encode(array("message"=>"Error in sending check department"));
                 }
                 
             }

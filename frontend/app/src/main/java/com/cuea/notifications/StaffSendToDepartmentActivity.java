@@ -189,9 +189,15 @@ public class StaffSendToDepartmentActivity extends AppCompatActivity {
                 //create a json object to hold the message
                 try {
                     JSONObject json = new JSONObject();
+                    //create a json array to hold the documents
+                    JSONArray array = new JSONArray();
+                    //put data
+                    for(int i=0;i<departments.length;i++){
+                        array.put(departments[i]);
+                    }
                     json.put("message",sms);
                     json.put("description",desc);
-                    json.put("departmentname",departments[0]);
+                    json.put("departmentname",array);
                     //now post
                     return requestHandler.PostRequest(MyLinks.LEC_URL_SEND,json,token);
 
@@ -210,9 +216,11 @@ public class StaffSendToDepartmentActivity extends AppCompatActivity {
                 JSONObject json = new JSONObject(s);
                 Toast.makeText(StaffSendToDepartmentActivity.this, json.getString("message"), Toast.LENGTH_LONG).show();
                 //clear the writing
-                editxtsms.setText("");
-                description.setText("");
-                destination.setText("");
+                if(json.getString("message").contains("successful")) {
+                    editxtsms.setText("");
+                    description.setText("");
+                    destination.setText("");
+                }
 
             }catch(Exception e)
             {
@@ -235,15 +243,14 @@ public class StaffSendToDepartmentActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            Toast.makeText(StaffSendToDepartmentActivity.this, s, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(StaffSendToDepartmentActivity.this, s, Toast.LENGTH_SHORT).show();
             super.onPostExecute(s);
             try{
                 JSONObject json = new JSONObject(s);
-               // Toast.makeText(LecSendActivity.this, s, Toast.LENGTH_SHORT).show();
                 JSONArray array = json.getJSONArray("result");
                 //create an array of equal size
-              departments = new String[array.length()];
-              departmentschecked = new boolean[array.length()];
+                departments = new String[array.length()];
+                departmentschecked = new boolean[array.length()];
                 for(int i=0;i<array.length();i++){
                     departments[i]=(array.getString(i));
                 }
